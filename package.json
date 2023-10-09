@@ -1,0 +1,12 @@
+{
+  "name": "evira",
+  "version": "1.0.0",
+  "description": "evira e-commerce application backend",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "Sanket Talaviya",
+  "license": "ISC"
+}
