@@ -6,6 +6,7 @@ const envFilePath = environment === 'production' ? '.env.production' : '.env.loc
 dotenv.config({ path: envFilePath })
 
 export default {
+    environment,
     PORT: process.env.PORT,
     DB_URI: process.env.DB_URI
 }
