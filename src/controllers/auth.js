@@ -1,9 +1,11 @@
 const httpStatus = require('http-status')
 const catchAsyncErrors = require('../utils/catchAsyncErrors')
-const authService = require('../services/auth')
-const userService = require('../services/user')
-const tokenService = require('../services/token')
 const sendResponse = require('../utils/responseHandler')
+const {
+    authService,
+    userService,
+    tokenService
+} = require('../services/index.service')
 
 exports.register = catchAsyncErrors(async (req, res) => {
     const body = req.body
@@ -14,7 +16,7 @@ exports.register = catchAsyncErrors(async (req, res) => {
 
     const tokens = await tokenService.generateAuthTokens(user._id)
 
-    Logger.info('User signup successfully => '+ body.email)
+    Logger.info('User signup successfully => ' + body.email)
 
     return sendResponse(
         res,
@@ -31,12 +33,79 @@ exports.login = catchAsyncErrors(async (req, res) => {
 
     const tokens = await tokenService.generateAuthTokens(user._id)
 
-    Logger.info('User login successfully => '+ email)
+    Logger.info('User login successfully => ' + email)
 
     return sendResponse(
         res,
         httpStatus.OK,
         { user, tokens },
         'You have logged-in successfully'
+    )
+})
+
+exports.forgotPasswordWithEmail = catchAsyncErrors(async (req, res) => {
+    const resetToken = await authService.forgotPasswordWithEmail(req.body.email)
+
+    // send an otp on the email (ex. 1234)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { resetToken },
+        'Forgot password successfully'
+    )
+})
+
+exports.forgotPasswordWithMobile = catchAsyncErrors(async (req, res) => {
+    const resetToken = await authService.forgotPasswordWithMobile(req.body.email)
+
+    // send an otp on the mobile (ex. 1234)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { resetToken },
+        'Forgot password successfull'
+    )
+})
+
+exports.verifyResetOtp = catchAsyncErrors(async (req, res) => {
+    const { token, otp } = req.body
+
+    await authService.verifyResetOtp({ token, otp })
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        [],
+        'OTP verified successfully'
+    )
+})
+
+exports.resetPassword = catchAsyncErrors(async (req, res) => {
+    const { token, password } = req.body
+
+    await authService.resetPassword({ token, password })
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        [],
+        'Password updated successfully'
+    )
+})
+
+exports.refreshTokens = catchAsyncErrors(async (req, res) => {
+    const { token } = req.body
+
+    const user = await authService.refreshTokens(token)
+
+    const tokens = await tokenService.generateAuthTokens(user._id)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { tokens },
+        'Token refreshed successfully'
     )
 })

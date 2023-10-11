@@ -1,10 +1,36 @@
 const jwt = require('jsonwebtoken')
+const httpStatus = require('http-status')
+const ApiError = require('../utils/ApiError')
+const constant = require('../constants')
+const userService = require('./user')
 
-generateToken = ({ payload, secret, options }) => {
+const generateToken = ({ payload, secret, options }) => {
     return jwt.sign(payload, secret, options)
 }
 
-generateAuthTokens = async (userId, role = 1) => {
+/**
+ * 
+ * @param {string} token 
+ * @param {string} secret 
+ * @returns object
+ */
+
+const verifyToken = (token, secret) => {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, secret, (err, decoded) => {
+            if (err) {
+                if (err.name === 'JsonWebTokenError') {
+                    reject(new ApiError(constant.MESSAGES.AUTHENTICATION_FAILED, httpStatus.UNAUTHORIZED))
+                }
+                reject(new ApiError(err.message, httpStatus.UNAUTHORIZED))
+            } else {
+                resolve(decoded)
+            }
+        })
+    })
+}
+
+const generateAuthTokens = async (userId, role = 'user') => {
     const payload = {
         sub: userId,
         role
@@ -19,6 +45,7 @@ generateAuthTokens = async (userId, role = 1) => {
         secret: config.REFRESH_TOKEN_SECRET,
         options: { expiresIn: config.REFRESH_TOKEN_EXPIRY }
     })
+    await userService.updateUser(userId, { token: refreshToken })
 
     return {
         accessToken,
@@ -27,5 +54,7 @@ generateAuthTokens = async (userId, role = 1) => {
 }
 
 module.exports = {
+    generateToken,
+    verifyToken,
     generateAuthTokens
 }

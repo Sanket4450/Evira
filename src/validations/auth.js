@@ -61,7 +61,7 @@ const resetPassword = {
     })
 }
 
-const generateTokens = {
+const refreshTokens = {
     body: joi.object().keys({
         token: stringReqValidation
     })
@@ -74,5 +74,5 @@ module.exports = {
     forgotPasswordWithMobile,
     verifyResetOtp,
     resetPassword,
-    generateTokens
+    refreshTokens
 }

@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema({
     isNotificationEnabled: {
         type: Boolean,
         default: true
+    },
+    token: {
+        type: String,
+        default: null
     }
 },
     {

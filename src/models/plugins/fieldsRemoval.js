@@ -3,6 +3,7 @@ function fieldsRemoval (schema) {
         transform: (doc, ret) => {
             delete ret.password
             delete ret.role
+            delete ret.token
             delete ret.createdAt
             delete ret.updatedAt
             delete ret.__v
