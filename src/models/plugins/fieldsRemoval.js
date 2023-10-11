@@ -1,7 +1,8 @@
-export default function fieldsRemoval(schema) {
+function fieldsRemoval (schema) {
     schema.set('toJSON', {
         transform: (doc, ret) => {
             delete ret.password
+            delete ret.role
             delete ret.createdAt
             delete ret.updatedAt
             delete ret.__v
@@ -11,3 +12,5 @@ export default function fieldsRemoval(schema) {
         }
     })
 }
+
+module.exports = fieldsRemoval

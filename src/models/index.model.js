@@ -1,18 +1,18 @@
-import User from './user.js'
-import Product from './product.js'
-import Category from './category.js'
-import Review from './review.js'
-import Notification from './notification.js'
-import Wishlist from './wishlist.js'
-import Offer from './offer.js'
-import Cart from './cart.js'
-import Order from './order.js'
-import Address from './address.js'
-import Promotion from './promotion.js'
-import Payment from './payment.js'
-import Shipping from './shipping.js'
+const User = require('./user')
+const Product = require('./product')
+const Category = require('./category')
+const Review = require('./review')
+const Notification = require('./notification')
+const Wishlist = require('./wishlist')
+const Offer = require('./offer')
+const Cart = require('./cart')
+const Order = require('./order')
+const Address = require('./address')
+const Promotion = require('./promotion')
+const Payment = require('./payment')
+const Shipping = require('./shipping')
 
-export default {
+module.exports = {
     User,
     Product,
     Category,

@@ -1,5 +1,5 @@
-import mongoose, { Mongoose } from 'mongoose'
-import fieldsRemoval from './plugins/fieldsRemoval.js'
+const mongoose = require('mongoose')
+const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const shippingSchema = new mongoose.Schema({
     orderId: {
@@ -27,4 +27,4 @@ const shippingSchema = new mongoose.Schema({
 
 shippingSchema.plugin(fieldsRemoval)
 
-export default mongoose.model('Shipping', shippingSchema)
+module.exports = mongoose.model('Shipping', shippingSchema)

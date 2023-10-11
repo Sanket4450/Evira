@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import fieldsRemoval from './plugins/fieldsRemoval.js'
+const mongoose = require('mongoose')
+const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const reviewSchema = new mongoose.Schema({
     productId: {
@@ -31,4 +31,4 @@ const reviewSchema = new mongoose.Schema({
 
 reviewSchema.plugin(fieldsRemoval)
 
-export default mongoose.model('Review', reviewSchema)
+module.exports = mongoose.model('Review', reviewSchema)

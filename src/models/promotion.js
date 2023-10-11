@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import fieldsRemoval from './plugins/fieldsRemoval.js'
+const mongoose = require('mongoose')
+const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const promotionSchema = new mongoose.Schema({
     code: {
@@ -19,16 +19,16 @@ const promotionSchema = new mongoose.Schema({
         default: null
     },
     validFrom: {
-        type: Date
-    },
-    validUntil: {
-        type: Date
-    }
+    type: Date
 },
-    {
-        timestamps: true
-    })
+    validUntil: {
+    type: Date
+}
+},
+{
+    timestamps: true
+})
 
 promotionSchema.plugin(fieldsRemoval)
 
-export default mongoose.model('Promotion', promotionSchema)
+module.exports = mongoose.model('Promotion', promotionSchema)

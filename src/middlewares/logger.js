@@ -1,5 +1,5 @@
-import winston from 'winston'
-import path from 'path'
+const winston = require('winston')
+const path = require('path')
 
 const { createLogger, format, transports } = winston
 const { combine, timestamp, json } = format
@@ -19,4 +19,4 @@ const logger = createLogger({
     ]
 })
 
-export default logger
+module.exports = logger

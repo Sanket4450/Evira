@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import fieldsRemoval from './plugins/fieldsRemoval.js'
+const mongoose = require('mongoose')
+const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const wishlistSchema = new mongoose.Schema({
     userId: {
@@ -19,4 +19,4 @@ const wishlistSchema = new mongoose.Schema({
 
 wishlistSchema.plugin(fieldsRemoval)
 
-export default mongoose.model('Wishlist', wishlistSchema)
+module.exports = mongoose.model('Wishlist', wishlistSchema)

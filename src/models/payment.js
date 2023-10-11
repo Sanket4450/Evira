@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import fieldsRemoval from './plugins/fieldsRemoval.js'
+const mongoose = require('mongoose')
+const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const paymentSchema = new mongoose.Schema({
     userId: {
@@ -26,11 +26,11 @@ const paymentSchema = new mongoose.Schema({
         default: 'Pending'
     }
 },
-{
-    timestamps: true,
-    autoIndex: false
-})
+    {
+        timestamps: true,
+        autoIndex: false
+    })
 
 paymentSchema.plugin(fieldsRemoval)
 
-export default mongoose.model('Payment', paymentSchema)
+module.exports = mongoose.model('Payment', paymentSchema)

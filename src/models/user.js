@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import fieldsRemoval from './plugins/fieldsRemoval.js'
+const mongoose = require('mongoose')
+const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const userSchema = new mongoose.Schema({
     fullName: {
@@ -37,8 +37,9 @@ const userSchema = new mongoose.Schema({
         type: String
     },
     role: {
-        type: Number,
-        default: 1
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
     },
     isNotificationEnabled: {
         type: Boolean,
@@ -52,4 +53,4 @@ const userSchema = new mongoose.Schema({
 
 userSchema.plugin(fieldsRemoval)
 
-export default mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', userSchema)

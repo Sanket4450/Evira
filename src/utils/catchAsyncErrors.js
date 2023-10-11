@@ -5,4 +5,4 @@ const catchAsyncErrors = (theFunc) => (req, res, next) => {
     })
 }
 
-export default catchAsyncErrors
+module.exports = catchAsyncErrors

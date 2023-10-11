@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import fieldsRemoval from './plugins/fieldsRemoval.js'
+const mongoose = require('mongoose')
+const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const categorySchema = new mongoose.Schema({
     name: {
@@ -16,4 +16,4 @@ const categorySchema = new mongoose.Schema({
 
 categorySchema.plugin(fieldsRemoval)
 
-export default mongoose.model('Category', categorySchema)
+module.exports = mongoose.model('Category', categorySchema)

@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import fieldsRemoval from './plugins/fieldsRemoval.js'
+const mongoose = require('mongoose')
+const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const notificationSchema = new mongoose.Schema({
     userId: {
@@ -26,4 +26,4 @@ const notificationSchema = new mongoose.Schema({
 
 notificationSchema.plugin(fieldsRemoval)
 
-export default mongoose.model('Notification', notificationSchema)
+module.exports = mongoose.model('Notification', notificationSchema)

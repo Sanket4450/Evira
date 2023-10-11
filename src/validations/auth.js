@@ -1,68 +1,78 @@
-import joi from 'joi'
+const joi = require('joi')
 
-import {
+const {
     emailValidation,
     passwordValidation,
-    numberReqValidation,
+    stringValidation,
     stringReqValidation,
     integerNumberReqValidation,
-    stringValidation,
+    numberValidation,
+    numberReqValidation,
     dateValidation,
-    integerNumberValidation,
     booleanValidation
-} from './common.js'
+} = require('./common')
 
-export const register = {
+const register = {
     body: joi.object().keys({
         email: emailValidation,
         password: passwordValidation,
-        mobile: numberReqValidation,
         fullName: stringValidation,
         nickName: stringValidation,
         profileImage: stringValidation,
         dateOfBirth: dateValidation,
+        mobile: numberValidation,
         gender: stringValidation,
         language: stringValidation,
-        role: integerNumberValidation,
+        role: stringValidation,
         isNotificationEnabled: booleanValidation
     })
 }
 
-export const login = {
+const login = {
     body: joi.object().keys({
         email: emailValidation,
         password: passwordValidation
     })
 }
 
-export const forgotPasswordWithEmail = {
+const forgotPasswordWithEmail = {
     body: joi.object().keys({
         email: emailValidation
     })
 }
 
-export const forgotPasswordWithMobile = {
+const forgotPasswordWithMobile = {
     body: joi.object().keys({
         mobile: numberReqValidation
     })
 }
 
-export const verifyResetOtp = {
+const verifyResetOtp = {
     body: joi.object().keys({
         token: stringReqValidation,
         otp: integerNumberReqValidation
     })
 }
 
-export const resetPassword = {
+const resetPassword = {
     body: joi.object().keys({
         token: stringReqValidation,
         password: passwordValidation
     })
 }
 
-export const generateTokens = {
+const generateTokens = {
     body: joi.object().keys({
         token: stringReqValidation
     })
+}
+
+module.exports = {
+    register,
+    login,
+    forgotPasswordWithEmail,
+    forgotPasswordWithMobile,
+    verifyResetOtp,
+    resetPassword,
+    generateTokens
 }

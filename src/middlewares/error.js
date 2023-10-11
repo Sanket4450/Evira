@@ -1,8 +1,8 @@
-import mongoose from 'mongoose'
-import httpStatus from 'http-status'
-import ApiError from '../utils/ApiError.js'
+const mongoose = require('mongoose')
+const httpStatus = require('http-status')
+const ApiError = require('../utils/ApiError')
 
-export const errorConverter = (err, req, res, next) => {
+exports.errorConverter = (err, req, res, next) => {
     if (!(err instanceof ApiError)) {
         const statusCode =
             err.statusCode || err instanceof mongoose.Error
@@ -14,14 +14,15 @@ export const errorConverter = (err, req, res, next) => {
     next(err)
 }
 
-export const errorHandler = (err, req, res, next) => {
-    const {message, statusCode} = err
+exports.errorHandler = (err, req, res, next) => {
+    const { message, statusCode } = err
 
     const response = {
         type: "error",
-        message
-    }
+        message,
+        ...(config.environment === 'development' && { stack: err.stack })
 
+    }
     if (config.environment === 'development') {
         Logger.error(err)
     }
