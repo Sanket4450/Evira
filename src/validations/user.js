@@ -1,16 +1,15 @@
 const joi = require('joi')
 
 const {
-    emailValidation,
     stringValidation,
     dateValidation,
     numberValidation,
-    booleanValidation
+    stringReqValidation
 } = require('./common')
 
 const profile = {
     body: joi.object().keys({
-        email: emailValidation,
+        email: stringValidation.email().lowercase(),
         fullName: stringValidation,
         nickName: stringValidation,
         profileImage: stringValidation,
@@ -18,11 +17,17 @@ const profile = {
         mobile: numberValidation,
         gender: stringValidation,
         language: stringValidation,
-        role: stringValidation,
-        isNotificationEnabled: booleanValidation
+        role: stringValidation
+    })
+}
+
+const toggleNotifications = {
+    query: joi.object().keys({
+        enabled: stringReqValidation
     })
 }
 
 module.exports = {
-    profile
+    profile,
+    toggleNotifications
 }

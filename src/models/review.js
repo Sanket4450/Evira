@@ -15,7 +15,7 @@ const reviewSchema = new mongoose.Schema({
     message: {
         type: String
     },
-    stars: {
+    star: {
         type: Number,
         enum: [1, 2, 3, 4, 5]
     },

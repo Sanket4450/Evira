@@ -8,9 +8,7 @@ const {
 } = require('../services/index.service')
 
 exports.getProfile = catchAsyncErrors(async (req, res) => {
-    const { sub } = req.user
-
-    const user = await userService.getUserById(sub)
+    const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -24,10 +22,9 @@ exports.getProfile = catchAsyncErrors(async (req, res) => {
 })
 
 exports.updateProfile = catchAsyncErrors(async (req, res) => {
-    const { sub } = req.user
     const body = req.body
 
-    let user = await userService.getUserById(sub)
+    let user = await userService.getUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -46,9 +43,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res) => {
 })
 
 exports.deleteProfile = catchAsyncErrors(async (req, res) => {
-    const { sub } = req.user
-
-    let user = await userService.getUserById(sub)
+    let user = await userService.getUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -61,7 +56,29 @@ exports.deleteProfile = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        {user},
+        { user },
         'Profile deleted successfully'
+    )
+})
+
+exports.toggleNotifications = catchAsyncErrors(async (req, res) => {
+    const { enabled } = req.query
+
+    let user = await userService.getUserById(req.user.sub)
+
+    if (!user) {
+        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    if (enabled === 'true') await userService.updateUser(user._id, { isNotificationEnabled: true })
+    else if (enabled === 'false') await userService.updateUser(user._id, { isNotificationEnabled: false })
+    else throw new ApiError(`The 'enabled' query parameter is invalid. Please use 'true' or 'false' to toggle notifications.`,
+        httpStatus.BAD_REQUEST)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        {},
+        `Notifications ${enabled === 'true' ? 'enabled' : 'disabled'} successfully`
     )
 })

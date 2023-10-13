@@ -21,17 +21,21 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     },
+    price: {
+        type: Number,
+        required: true
+    },
     quantity: {
         type: Number
     },
     variants: [{
-        color: {
-            type: String,
-            required: true
-        },
         size: {
             type: String,
             default: 'default'
+        },
+        color: {
+            type: String,
+            required: true
         },
         price: {
             type: Number,
@@ -43,8 +47,13 @@ const productSchema = new mongoose.Schema({
         }
     }],
     sold: {
-        type: Number
+        type: Number,
+        default: 0
     },
+    reviews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review'
+    }],
     savedBy: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

@@ -1,33 +1,37 @@
 const mongoose = require('mongoose')
 const fieldsRemoval = require('./plugins/fieldsRemoval')
 
-const offerSchema = new mongoose.Schema({
-    productId: {
+const paymentMethodSchema = new mongoose.Schema({
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+        ref: 'User',
         required: true,
     },
-    image: {
+    name: {
+        type: String
+    },
+    cardName: {
         type: String,
         required: true
     },
-    discountPercentage: {
+    cardNumber: {
         type: Number,
         required: true
     },
-    startDate: {
+    expiryDate: {
         type: Date,
         required: true
     },
-    endDate: {
-        type: Date,
+    cvv: {
+        type: Number,
         required: true
     }
 },
     {
-        timestamps: true
+        timestamps: true,
+        autoIndex: false
     })
 
-offerSchema.plugin(fieldsRemoval)
+paymentMethodSchema.plugin(fieldsRemoval)
 
-module.exports = mongoose.model('Offer', offerSchema)
+module.exports = mongoose.model('PaymentMethod', paymentMethodSchema)

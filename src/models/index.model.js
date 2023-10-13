@@ -9,7 +9,7 @@ const Cart = require('./cart')
 const Order = require('./order')
 const Address = require('./address')
 const Promotion = require('./promotion')
-const Payment = require('./payment')
+const PaymentMethod = require('./payment.method')
 const Shipping = require('./shipping')
 
 module.exports = {
@@ -24,6 +24,6 @@ module.exports = {
     Order,
     Address,
     Promotion,
-    Payment,
+    PaymentMethod,
     Shipping
 }

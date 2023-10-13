@@ -10,4 +10,6 @@ router.put('/profile', authChecker, validate(userValidation.profile), userContro
 
 router.delete('/profile', authChecker, userController.deleteProfile)
 
+router.patch('/toggle-notifications', authChecker, validate(userValidation.toggleNotifications), userController.toggleNotifications)
+
 module.exports = router

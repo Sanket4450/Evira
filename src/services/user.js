@@ -63,12 +63,15 @@ exports.updateUser = async (userId, userBody) => {
             _id: userId
         }
         const data = {
-            ...userBody
+            $set: { ...userBody }
         }
 
         if (userBody.email || userBody.mobile) {
             emailOrMobileTaken = await User.findOne({
-                $and: [{ $or: [{ email: userBody.email }, { mobile: userBody.mobile }] }, { email: { $ne: userBody.email } }]
+                $or: [
+                    { $and: [{ email: userBody.email }, { _id: { $ne: userId } }] },
+                    { $and: [{ mobile: userBody.mobile }, { _id: { $ne: userId } }] }
+                ]
             })
 
             if (emailOrMobileTaken) {
@@ -78,9 +81,13 @@ exports.updateUser = async (userId, userBody) => {
             // send a verification link to email & mobile
         }
         await dbRepo.updateOne(constant.COLLECTIONS.USER, { query, data })
+
         return true
     } catch (error) {
-        Logger.info('updateUser error => ' + error)
+        Logger.error('updateUser error => ' + error)
+        if (error.message === constant.MESSAGES.USER_ALREADY_EXISTS) {
+            throw new ApiError(constant.MESSAGES.USER_ALREADY_EXISTS, httpStatus.CONFLICT)
+        }
         throw new ApiError(constant.MESSAGES.SOMETHING_WENT_WRONG, httpStatus.INTERNAL_SERVER_ERROR)
     }
 }

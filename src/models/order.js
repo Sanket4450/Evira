@@ -23,6 +23,14 @@ const orderSchema = new mongoose.Schema({
         ref: 'Address',
         required: true
     },
+    amount: {
+        type: String,
+        required: true
+    },
+    paymentMethod: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    },
     status: {
         type: String,
         enum: ['Ongoing', 'Completed'],

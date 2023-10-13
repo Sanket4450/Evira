@@ -19,9 +19,9 @@ module.exports = {
         OFFER: 'Offer',
         CART: 'Cart',
         ORDER: 'Order',
-        Adress: 'Adress',
+        ADRESS: 'Adress',
         PROMOTION: 'Promotion',
-        PAYMENT: 'Payment',
+        PAYMENTMETHOD: 'PaymentMethod',
         SHIPPING: 'Shipping'
     }
 }

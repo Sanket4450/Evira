@@ -52,6 +52,34 @@ class DbRepo {
                 })
         })
     }
+
+    find(collectionName, queryObject) {
+        return new Promise((resolve, reject) => {
+            domain[collectionName]
+                .find(queryObject.query, queryObject.data)
+                .then(results => {
+                    resolve(results)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    }
+
+    aggregatePaginate(collectionName, queryObject, page, limit) {
+        return new Promise((resolve, reject) => {
+            domain[collectionName]
+                .find(queryObject.query)
+                .skip((page - 1) * limit)
+                .limit(limit)
+                .then(results => {
+                    resolve(results)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        })
+    }
 }
 
 module.exports = new DbRepo()

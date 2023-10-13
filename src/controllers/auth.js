@@ -1,6 +1,8 @@
 const httpStatus = require('http-status')
 const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
+const ApiError = require('../utils/ApiError')
+const constant = require('../constants')
 const {
     authService,
     userService,
@@ -57,7 +59,7 @@ exports.forgotPasswordWithEmail = catchAsyncErrors(async (req, res) => {
 })
 
 exports.forgotPasswordWithMobile = catchAsyncErrors(async (req, res) => {
-    const resetToken = await authService.forgotPasswordWithMobile(req.body.email)
+    const resetToken = await authService.forgotPasswordWithMobile(req.body.mobile)
 
     // send an otp on the mobile (ex. 1234)
 
@@ -77,7 +79,7 @@ exports.verifyResetOtp = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        [],
+        {},
         'OTP verified successfully'
     )
 })
@@ -90,7 +92,7 @@ exports.resetPassword = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        [],
+        {},
         'Password updated successfully'
     )
 })
@@ -107,5 +109,22 @@ exports.refreshTokens = catchAsyncErrors(async (req, res) => {
         httpStatus.OK,
         { tokens },
         'Token refreshed successfully'
+    )
+})
+
+exports.logout = catchAsyncErrors(async (req, res) => {
+    const user = await userService.getUserById(req.user.sub)
+
+    if (!user) {
+        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    await userService.updateUser(user._id, { token: null })
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { user },
+        'User have logged-out successfully'
     )
 })

@@ -56,7 +56,7 @@ exports.forgotPasswordWithMobile = async (mobile) => {
     Logger.info('Inside forgotPasswordWithMobile => ' + mobile)
 
     const user = await userService.getUserByMobile(mobile)
-    console.log(user)
+
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_EXIST, httpStatus.NOT_FOUND)
     }
