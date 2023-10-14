@@ -43,7 +43,7 @@ const forgotPasswordWithEmail = {
 
 const forgotPasswordWithMobile = {
     body: joi.object().keys({
-        mobile: numberReqValidation
+        mobile: numberReqValidation.label('Mobile Number')
     })
 }
 

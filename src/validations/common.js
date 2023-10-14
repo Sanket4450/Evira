@@ -12,6 +12,15 @@ const booleanValidation = joi.boolean().strict(true)
 const dateValidation = joi.date()
 const arrayValidation = joi.array()
 
+const pageAndLimit = {
+    page: integerNumberValidation.min(1),
+    limit: integerNumberValidation.min(1)
+}
+
+const idValidation = joi.string()
+    .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
+    .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' })
+
 module.exports = {
     stringValidation,
     stringReqValidation,
@@ -23,5 +32,7 @@ module.exports = {
     integerNumberReqValidation,
     booleanValidation,
     dateValidation,
-    arrayValidation
+    arrayValidation,
+    pageAndLimit,
+    idValidation
 }

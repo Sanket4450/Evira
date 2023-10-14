@@ -8,13 +8,6 @@ const generateToken = ({ payload, secret, options }) => {
     return jwt.sign(payload, secret, options)
 }
 
-/**
- * 
- * @param {string} token 
- * @param {string} secret 
- * @returns object
- */
-
 const verifyToken = (token, secret) => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, secret, (err, decoded) => {
@@ -31,6 +24,8 @@ const verifyToken = (token, secret) => {
 }
 
 const generateAuthTokens = async (userId, role = 'user') => {
+    Logger.info('Inside generateAuthTokens => ', + userId)
+
     const payload = {
         sub: userId,
         role

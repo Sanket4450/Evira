@@ -7,7 +7,8 @@ module.exports = {
         INCORRECT_OTP: 'Incorrect OTP',
         SOMETHING_WENT_WRONG: 'Something went wrong, please try again',
         AUTHENTICATION_FAILED: 'Authentication failed',
-        INVALID_TOKEN: 'Invalid token'
+        INVALID_TOKEN: 'Invalid token',
+        ENTER_VALID_CATEGORY: 'Plase enter valid category'
     },
     COLLECTIONS: {
         USER: 'User',

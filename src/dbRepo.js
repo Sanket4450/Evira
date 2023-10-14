@@ -66,10 +66,10 @@ class DbRepo {
         })
     }
 
-    aggregatePaginate(collectionName, queryObject, page, limit) {
+    findPage(collectionName, queryObject, page, limit) {
         return new Promise((resolve, reject) => {
             domain[collectionName]
-                .find(queryObject.query)
+                .find(queryObject.query, queryObject.data)
                 .skip((page - 1) * limit)
                 .limit(limit)
                 .then(results => {
@@ -79,6 +79,19 @@ class DbRepo {
                     reject(error)
                 })
         })
+    }
+
+    aggregate(collectionName, queryArray) {
+        return new Promise((resolve, reject) => [
+            domain[collectionName]
+                .aggregate(queryArray)
+                .then(results => {
+                    resolve(results)
+                })
+                .catch(error => {
+                    reject(error)
+                })
+        ])
     }
 }
 

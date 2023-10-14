@@ -28,18 +28,23 @@ exports.getUserByMobile = async (mobile) => {
 
 exports.createUser = async (userBody) => {
     try {
+        Logger.info('Inside createUser')
+
         const hashedPassword = await bcrypt.hash(userBody.password, 10)
         userBody.password = hashedPassword
 
         return dbRepo.create(constant.COLLECTIONS.USER, { data: userBody })
     } catch (error) {
-        Logger.info('createUser error => ' + error)
+        Logger.error('createUser error => ' + error)
+        
         throw new ApiError(constant.MESSAGES.SOMETHING_WENT_WRONG, httpStatus.INTERNAL_SERVER_ERROR)
     }
 }
 
 exports.updatePassword = async (userId, password) => {
     try {
+        Logger.info('Inside updatePassword')
+
         const query = {
             _id: userId
         }
@@ -51,7 +56,8 @@ exports.updatePassword = async (userId, password) => {
         await dbRepo.updateOne(constant.COLLECTIONS.USER, { query, data })
         return true
     } catch (error) {
-        Logger.info('updatePassword error => ' + error)
+        Logger.error('updatePassword error => ' + error)
+
         throw new ApiError(constant.MESSAGES.SOMETHING_WENT_WRONG, httpStatus.INTERNAL_SERVER_ERROR)
     }
 }
@@ -59,6 +65,7 @@ exports.updatePassword = async (userId, password) => {
 exports.updateUser = async (userId, userBody) => {
     try {
         Logger.info('Inside updateUser')
+        
         const query = {
             _id: userId
         }
@@ -85,6 +92,7 @@ exports.updateUser = async (userId, userBody) => {
         return true
     } catch (error) {
         Logger.error('updateUser error => ' + error)
+
         if (error.message === constant.MESSAGES.USER_ALREADY_EXISTS) {
             throw new ApiError(constant.MESSAGES.USER_ALREADY_EXISTS, httpStatus.CONFLICT)
         }

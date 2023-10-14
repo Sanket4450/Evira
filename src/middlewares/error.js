@@ -16,7 +16,7 @@ exports.errorConverter = (err, req, res, next) => {
 
 exports.errorHandler = (err, req, res, next) => {
     const { message, statusCode } = err
-
+    
     const response = {
         type: "error",
         message,

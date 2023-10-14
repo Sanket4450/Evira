@@ -99,6 +99,8 @@ exports.resetPassword = async ({ token, password }) => {
 }
 
 exports.refreshTokens = async (token) => {
+    Logger.info('Inside refreshTokens => ', + token)
+
     const { sub } = await tokenService.verifyToken(token, config.REFRESH_TOKEN_SECRET)
 
     const user = await userService.getUserById(sub)
