@@ -5,6 +5,8 @@ const productController = require('../controllers/product')
 
 router.get('/', validate(productValidation.getProducts), productController.getProducts)
 
-router.get('/:category', validate(productValidation.getProductsByCategory), productController.getProductsByCategory)
+router.get('/category/:categoryId', validate(productValidation.getProductsByCategory), productController.getProductsByCategory)
+
+router.get('/:productId', validate(productValidation.getProductById), productController.getProductById)
 
 module.exports = router

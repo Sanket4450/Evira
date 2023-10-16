@@ -10,7 +10,7 @@ const httpStatus = require('http-status')
 exports.getHomeData = catchAsyncErrors(async (req, res) => {
     const specialOffers = await offerService.getOffers()
     const categories = await categoryService.getCategories()
-    const products = await productService.getProducts({page: 1, limit: 20})
+    const products = await productService.getProducts({ page: 1, limit: 20 })
 
     return responseHandler(
         res,

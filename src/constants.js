@@ -8,7 +8,9 @@ module.exports = {
         SOMETHING_WENT_WRONG: 'Something went wrong, please try again',
         AUTHENTICATION_FAILED: 'Authentication failed',
         INVALID_TOKEN: 'Invalid token',
-        ENTER_VALID_CATEGORY: 'Plase enter valid category'
+        ENTER_VALID_CATEGORY: 'Plase enter valid category',
+        PRODUCTS_NOT_FOUND: 'Products not found for this category',
+        PRODUCT_NOT_FOUND: 'Pruduct not found for this productId'
     },
     COLLECTIONS: {
         USER: 'User',

@@ -15,7 +15,7 @@ global.config = config
 global.Logger = Logger
 global.domain = domain
 
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 app.use('/api/v1', routes)

@@ -4,7 +4,7 @@ class DbRepo {
     findOne(collectionName, queryObject) {
         return new Promise((resolve, reject) => {
             domain[collectionName]
-                .findOne(queryObject.query)
+                .findOne(queryObject.query, queryObject.data)
                 .then(results => {
                     resolve(results)
                 })
@@ -53,10 +53,11 @@ class DbRepo {
         })
     }
 
-    find(collectionName, queryObject) {
+    find(collectionName, queryObject, sortQuery = {}) {
         return new Promise((resolve, reject) => {
             domain[collectionName]
                 .find(queryObject.query, queryObject.data)
+                .sort(sortQuery)
                 .then(results => {
                     resolve(results)
                 })
@@ -66,10 +67,11 @@ class DbRepo {
         })
     }
 
-    findPage(collectionName, queryObject, page, limit) {
+    findPage(collectionName, queryObject, sortQuery = {}, page, limit) {
         return new Promise((resolve, reject) => {
             domain[collectionName]
                 .find(queryObject.query, queryObject.data)
+                .sort(sortQuery)
                 .skip((page - 1) * limit)
                 .limit(limit)
                 .then(results => {

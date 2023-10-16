@@ -15,11 +15,18 @@ const getProductsByCategory = {
         ...pageAndLimit
     }),
     params: joi.object().keys({
-        category: idValidation
+        categoryId: idValidation
+    })
+}
+
+const getProductById = {
+    params: joi.object().keys({
+        productId: idValidation
     })
 }
 
 module.exports = {
     getProducts,
-    getProductsByCategory
+    getProductsByCategory,
+    getProductById
 }

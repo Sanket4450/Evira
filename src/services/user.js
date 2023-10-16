@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const httpStatus = require('http-status')
 const dbRepo = require('../dbRepo')
@@ -7,7 +8,7 @@ const User = require('../models/user')
 
 exports.getUserById = async (userId) => {
     const query = {
-        _id: userId
+        _id: new mongoose.Types.ObjectId(userId)
     }
     return dbRepo.findOne(constant.COLLECTIONS.USER, { query })
 }
@@ -46,7 +47,7 @@ exports.updatePassword = async (userId, password) => {
         Logger.info('Inside updatePassword')
 
         const query = {
-            _id: userId
+            _id: new mongoose.Types.ObjectId(userId)
         }
         const hashedPassword = await bcrypt.hash(password, 10)
         const data = {
@@ -67,7 +68,7 @@ exports.updateUser = async (userId, userBody) => {
         Logger.info('Inside updateUser')
         
         const query = {
-            _id: userId
+            _id: new mongoose.Types.ObjectId(userId)
         }
         const data = {
             $set: { ...userBody }
@@ -102,7 +103,7 @@ exports.updateUser = async (userId, userBody) => {
 
 exports.deleteUserById = async (userId) => {
     const query = {
-        _id: userId
+        _id: new mongoose.Types.ObjectId(userId)
     }
     return dbRepo.deleteOne(constant.COLLECTIONS.USER, { query })
 }

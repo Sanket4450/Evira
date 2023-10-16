@@ -12,4 +12,6 @@ router.delete('/profile', authChecker, userController.deleteProfile)
 
 router.patch('/toggle-notifications', authChecker, validate(userValidation.toggleNotifications), userController.toggleNotifications)
 
+router.get('/wishlist', authChecker, )
+
 module.exports = router

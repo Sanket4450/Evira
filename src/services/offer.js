@@ -1,8 +1,11 @@
 const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 
-exports.getOffers = (page = 1, limit = 5) => {
+exports.getOffers = ({ page, limit }) => {
     Logger.info(`Inside getOffers => page = ${page} & limit = ${limit}`)
+
+    page ||= 1
+    limit ||= 3
 
     const query = {
         // query for offers
@@ -10,11 +13,11 @@ exports.getOffers = (page = 1, limit = 5) => {
     const data = {
         image: 1
     }
-    return dbRepo.findPage(constant.COLLECTIONS.OFFER, { query, data }, page, limit)
+    return dbRepo.findPage(constant.COLLECTIONS.OFFER, { query, data }, {}, page, limit)
 }
 
 exports.getAllOffers = () => {
-    Logger.log('Inside getAllOffers')
+    Logger.info('Inside getAllOffers')
 
     const query = {
         // query for offers
