@@ -7,6 +7,8 @@ router.get('/', validate(productValidation.getProducts), productController.getPr
 
 router.get('/category/:categoryId', validate(productValidation.getProductsByCategory), productController.getProductsByCategory)
 
+router.get('/search', validate(productValidation.getProductsBySearch), productController.getProductsBySearch)
+
 router.get('/:productId', validate(productValidation.getProductById), productController.getProductById)
 
 module.exports = router

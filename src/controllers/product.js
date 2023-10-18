@@ -38,6 +38,17 @@ exports.getProductsByCategory = catchAsyncErrors(async (req, res) => {
     )
 })
 
+exports.getProductsBySearch = catchAsyncErrors(async (req, res) => {
+    const products = await productService.getProductsBySearch(req.query)
+
+    return responseHandler(
+        res,
+        httpStatus.OK,
+        { products },
+        'Product retrieved successfully'
+    )
+})
+
 exports.getProductById = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
 

@@ -21,6 +21,10 @@ const idValidation = joi.string()
     .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
     .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' })
 
+const toggleValidation = [
+    joi.string().trim().valid('true', 'false'), joi.number().valid(1, 0)
+]
+
 module.exports = {
     stringValidation,
     stringReqValidation,
@@ -34,5 +38,6 @@ module.exports = {
     dateValidation,
     arrayValidation,
     pageAndLimit,
-    idValidation
+    idValidation,
+    toggleValidation
 }

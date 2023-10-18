@@ -3,6 +3,7 @@ const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
 const sendResponse = require('../utils/responseHandler')
+const toBoolean = require('../utils/checkBoolean')
 const {
     userService
 } = require('../services/index.service')
@@ -43,15 +44,13 @@ exports.updateProfile = catchAsyncErrors(async (req, res) => {
 })
 
 exports.deleteProfile = catchAsyncErrors(async (req, res) => {
-    let user = await userService.getUserById(req.user.sub)
+    const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
     await userService.deleteUserById(user._id)
-
-    user = await userService.getUserById(user._id)
 
     return sendResponse(
         res,
@@ -62,23 +61,20 @@ exports.deleteProfile = catchAsyncErrors(async (req, res) => {
 })
 
 exports.toggleNotifications = catchAsyncErrors(async (req, res) => {
-    const { enabled } = req.query
-
     let user = await userService.getUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    if (enabled === 'true') await userService.updateUser(user._id, { isNotificationEnabled: true })
-    else if (enabled === 'false') await userService.updateUser(user._id, { isNotificationEnabled: false })
-    else throw new ApiError(`The 'enabled' query parameter is invalid. Please use 'true' or 'false' to toggle notifications.`,
-        httpStatus.BAD_REQUEST)
+    const enable = toBoolean(req.query.enable)
+
+    await userService.updateUser(user._id, { isNotificationEnabled: enable })
 
     return sendResponse(
         res,
         httpStatus.OK,
         {},
-        `Notifications ${enabled === 'true' ? 'enabled' : 'disabled'} successfully`
+        `Notifications ${enable ? 'enabled' : 'disabled'} successfully`
     )
 })

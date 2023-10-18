@@ -1,7 +1,10 @@
 const joi = require('joi')
 const {
     pageAndLimit,
-    idValidation
+    idValidation,
+    stringReqValidation,
+    integerNumberValidation,
+    stringValidation
 } = require('./common')
 
 const getProducts = {
@@ -25,8 +28,20 @@ const getProductById = {
     })
 }
 
+const getProductsBySearch = {
+    query: joi.object().keys({
+        keyword: stringReqValidation.label('Search Keyword'),
+        category: stringValidation,
+        min_price: integerNumberValidation,
+        max_price: integerNumberValidation,
+        sortBy: stringReqValidation.valid('popular', 'recent', 'price_desc', 'price_asc'),
+        rating: integerNumberValidation.valid(1, 2, 3, 4, 5)
+    })
+}
+
 module.exports = {
     getProducts,
     getProductsByCategory,
-    getProductById
+    getProductById,
+    getProductsBySearch
 }

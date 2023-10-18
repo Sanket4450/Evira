@@ -4,7 +4,8 @@ const {
     stringValidation,
     dateValidation,
     numberValidation,
-    stringReqValidation
+    stringReqValidation,
+    toggleValidation
 } = require('./common')
 
 const profile = {
@@ -23,7 +24,7 @@ const profile = {
 
 const toggleNotifications = {
     query: joi.object().keys({
-        enabled: stringReqValidation
+        enable: toggleValidation
     })
 }
 

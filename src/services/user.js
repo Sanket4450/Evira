@@ -71,7 +71,9 @@ exports.updateUser = async (userId, userBody) => {
             _id: new mongoose.Types.ObjectId(userId)
         }
         const data = {
-            $set: { ...userBody }
+            $set: {
+                ...userBody
+            }
         }
 
         if (userBody.email || userBody.mobile) {
