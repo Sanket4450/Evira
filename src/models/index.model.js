@@ -10,7 +10,7 @@ const Order = require('./order')
 const Address = require('./address')
 const Promotion = require('./promotion')
 const PaymentMethod = require('./payment.method')
-const Shipping = require('./shipping')
+const ShippingType = require('./shipping.type')
 
 module.exports = {
     User,
@@ -25,5 +25,5 @@ module.exports = {
     Address,
     Promotion,
     PaymentMethod,
-    Shipping
+    ShippingType
 }

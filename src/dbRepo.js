@@ -30,7 +30,7 @@ class DbRepo {
     updateOne(collectionName, queryObject) {
         return new Promise((resolve, reject) => {
             domain[collectionName]
-                .updateOne(queryObject.query, queryObject.data)
+                .updateOne(queryObject.query, queryObject.data, queryObject.options)
                 .then(results => {
                     resolve(results)
                 })

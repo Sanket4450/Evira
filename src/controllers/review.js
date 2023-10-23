@@ -15,7 +15,7 @@ exports.getReviews = catchAsyncErrors(async (req, res) => {
 
     const product = await productService.getProductById(productId)
 
-    if (!product.length) {
+    if (!product) {
         throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
@@ -34,7 +34,7 @@ exports.getReviewsBySearch = catchAsyncErrors(async (req, res) => {
 
     const product = await productService.getProductById(productId)
 
-    if (!product.length) {
+    if (!product) {
         throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
@@ -59,7 +59,7 @@ exports.postReview = catchAsyncErrors(async (req, res) => {
 
     const product = await productService.getProductById(productId)
 
-    if (!product.length) {
+    if (!product) {
         throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
@@ -86,13 +86,13 @@ exports.updateReview = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.REVIEW_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    if (!await reviewService.checkReviewWithUserId(review._id, req.user.sub)) {
+    if (!await reviewService.checkReviewWithUserId(reviewId, req.user.sub)) {
         throw new ApiError(constant.MESSAGES.USER_NOT_ALLOWED, httpStatus.FORBIDDEN)
     }
 
-    await reviewService.updateReview(review._id, req.body)
+    await reviewService.updateReview(reviewId, req.body)
 
-    review = reviewService.getReviewById(review._id)
+    review = reviewService.getReviewById(reviewId)
 
     return sendResponse(
         res,
@@ -111,11 +111,11 @@ exports.deleteReview = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.REVIEW_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    if (!await reviewService.checkReviewWithUserId(review._id, req.user.sub)) {
+    if (!await reviewService.checkReviewWithUserId(reviewId, req.user.sub)) {
         throw new ApiError(constant.MESSAGES.USER_NOT_ALLOWED, httpStatus.FORBIDDEN)
     }
 
-    await reviewService.deleteReview(review._id)
+    await reviewService.deleteReview(reviewId)
 
     return sendResponse(
         res,
@@ -134,7 +134,7 @@ exports.toggleLike = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.REVIEW_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    let user = await userService.getUserById(req.user.sub)
+    const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -142,11 +142,11 @@ exports.toggleLike = catchAsyncErrors(async (req, res) => {
 
     const like = toBoolean(req.query.like)
 
-    if (!like || !await reviewService.checkReviewLikedWithUserId(review._id, user._id)) {
-        await reviewService.likeReview(review._id, user._id, like)
+    if (!like || !await reviewService.checkReviewLikedWithUserId(reviewId, user._id)) {
+        await reviewService.likeUnlikeReview(reviewId, user._id, like)
     }
 
-    review = await reviewService.getReviewById(review._id)
+    review = await reviewService.getReviewById(reviewId)
 
     return sendResponse(
         res,

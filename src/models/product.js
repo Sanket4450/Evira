@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const productSchema = new mongoose.Schema({
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -35,7 +35,7 @@ const productSchema = new mongoose.Schema({
         },
         color: {
             type: String,
-            required: true
+            default: 'default'
         },
         price: {
             type: Number,

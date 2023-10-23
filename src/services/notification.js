@@ -9,7 +9,7 @@ exports.getNotifications = (userId, { page, limit }) => {
     limit ||= 20
 
     const query = {
-        userId: new mongoose.Types.ObjectId(userId)
+        user: new mongoose.Types.ObjectId(userId)
     }
 
     const data = {

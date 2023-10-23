@@ -37,7 +37,7 @@ exports.createUser = async (userBody) => {
         return dbRepo.create(constant.COLLECTIONS.USER, { data: userBody })
     } catch (error) {
         Logger.error('createUser error => ' + error)
-        
+
         throw new ApiError(constant.MESSAGES.SOMETHING_WENT_WRONG, httpStatus.INTERNAL_SERVER_ERROR)
     }
 }
@@ -66,7 +66,7 @@ exports.updatePassword = async (userId, password) => {
 exports.updateUser = async (userId, userBody) => {
     try {
         Logger.info('Inside updateUser')
-        
+
         const query = {
             _id: new mongoose.Types.ObjectId(userId)
         }
@@ -108,4 +108,72 @@ exports.deleteUserById = async (userId) => {
         _id: new mongoose.Types.ObjectId(userId)
     }
     return dbRepo.deleteOne(constant.COLLECTIONS.USER, { query })
+}
+
+exports.getDefaultAddressById = (userId) => {
+    const query = {
+        user: new mongoose.Types.ObjectId(userId),
+        default: true
+    }
+
+    const data = {
+        user: 0
+    }
+    return dbRepo.findOne(constant.COLLECTIONS.ADDRESS, { query, data })
+}
+
+exports.getAddressById = (addressId, userId) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(addressId),
+        user: new mongoose.Types.ObjectId(userId)
+    }
+
+    const data = {
+        user: 0
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.ADDRESS, { query, data })
+}
+
+exports.getAddresses = (userId) => {
+    const query = {
+        user: new mongoose.Types.ObjectId(userId)
+    }
+
+    const data = {
+        user: 0
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.ADDRESS, { query, data })
+}
+
+exports.createAddress = (userId, addressBody) => {
+    const data = {
+        user: new mongoose.Types.ObjectId(userId),
+        ...addressBody
+    }
+    return dbRepo.create(constant.COLLECTIONS.ADDRESS, { data })
+}
+
+exports.updateAddress = (addressId, userId, addressBody) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(addressId),
+        user: new mongoose.Types.ObjectId(userId)
+    }
+
+    const data = {
+        $set: {
+            ...addressBody
+        }
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.ADDRESS, { query, data })
+}
+
+exports.deleteAddress = (addressId, userId) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(addressId),
+        user: new mongoose.Types.ObjectId(userId)
+    }
+    return dbRepo.deleteOne(constant.COLLECTIONS.ADDRESS, { query })
 }

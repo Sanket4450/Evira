@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const paymentMethodSchema = new mongoose.Schema({
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
@@ -24,6 +24,14 @@ const paymentMethodSchema = new mongoose.Schema({
     },
     cvv: {
         type: Number,
+        required: true
+    },
+    balance: {
+        type: Number,
+        default: 0
+    },
+    pin: {
+        type: String,
         required: true
     }
 },

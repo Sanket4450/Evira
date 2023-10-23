@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const orderSchema = new mongoose.Schema({
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -23,13 +23,19 @@ const orderSchema = new mongoose.Schema({
         ref: 'Address',
         required: true
     },
+    shippingType: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ShippingTypes',
+        required: true
+    },
     amount: {
-        type: String,
+        type: Number,
         required: true
     },
     paymentMethod: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        ref: 'PaymentMethod',
+        default: null
     },
     status: {
         type: String,
@@ -42,6 +48,7 @@ const orderSchema = new mongoose.Schema({
     }
 },
     {
+        timestamps: true,
         autoIndex: false
     })
 

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const addressSchema = new mongoose.Schema({
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -27,8 +27,12 @@ const addressSchema = new mongoose.Schema({
         type: String
     },
     postalCode: {
-        type: String,
+        type: Number,
         required: true
+    },
+    default: {
+        type: Boolean,
+        default: true
     }
 },
     {

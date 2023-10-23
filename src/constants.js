@@ -10,9 +10,23 @@ module.exports = {
         INVALID_TOKEN: 'Invalid token',
         ENTER_VALID_CATEGORY: 'Please enter valid category',
         PRODUCTS_NOT_FOUND: 'Products not found for this category',
-        PRODUCT_NOT_FOUND: 'Pruduct not found for this productId',
+        PRODUCT_NOT_FOUND: 'Product not found for this productId',
         REVIEW_NOT_FOUND: 'Review not found with this reviewId',
-        USER_NOT_ALLOWED: 'User is not allowed to modify this resource'
+        USER_NOT_ALLOWED: 'User is not allowed to modify this resource',
+        TOGGLE_PARAM_MISSING: 'Please enter a toggle query parameter',
+        ENTER_VALID_ACTION: 'Please enter a valid cart action',
+        ADD_PRODUCT_TO_CART: 'Please first add product to cart',
+        ADDRESS_NOT_FOUND: 'Address not found for this user or addressId',
+        SHIPPING_NOT_FOUND: 'Shipping-type not found with this Id',
+        ENTER_VALID_OBJECTID: 'Invalid ID. Please provide a valid ObjectId',
+        PROMO_NOT_FOUND: 'Promo-code expired or not found with this Id',
+        INCORRECT_PIN: 'Incorrect PIN. Please enter correct PIN',
+        ORDER_NOT_FOUND: 'Order not found for this user or orderId',
+        ADD_PRODUCTS: 'Please add products to cart first to checkout',
+        AMOUNT_NOT_MATCH: 'Amount not match! please check the total amount',
+        PAYMENT_METHOD_NOT_FOUND: 'Payment-method not found for this user or paymentId',
+        PAYMENT_METHOD_EXPIRED: 'Payment-method expired, please add a new payment-method',
+        INSUFFICIENT_BALANCE: 'Not have sufficient balance'
     },
     COLLECTIONS: {
         USER: 'User',
@@ -24,9 +38,9 @@ module.exports = {
         OFFER: 'Offer',
         CART: 'Cart',
         ORDER: 'Order',
-        ADRESS: 'Adress',
+        ADDRESS: 'Address',
         PROMOTION: 'Promotion',
         PAYMENTMETHOD: 'PaymentMethod',
-        SHIPPING: 'Shipping'
+        SHIPPINGTYPE: 'ShippingType'
     }
 }

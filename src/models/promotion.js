@@ -16,7 +16,11 @@ const promotionSchema = new mongoose.Schema({
     },
     maxUses: {
         type: Number,
-        default: null
+        default: 100
+    },
+    remainingUses: {
+        type: Number,
+        default: 0
     },
     validFrom: {
     type: Date

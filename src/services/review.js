@@ -13,7 +13,7 @@ exports.getReviews = (productId, { rating, page, limit }) => {
     pipeline.push(
         {
             $match: {
-                productId: new mongoose.Types.ObjectId(productId)
+                product: new mongoose.Types.ObjectId(productId)
             }
         }
     )
@@ -52,7 +52,7 @@ exports.getReviews = (productId, { rating, page, limit }) => {
         {
             $lookup: {
                 from: 'users',
-                localField: 'userId',
+                localField: 'user',
                 foreignField: '_id',
                 as: 'users'
             }
@@ -101,13 +101,13 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
     pipeline.push(
         {
             $match: {
-                productId: new mongoose.Types.ObjectId(productId),
+                product: new mongoose.Types.ObjectId(productId),
             }
         },
         {
             $lookup: {
                 from: 'users',
-                localField: 'userId',
+                localField: 'user',
                 foreignField: '_id',
                 as: 'users'
             }
@@ -153,7 +153,7 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
         {
             $lookup: {
                 from: 'users',
-                localField: 'userId',
+                localField: 'user',
                 foreignField: '_id',
                 as: 'users'
             }
@@ -195,8 +195,8 @@ exports.postReview = ({ productId, userId, ...reviewBody }) => {
     Logger.info(`Inside postReview => productId = ${productId} userId = ${userId}`)
 
     const data = {
-        productId: new mongoose.Types.ObjectId(productId),
-        userId: new mongoose.Types.ObjectId(userId),
+        product: new mongoose.Types.ObjectId(productId),
+        user: new mongoose.Types.ObjectId(userId),
         ...reviewBody
     }
 
@@ -218,12 +218,18 @@ exports.getReviewById = (id) => {
 exports.checkReviewWithUserId = (reviewId, userId) => {
     const query = {
         _id: new mongoose.Types.ObjectId(reviewId),
-        userId: new mongoose.Types.ObjectId(userId)
+        user: new mongoose.Types.ObjectId(userId)
     }
-    return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query })
+
+    const data = {
+        _id: 1
+    }
+    
+    return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
 }
 
 exports.updateReview = (reviewId, reviewBody) => {
+    Logger.info(`Inside updateReview => reviewId = ${reviewId}`)
     const query = {
         _id: new mongoose.Types.ObjectId(reviewId)
     }
@@ -238,6 +244,7 @@ exports.updateReview = (reviewId, reviewBody) => {
 }
 
 exports.deleteReview = (reviewId) => {
+    Logger.info(`Inside deleteReview => reviewId = ${reviewId}`)
     const query = {
         _id: new mongoose.Types.ObjectId(reviewId)
     }
@@ -250,10 +257,16 @@ exports.checkReviewLikedWithUserId = (reviewId, userId) => {
         _id: new mongoose.Types.ObjectId(reviewId),
         likedBy: { $eq: new mongoose.Types.ObjectId(userId) }
     }
-    return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query })
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
 }
 
-exports.likeReview = (reviewId, userId, like) => {
+exports.likeUnlikeReview = (reviewId, userId, like) => {
+    Logger.info(`Inside likeUnlikeReview => reviewId = ${reviewId} userId = ${userId}`)
     const query = {
         _id: new mongoose.Types.ObjectId(reviewId)
     }

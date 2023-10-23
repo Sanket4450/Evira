@@ -4,6 +4,18 @@ const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 const ApiError = require('../utils/ApiError')
 
+exports.getProductById = (id) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(id)
+    }
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.PRODUCT, { query, data })
+}
+
 exports.getProducts = ({ matchCriteria, page, limit }) => {
     Logger.info(`Inside getProducts => page = ${page} & limit = ${limit}`)
 
@@ -25,7 +37,7 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
             $lookup: {
                 from: 'reviews',
                 localField: '_id',
-                foreignField: 'productId',
+                foreignField: 'product',
                 as: 'reviews'
             }
         },
@@ -52,11 +64,17 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
                 price: 1,
                 sold: 1,
                 stars: {
-                    $cond: {
-                        if: { $gt: ['$stars', null] },
-                        then: { $round: ['$stars', 1] },
-                        else: 0
-                    }
+                    $round: [
+                        {
+                            $ifNull: [
+                                {
+                                    $avg: "$reviews.star"
+                                },
+                                0
+                            ]
+                        },
+                        1
+                    ]
                 },
                 _id: 0,
                 id: '$_id'
@@ -93,7 +111,7 @@ exports.getProductsByCategory = (categoryId, { matchCriteria, page, limit }) => 
             $lookup: {
                 from: 'reviews',
                 localField: '_id',
-                foreignField: 'productId',
+                foreignField: 'product',
                 as: 'reviews'
             }
         },
@@ -120,48 +138,6 @@ exports.getProductsByCategory = (categoryId, { matchCriteria, page, limit }) => 
                 price: 1,
                 sold: 1,
                 stars: {
-                    $cond: {
-                        if: { $gt: ['$stars', null] },
-                        then: { $round: ['$stars', 1] },
-                        else: 0
-                    }
-                },
-                _id: 0,
-                id: '$_id'
-            }
-        }
-    ]
-
-    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
-}
-
-exports.getProductById = (id) => {
-    Logger.info('Inside getProductById => ' + id)
-
-    const pipeline = [
-        {
-            $match: {
-                _id: new mongoose.Types.ObjectId(id)
-            }
-        },
-        {
-            $lookup: {
-                from: 'reviews',
-                localField: '_id',
-                foreignField: 'productId',
-                as: 'reviews'
-            }
-        },
-        {
-            $project: {
-                name: 1,
-                image: 1,
-                description: 1,
-                price: 1,
-                variants: 1,
-                quantity: 1,
-                sold: 1,
-                stars: {
                     $round: [
                         {
                             $ifNull: [
@@ -173,9 +149,6 @@ exports.getProductById = (id) => {
                         },
                         1
                     ]
-                },
-                reviewCount: {
-                    $size: '$reviews'
                 },
                 _id: 0,
                 id: '$_id'
@@ -288,7 +261,7 @@ exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy
             $lookup: {
                 from: 'reviews',
                 localField: '_id',
-                foreignField: 'productId',
+                foreignField: 'product',
                 as: 'reviews'
             }
         },
@@ -315,6 +288,57 @@ exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy
                 id: '$_id'
             }
         })
+
+    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
+}
+
+exports.getFullProductById = (productId) => {
+    Logger.info('Inside getFullProductById => ' + productId)
+
+    const pipeline = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(productId)
+            }
+        },
+        {
+            $lookup: {
+                from: 'reviews',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'reviews'
+            }
+        },
+        {
+            $project: {
+                name: 1,
+                image: 1,
+                description: 1,
+                price: 1,
+                variants: 1,
+                quantity: 1,
+                sold: 1,
+                stars: {
+                    $round: [
+                        {
+                            $ifNull: [
+                                {
+                                    $avg: "$reviews.star"
+                                },
+                                0
+                            ]
+                        },
+                        1
+                    ]
+                },
+                reviewCount: {
+                    $size: '$reviews'
+                },
+                _id: 0,
+                id: '$_id'
+            }
+        }
+    ]
 
     return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
 }

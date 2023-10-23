@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const reviewSchema = new mongoose.Schema({
-    productId: {
+    product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product'
     },
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true

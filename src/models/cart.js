@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const cartSchema = new mongoose.Schema({
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -14,8 +14,12 @@ const cartSchema = new mongoose.Schema({
             required: true
         },
         quantity: {
-            type: String,
+            type: Number,
             default: 1
+        },
+        addedAt: {
+            type: Date,
+            default: Date.now()
         }
     }]
 },
