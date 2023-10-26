@@ -11,6 +11,7 @@ module.exports = {
         ENTER_VALID_CATEGORY: 'Please enter valid category',
         PRODUCTS_NOT_FOUND: 'Products not found for this category',
         PRODUCT_NOT_FOUND: 'Product not found for this productId',
+        VARIANT_NOT_FOUND: 'Variant not found for this product or variantId',
         REVIEW_NOT_FOUND: 'Review not found with this reviewId',
         USER_NOT_ALLOWED: 'User is not allowed to modify this resource',
         TOGGLE_PARAM_MISSING: 'Please enter a toggle query parameter',
@@ -31,6 +32,7 @@ module.exports = {
     COLLECTIONS: {
         USER: 'User',
         PRODUCT: 'Product',
+        VARIANT: 'Variant',
         CATEGORY: 'Category',
         REVIEW: 'Review',
         NOTIFICATION: 'Notification',

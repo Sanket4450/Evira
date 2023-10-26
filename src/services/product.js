@@ -16,6 +16,19 @@ exports.getProductById = (id) => {
     return dbRepo.findOne(constant.COLLECTIONS.PRODUCT, { query, data })
 }
 
+exports.getVariantById = (variantId, productId) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(variantId),
+        product: new mongoose.Types.ObjectId(productId)
+    }
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.VARIANT, { query, data })
+}
+
 exports.getProducts = ({ matchCriteria, page, limit }) => {
     Logger.info(`Inside getProducts => page = ${page} & limit = ${limit}`)
 
@@ -303,6 +316,25 @@ exports.getFullProductById = (productId) => {
         },
         {
             $lookup: {
+                from: 'variants',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'variants'
+            }
+        },
+        {
+            $lookup: {
+                from: 'variants',
+                localField: 'defaultVariant',
+                foreignField: '_id',
+                as: 'defaultVariant'
+            }
+        },
+        {
+            $unwind: '$defaultVariant'
+        },
+        {
+            $lookup: {
                 from: 'reviews',
                 localField: '_id',
                 foreignField: 'product',
@@ -315,8 +347,6 @@ exports.getFullProductById = (productId) => {
                 image: 1,
                 description: 1,
                 price: 1,
-                variants: 1,
-                quantity: 1,
                 sold: 1,
                 stars: {
                     $round: [
@@ -333,6 +363,24 @@ exports.getFullProductById = (productId) => {
                 },
                 reviewCount: {
                     $size: '$reviews'
+                },
+                defaultVariant: {
+                    size: '$defaultVariant.size',
+                    color: '$defaultVariant.color',
+                    price: '$defaultVariant.price',
+                    id: '$defaultVariant._id'
+                },
+                variants: {
+                    $map: {
+                        input: "$variants",
+                        as: "variant",
+                        in: {
+                            size: "$$variant.size",
+                            color: "$$variant.color",
+                            price: '$$variant.price',
+                            id: '$$variant._id'
+                        }
+                    }
                 },
                 _id: 0,
                 id: '$_id'

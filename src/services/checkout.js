@@ -52,11 +52,7 @@ const checkPromoCodeValidity = (id, date) => {
 
 const postCheckout = async ({ userId, address, shipping, promo }) => {
     try {
-        Logger.info(`Inside postCheckout => userId = ${userId}`)
-
-        if (!await userService.getUserById(userId)) {
-            throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
-        }
+        Logger.info(`Inside postCheckout => address = ${address} shipping-type = ${shipping} promo-code = ${promo}`)
 
         if (!await userService.getAddressById(address, userId)) {
             throw new ApiError(constant.MESSAGES.ADDRESS_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -68,16 +64,13 @@ const postCheckout = async ({ userId, address, shipping, promo }) => {
             throw new ApiError(constant.MESSAGES.SHIPPING_NOT_FOUND, httpStatus.NOT_FOUND)
         }
 
-        let products = await cartService.getCheckoutProducts(userId)
+        let items = await cartService.getCheckoutProducts(userId)
 
-        const [{ amount }] = await cartService.getTotalAmount(userId)
+        let [{ amount }] = await cartService.getTotalAmount(userId)
 
         if (!amount) {
             throw new ApiError(constant.MESSAGES.ADD_PRODUCTS, httpStatus.FORBIDDEN)
         }
-
-        products = products.items
-        let finalAmount = amount + charge
 
         if (promo) {
             if (!new RegExp('^[0-9a-fA-F]{24}$').test(promo)) {
@@ -88,15 +81,24 @@ const postCheckout = async ({ userId, address, shipping, promo }) => {
             if (!discountPercentage) {
                 throw new ApiError(constant.MESSAGES.PROMO_NOT_FOUND, httpStatus.NOT_FOUND)
             }
-            finalAmount -= (finalAmount * discountPercentage / 100)
 
-            return { products, finalAmount }
+            for (let item of items) {
+                item.amount -= (item.amount * discountPercentage / 100)
+            }
+
+            amount -= (amount * discountPercentage / 100)
+            const finalAmount = amount + charge
+
+            return { items, finalAmount }
         }
-        return { products, finalAmount }
+
+        const finalAmount = amount + charge
+
+        return { items, finalAmount }
     } catch (error) {
         Logger.error(error)
 
-        throw new ApiError(error.message, httpStatus.CONFLICT)
+        throw new ApiError(error.message, httpStatus.CONFLICT, error.stack)
     }
 }
 

@@ -7,8 +7,13 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    products: [{
+    item: {
         product: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product',
+            required: true
+        },
+        variant: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Product',
             required: true
@@ -17,7 +22,7 @@ const orderSchema = new mongoose.Schema({
             type: Number,
             required: true
         }
-    }],
+    },
     address: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address',
@@ -37,15 +42,26 @@ const orderSchema = new mongoose.Schema({
         ref: 'PaymentMethod',
         default: null
     },
-    status: {
+    type: {
         type: String,
         enum: ['Ongoing', 'Completed'],
         default: 'Ongoing'
     },
-    orderDate: {
-        type: Date,
-        default: Date.now()
-    }
+    status: [{
+        title: {
+            type: String,
+            enum: ['Ordered', 'Shipped', 'Out for Delivery', 'Delivered', 'Canceled'],
+            default: 'Ordered'
+        },
+        description: {
+            type: String,
+            default: 'Order placed successfully'
+        },
+        date: {
+            type: Date,
+            default: Date.now()
+        }
+    }]
 },
     {
         timestamps: true,

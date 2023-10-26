@@ -3,8 +3,8 @@ const joi = require('joi')
 const {
     idValidation,
     stringValidation,
-    integerNumberReqValidation,
-    stringReqValidation
+    stringReqValidation,
+    numberReqValidation
 } = require('./common')
 
 const addPromoCode = {
@@ -18,29 +18,11 @@ const postCheckout = {
         address: idValidation.label('Address'),
         shipping: idValidation.label('Shipping-type'),
         promo: stringValidation.label('Promo-code'),
-        amount: integerNumberReqValidation.label('Total Amount')
-    })
-}
-
-const prePayment = {
-    body: joi.object().keys({
-        orderId: idValidation,
-        paymentId: idValidation
-    })
-}
-
-const postPayment = {
-    body: joi.object().keys({
-        orderId: idValidation,
-        pin: stringReqValidation.length(4)
-            .pattern(/^[0-9]+$/)
-            .messages({ 'string.pattern.base': 'PIN must be 4 digit numeric value' })
+        amount: numberReqValidation.precision(2).label('Total Amount')
     })
 }
 
 module.exports = {
     addPromoCode,
-    postCheckout,
-    prePayment,
-    postPayment
+    postCheckout
 }

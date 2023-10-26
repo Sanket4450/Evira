@@ -153,13 +153,7 @@ exports.getWishlistProductsBySearch = catchAsyncErrors(async (req, res) => {
 
 exports.toggleCart = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
-    const { quantity, action } = req.query
-
-    const [product] = await productService.getFullProductById(productId)
-
-    if (!product) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
-    }
+    const { action, variant, quantity } = req.query
 
     const user = await userService.getUserById(req.user.sub)
 
@@ -167,19 +161,31 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    const cartProduct = await cartService.getCartProductById(productId, user._id)
+    const [product] = await productService.getFullProductById(productId)
 
-    if (!cartProduct && (action === 'increase' || action === 'decrease')) {
+    if (!product) {
+        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const variantId = variant || product.defaultVariant.id.toString()
+
+    if (!await productService.getVariantById(variantId, productId)) {
+        throw new ApiError(constant.MESSAGES.VARIANT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const cartProductVariant = await cartService.getCartProductVariant(productId, variantId, user._id)
+
+    if (!cartProductVariant && (action === 'increase' || action === 'decrease')) {
         throw new ApiError(constant.MESSAGES.ADD_PRODUCT_TO_CART, httpStatus.CONFLICT)
     }
-    else if (cartProduct && action === 'add') {
-        await cartService.cartAction('increase', productId, user._id, quantity)
+    else if (cartProductVariant && action === 'add') {
+        await cartService.cartAction({ action: 'increase', productId, variantId, userId: user._id, quantity })
     }
-    else if (cartProduct && action === 'decrease' && quantity >= cartProduct.items[0].quantity) {
-        await cartService.cartAction('remove', productId, user._id, quantity)
+    else if (cartProductVariant && action === 'decrease' && quantity >= cartProductVariant.items[0].quantity) {
+        await cartService.cartAction({ action: 'remove', productId, variantId, userId: user._id, quantity })
     }
     else {
-        await cartService.cartAction(action, productId, user._id, quantity)
+        await cartService.cartAction({ action, productId, variantId, userId: user._id, quantity })
     }
 
     return sendResponse(

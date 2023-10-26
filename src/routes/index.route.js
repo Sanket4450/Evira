@@ -11,6 +11,7 @@ const notificationRoutes = require('./notification')
 const productReviewRoutes = require('./review').router1
 const reviewRoutes = require('./review').router2
 const checkoutRoutes = require('./checkout')
+const orderRoutes = require('./order')
 
 router.use('/', rootRoutes)
 router.use('/auth', authRoutes)
@@ -24,5 +25,6 @@ router.use('/notifications', notificationRoutes)
 router.use('/products', productReviewRoutes)
 router.use('/reviews', reviewRoutes)
 router.use('/checkout', checkoutRoutes)
+router.use('/orders', orderRoutes)
 
 module.exports = router

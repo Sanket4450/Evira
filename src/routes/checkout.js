@@ -14,8 +14,4 @@ router.post('/promo-code/:promoId', authChecker, validate(checkoutValidation.add
 
 router.get('/payment-methods', authChecker, checkoutController.getPaymentMethods)
 
-router.post('/pre-payment', authChecker, validate(checkoutValidation.prePayment), checkoutController.prePayment)
-
-router.post('/post-payment', authChecker, validate(checkoutValidation.postPayment), checkoutController.postPayment)
-
 module.exports = router

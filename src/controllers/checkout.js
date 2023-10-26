@@ -57,34 +57,53 @@ exports.addPromoCode = catchAsyncErrors(async (req, res) => {
 
 exports.postCheckout = catchAsyncErrors(async (req, res) => {
     const { address, shipping, promo, amount } = req.body
-    const userId = req.user.sub
+
+    const user = await userService.getUserById(req.user.sub)
+
+    if (!user) {
+        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
 
     const checkoutBody = {
         address,
         shipping,
         promo,
-        userId
+        userId: user._id
     }
-
-    const { products, finalAmount } = await checkoutService.postCheckout(checkoutBody)
+    
+    const { items, finalAmount } = await checkoutService.postCheckout(checkoutBody)
 
     if (Math.round(amount) !== Math.round(finalAmount)) {
         throw new ApiError(constant.MESSAGES.AMOUNT_NOT_MATCH, httpStatus.CONFLICT)
     }
 
-    const orderBody = {
-        products,
-        address,
-        shippingType: shipping,
-        amount: finalAmount
-    }
+    const orders = []
 
-    const order = await orderService.createOrder(userId, orderBody)
+    for (let item of items) {
+        const orderBody = {
+            item: {
+                product: item.product,
+                variant: item.variant,
+                quantity: item.quantity
+            },
+            address,
+            shippingType: shipping,
+            amount: item.amount,
+            type: 'Ongoing',
+            status: {
+                title: 'Ordered',
+                description: 'Order placed successfully',
+                date: Date.now()
+            }
+        }
+        const order = await orderService.createOrder(user._id, orderBody)
+        orders.push(order._id)
+    }
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { orderId: order._id },
+        { orders },
         'Checkout successfull'
     )
 })
@@ -103,54 +122,5 @@ exports.getPaymentMethods = catchAsyncErrors(async (req, res) => {
         httpStatus.OK,
         { paymentMethods },
         'Payment-methods retrieved successfully'
-    )
-})
-
-exports.prePayment = catchAsyncErrors(async (req, res) => {
-    const { orderId, paymentId } = req.body
-    const user = await userService.getUserById(req.user.sub)
-
-    if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
-    }
-
-    const order = await orderService.getOrderById(orderId, user._id)
-
-    if (!order) {
-        throw new ApiError(constant.MESSAGES.ORDER_NOT_FOUND, httpStatus.NOT_FOUND)
-    }
-
-    await paymentService.checkPaymentMethod({ paymentId, userId: user._id, amount: order.amount })
-
-    const orderBody = {
-        paymentMethod: paymentId
-    }
-
-    await orderService.updateOrder(orderId, orderBody)
-
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        {},
-        'Payment-method verified successfully'
-    )
-})
-
-exports.postPayment = catchAsyncErrors(async (req, res) => {
-    const { orderId, pin } = req.body
-
-    const paymentBody = {
-        userId: req.user.sub,
-        orderId,
-        pin
-    }
-
-    const order = await paymentService.postPayment(paymentBody)
-
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        { order },
-        'Payment successfull'
     )
 })

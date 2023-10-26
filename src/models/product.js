@@ -28,24 +28,10 @@ const productSchema = new mongoose.Schema({
     quantity: {
         type: Number
     },
-    variants: [{
-        size: {
-            type: String,
-            default: 'default'
-        },
-        color: {
-            type: String,
-            default: 'default'
-        },
-        price: {
-            type: Number,
-            required: true
-        },
-        quantity: {
-            type: String,
-            default: 0
-        }
-    }],
+    defaultVariant: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Variant'
+    },
     sold: {
         type: Number,
         default: 0

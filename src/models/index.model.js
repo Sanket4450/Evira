@@ -1,5 +1,6 @@
 const User = require('./user')
 const Product = require('./product')
+const Variant = require('./variant')
 const Category = require('./category')
 const Review = require('./review')
 const Notification = require('./notification')
@@ -15,6 +16,7 @@ const ShippingType = require('./shipping.type')
 module.exports = {
     User,
     Product,
+    Variant,
     Category,
     Review,
     Notification,

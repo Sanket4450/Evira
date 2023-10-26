@@ -4,22 +4,26 @@ const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 const ApiError = require('../utils/ApiError')
 
-exports.getCartProductById = (productId, userId) => {
+exports.getCartProductVariant = (productId, variantId, userId) => {
     const query = {
         user: new mongoose.Types.ObjectId(userId),
-        'items.product': { $eq: new mongoose.Types.ObjectId(productId) }
+        'items.product': { $eq: new mongoose.Types.ObjectId(productId) },
+        'items.variant': { $eq: new mongoose.Types.ObjectId(variantId) }
     }
 
     const data = {
         'items.product': 1,
+        'items.variant': 1,
         'items.quantity': 1
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.CART, { query, data })
 }
 
-exports.cartAction = (action, productId, userId, quantity = 1) => {
-    Logger.info(`Inside cartAction => action = ${action} productId = ${productId} userId = ${userId} quantity = ${quantity}`)
+exports.cartAction = ({ action, productId, variantId, userId, quantity }) => {
+    quantity ||= 1
+
+    Logger.info(`Inside cartAction => action = ${action} productId = ${productId} variantId = ${variantId} quantity = ${quantity}`)
 
     const query = (action === 'add' || action === 'remove')
         ? {
@@ -27,7 +31,8 @@ exports.cartAction = (action, productId, userId, quantity = 1) => {
         } : (action === 'increase' || action === 'decrease')
             ? {
                 user: new mongoose.Types.ObjectId(userId),
-                'items.product': new mongoose.Types.ObjectId(productId)
+                'items.product': new mongoose.Types.ObjectId(productId),
+                'items.variant': new mongoose.Types.ObjectId(variantId)
             } : undefined
 
     const data = (action === 'add')
@@ -35,6 +40,7 @@ exports.cartAction = (action, productId, userId, quantity = 1) => {
             $push: {
                 items: {
                     product: new mongoose.Types.ObjectId(productId),
+                    variant: new mongoose.Types.ObjectId(variantId),
                     quantity,
                     addedAt: Date.now()
                 }
@@ -43,7 +49,7 @@ exports.cartAction = (action, productId, userId, quantity = 1) => {
             ? {
                 $pull: {
                     items: {
-                        product: new mongoose.Types.ObjectId(productId),
+                        variant: new mongoose.Types.ObjectId(variantId),
                     }
                 }
             } : (action === 'increase')
@@ -87,37 +93,42 @@ exports.getCartProducts = (userId, { page, limit }) => {
                 from: 'products',
                 localField: 'items.product',
                 foreignField: '_id',
-                as: 'products'
+                as: 'product'
             }
         },
         {
-            $unwind: '$products'
+            $unwind: '$product'
+        },
+        {
+            $lookup: {
+                from: 'variants',
+                localField: 'items.variant',
+                foreignField: '_id',
+                as: 'variant'
+            }
+        },
+        {
+            $unwind: '$variant'
         },
         {
             $group: {
-                _id: '$products._id',
-                name: { $first: '$products.name' },
-                image: { $first: '$products.image' },
-                variant: {
-                    $first: {
-                        $ifNull: [
-                            {
-                                $arrayElemAt: ["$products.variants", 0]
-                            },
-                            {}
-                        ]
-                    }
-                },
+                _id: '$variant._id',
+                product: { $first: '$product._id' },
+                name: { $first: '$product.name' },
+                image: { $first: '$product.image' },
+                size: {$first: '$variant.size'},
+                color: { $first: '$variant.color' },
                 quantity: { $first: '$items.quantity' },
-                price: { $first: { $multiply: ['$items.quantity', '$products.price'] } }
+                price: { $first: { $multiply: ['$items.quantity', '$variant.price'] } }
             }
         },
         {
             $project: {
+                product: 1,
                 name: 1,
                 image: 1,
-                'variant.size': 1,
-                'variant.color': 1,
+                size: 1,
+                color: 1,
                 quantity: 1,
                 price: 1,
                 _id: 0,
@@ -156,45 +167,52 @@ exports.getCartProductsBySearch = (userId, { keyword, page, limit }) => {
                 from: 'products',
                 localField: 'items.product',
                 foreignField: '_id',
-                as: 'products'
+                as: 'product'
             }
         },
         {
-            $unwind: '$products'
+            $unwind: '$product'
+        },
+        {
+            $lookup: {
+                from: 'variants',
+                localField: 'items.variant',
+                foreignField: '_id',
+                as: 'variant'
+            }
+        },
+        {
+            $unwind: '$variant'
         },
         {
             $match: {
                 $or: [
-                    { 'products.name': { $regex: keyword, $options: 'i' } },
-                    { 'products.description': { $regex: keyword, $options: 'i' } }
+                    { 'product.name': { $regex: keyword, $options: 'i' } },
+                    { 'product.description': { $regex: keyword, $options: 'i' } },
+                    { 'variant.size': { $regex: keyword, $options: 'i' } },
+                    { 'variant.color': { $regex: keyword, $options: 'i' } }
                 ]
             }
         },
         {
             $group: {
-                _id: '$products._id',
-                name: { $first: '$products.name' },
-                image: { $first: '$products.image' },
-                variant: {
-                    $first: {
-                        $ifNull: [
-                            {
-                                $arrayElemAt: ["$products.variants", 0]
-                            },
-                            {}
-                        ]
-                    }
-                },
+                _id: '$variant._id',
+                product: { $first: '$product._id' },
+                name: { $first: '$product.name' },
+                image: { $first: '$product.image' },
+                size: { $first: '$variant.size' },
+                color: { $first: '$variant.color' },
                 quantity: { $first: '$items.quantity' },
-                price: { $first: { $multiply: ['$items.quantity', '$products.price'] } }
+                price: { $first: { $multiply: ['$items.quantity', '$variant.price'] } }
             }
         },
         {
             $project: {
+                product: 1,
                 name: 1,
                 image: 1,
-                'variant.size': 1,
-                'variant.color': 1,
+                size: 1,
+                color: 1,
                 quantity: 1,
                 price: 1,
                 _id: 0,
@@ -225,20 +243,20 @@ exports.getTotalAmount = (userId) => {
         },
         {
             $lookup: {
-                from: 'products',
-                localField: 'items.product',
+                from: 'variants',
+                localField: 'items.variant',
                 foreignField: '_id',
-                as: 'products'
+                as: 'variant'
             }
         },
         {
-            $unwind: '$products'
+            $unwind: '$variant'
         },
         {
             $group: {
                 _id: null,
                 amount: {
-                    $sum: { $multiply: ['$items.quantity', '$products.price'] }
+                    $sum: { $multiply: ['$items.quantity', '$variant.price'] }
                 }
             }
         },
@@ -254,14 +272,44 @@ exports.getTotalAmount = (userId) => {
 }
 
 exports.getCheckoutProducts = (userId) => {
-    const query = {
-        user: new mongoose.Types.ObjectId(userId)
-    }
+    const pipeline = [
+        {
+            $match: {
+                user: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $unwind: '$items'
+        },
+        {
+            $lookup: {
+                from: 'variants',
+                localField: 'items.variant',
+                foreignField: '_id',
+                as: 'variant'
+            }
+        },
+        {
+            $unwind: '$variant'
+        },
+        {
+            $group: {
+                _id: '$variant._id',
+                product: { $first: '$items.product' },
+                quantity: { $first: '$items.quantity' },
+                amount: { $first: { $multiply: ['$items.quantity', '$variant.price'] } }
+            }
+        },
+        {
+            $project: {
+                product: 1,
+                variant: '$_id',
+                quantity: 1,
+                amount: 1,
+                _id: 0
+            }
+        }
+    ]
 
-    const data = {
-        'items.product': 1,
-        'items.quantity': 1
-    }
-
-    return dbRepo.findOne(constant.COLLECTIONS.CART, { query, data })
+    return dbRepo.aggregate(constant.COLLECTIONS.CART, pipeline)
 }

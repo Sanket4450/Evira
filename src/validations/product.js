@@ -57,6 +57,9 @@ const toggleCart = {
     }),
     query: joi.object().keys({
         action: stringReqValidation.valid('add', 'remove', 'increase', 'decrease'),
+        variant: stringValidation
+            .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
+            .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' }),
         quantity: integerNumberValidation.min(0)
     })
 }
