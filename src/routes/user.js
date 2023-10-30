@@ -1,8 +1,9 @@
 const router = require('express').Router()
+const adminRouter = require('express').Router()
 const validate = require('../middlewares/validate')
 const userValidation = require('../validations/user')
 const userController = require('../controllers/user')
-const authChecker = require('../middlewares/auth')
+const { authChecker, authorizeRole } = require('../middlewares/auth')
 
 router.get('/profile', authChecker, userController.getProfile)
 
@@ -20,4 +21,12 @@ router.put('/addresses/:addressId', authChecker, validate(userValidation.updateA
 
 router.delete('/addresses/:addressId', authChecker, validate(userValidation.deleteAddress), userController.deleteAddress)
 
-module.exports = router
+adminRouter.get('/', authChecker, authorizeRole('admin'), validate(userValidation.getUsers), userController.getUsers)
+
+adminRouter.get('/:userId', authChecker, authorizeRole('admin'), validate(userValidation.getUser), userController.getUser)
+
+adminRouter.put('/:userId', authChecker, authorizeRole('admin'), validate(userValidation.updateUser), userController.updateUser)
+
+adminRouter.delete('/:userId', authChecker, authorizeRole('admin'), validate(userValidation.deleteUser), userController.deleteUser)
+
+module.exports = { router, adminRouter }

@@ -2,7 +2,7 @@ const joi = require('joi')
 
 const {
     pageAndLimit,
-    idValidation,
+    idReqValidation,
     integerNumberValidation,
     stringReqValidation,
     integerNumberReqValidation,
@@ -16,7 +16,7 @@ const getReviews = {
         rating: integerNumberValidation.valid(1, 2, 3, 4, 5)
     }),
     params: joi.object().keys({
-        productId: idValidation
+        productId: idReqValidation
     })
 }
 
@@ -27,13 +27,13 @@ const getReviewsBySearch = {
         rating: integerNumberValidation.valid(1, 2, 3, 4, 5)
     }),
     params: joi.object().keys({
-        productId: idValidation
+        productId: idReqValidation
     })
 }
 
 const postReview = {
     params: joi.object().keys({
-        productId: idValidation
+        productId: idReqValidation
     }),
     body: joi.object().keys({
         message: stringReqValidation,
@@ -43,7 +43,7 @@ const postReview = {
 
 const updateReview = {
     params: joi.object().keys({
-        reviewId: idValidation
+        reviewId: idReqValidation
     }),
     body: joi.object().keys({
         message: stringValidation,
@@ -53,13 +53,13 @@ const updateReview = {
 
 const deleteReview = {
     params: joi.object().keys({
-        reviewId: idValidation
+        reviewId: idReqValidation
     })
 }
 
 const toggleLike = {
     params: joi.object().keys({
-        reviewId: idValidation
+        reviewId: idReqValidation
     }),
     query: joi.object().keys({
         like: toggleValidation

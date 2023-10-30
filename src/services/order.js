@@ -7,7 +7,13 @@ exports.getOrderById = (orderId, userId) => {
         _id: new mongoose.Types.ObjectId(orderId),
         user: new mongoose.Types.ObjectId(userId)
     }
-    return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query })
+
+    const data = {
+        user: 0,
+        'status._id': 0
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query, data })
 }
 
 exports.createOrder = (userId, orderBody) => {
@@ -19,25 +25,24 @@ exports.createOrder = (userId, orderBody) => {
     return dbRepo.create(constant.COLLECTIONS.ORDER, { data })
 }
 
-exports.updateOrder = (orderId, orderBody) => {
+exports.updateOrder = (orderId, updateBody, pushBody) => {
     const query = {
         _id: new mongoose.Types.ObjectId(orderId)
     }
 
     const data = {
         $set: {
-            ...orderBody
+            ...updateBody
+        },
+        $push: {
+            status: {
+                $each: [pushBody],
+                $position: 0
+            }
         }
     }
 
     return dbRepo.updateOne(constant.COLLECTIONS.ORDER, { query, data })
-}
-
-exports.deleteOrder = (orderId) => {
-    const query = {
-        _id: new mongoose.Types.ObjectId(orderId)
-    }
-    return dbRepo.deleteOne(constant.COLLECTIONS.ORDER, { query })
 }
 
 exports.getOrders = (type, userId, { page, limit }) => {
@@ -50,6 +55,17 @@ exports.getOrders = (type, userId, { page, limit }) => {
                 user: new mongoose.Types.ObjectId(userId),
                 type: { $regex: type, $options: 'i' }
             }
+        },
+        {
+            $sort: {
+                createdAt: -1
+            }
+        },
+        {
+            $skip: ((page - 1) * limit)
+        },
+        {
+            $limit: limit
         },
         {
             $lookup: {
@@ -117,4 +133,92 @@ exports.getTrackOrder = (orderId, userId) => {
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query, data })
+}
+
+exports.getAdminOrderById = (id) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(id)
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query })
+}
+
+exports.getAdminOrders = (type, { page, limit }) => {
+    page ||= 1
+    limit ||= 10
+
+    const pipeline = [
+        {
+            $sort: {
+                createdAt: -1
+            }
+        },
+        {
+            $skip: ((page - 1) * limit)
+        },
+        {
+            $limit: limit
+        },
+        {
+            $lookup: {
+                from: 'products',
+                localField: 'item.product',
+                foreignField: '_id',
+                as: 'product'
+            }
+        },
+        {
+            $unwind: '$product'
+        },
+        {
+            $lookup: {
+                from: 'variants',
+                localField: 'item.variant',
+                foreignField: '_id',
+                as: 'variant'
+            }
+        },
+        {
+            $unwind: '$variant'
+        },
+        {
+            $group: {
+                _id: '$_id',
+                product: { $first: '$item.product' },
+                variant: { $first: '$item.variant' },
+                name: { $first: '$product.name' },
+                image: { $first: '$product.image' },
+                color: { $first: '$variant.color' },
+                size: { $first: '$variant.size' },
+                quantity: { $first: '$item.quantity' },
+                amount: { $first: '$amount' }
+            }
+        },
+        {
+            $project: {
+                product: 1,
+                variant: 1,
+                name: 1,
+                image: 1,
+                color: 1,
+                size: 1,
+                quantity: 1,
+                amount: 1,
+                _id: 0,
+                id: '$_id'
+            }
+        }
+    ]
+
+    if (type) {
+        pipeline.unshift(
+            {
+                $match: {
+                    type: { $regex: type, $options: 'i' }
+                }
+            }
+        )
+    }
+
+    return dbRepo.aggregate(constant.COLLECTIONS.ORDER, pipeline)
 }

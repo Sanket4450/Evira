@@ -16,7 +16,9 @@ exports.register = catchAsyncErrors(async (req, res) => {
 
     const user = await userService.createUser(body)
 
-    const tokens = await tokenService.generateAuthTokens(user._id)
+    const tokens = (body.role && body.role === 'admin')
+        ? await tokenService.generateAuthTokens(user._id, 'admin')
+        : await tokenService.generateAuthTokens(user._id)
 
     Logger.info('User signup successfully => ' + body.email)
 
@@ -102,8 +104,10 @@ exports.refreshTokens = catchAsyncErrors(async (req, res) => {
 
     const user = await authService.refreshTokens(token)
 
-    const tokens = await tokenService.generateAuthTokens(user._id)
-
+    const tokens = (user.role === 'admin')
+        ? await tokenService.generateAuthTokens(user._id, 'admin')
+        : await tokenService.generateAuthTokens(user._id)
+        
     return sendResponse(
         res,
         httpStatus.OK,
@@ -113,7 +117,7 @@ exports.refreshTokens = catchAsyncErrors(async (req, res) => {
 })
 
 exports.logout = catchAsyncErrors(async (req, res) => {
-    const user = await userService.getUserById(req.user.sub)
+    const user = await userService.getFullUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)

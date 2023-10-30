@@ -20,4 +20,4 @@ const shippingSchema = new mongoose.Schema({
 
 shippingSchema.plugin(fieldsRemoval)
 
-module.exports = mongoose.model('ShippingTypes', shippingSchema)
+module.exports = mongoose.model('ShippingType', shippingSchema)

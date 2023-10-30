@@ -16,14 +16,14 @@ const register = {
     body: joi.object().keys({
         email: emailValidation,
         password: passwordValidation,
-        fullName: stringValidation,
-        nickName: stringValidation,
+        fullName: stringValidation.max(30),
+        nickName: stringValidation.max(15),
         profileImage: stringValidation,
         dateOfBirth: dateValidation,
-        mobile: numberValidation,
-        gender: stringValidation,
+        mobile: numberValidation.label('Mobile Number'),
+        gender: stringValidation.valid('male', 'female', 'other'),
         language: stringValidation,
-        role: stringValidation,
+        role: stringValidation.valid('user', 'admin'),
         isNotificationEnabled: booleanValidation
     })
 }

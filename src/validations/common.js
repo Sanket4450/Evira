@@ -17,12 +17,16 @@ const pageAndLimit = {
     limit: integerNumberValidation.min(1)
 }
 
-const idValidation = stringReqValidation
+const idValidation = stringValidation
+    .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
+    .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' })
+
+const idReqValidation = stringReqValidation
     .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
     .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' })
 
 const toggleValidation = [
-    joi.string().trim().valid('true', 'false'), joi.number().valid(1, 0)
+    stringValidation.valid('true', 'false'), numberValidation.valid(1, 0)
 ]
 
 module.exports = {
@@ -39,5 +43,6 @@ module.exports = {
     arrayValidation,
     pageAndLimit,
     idValidation,
+    idReqValidation,
     toggleValidation
 }

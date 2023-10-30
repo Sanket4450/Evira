@@ -1,7 +1,8 @@
 const joi = require('joi')
 
 const {
-    pageAndLimit
+    pageAndLimit,
+    idValidation
 } = require('./common')
 
 const getNotifications = {
@@ -10,6 +11,13 @@ const getNotifications = {
     })
 }
 
+const deleteNotification = {
+    params: joi.object().keys({
+        notificationId: idValidation
+    })
+}
+
 module.exports = {
-    getNotifications
+    getNotifications,
+    deleteNotification
 }

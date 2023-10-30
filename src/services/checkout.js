@@ -66,6 +66,10 @@ const postCheckout = async ({ userId, address, shipping, promo }) => {
 
         let items = await cartService.getCheckoutProducts(userId)
 
+        if (items.length === 0) {
+            throw new ApiError(constant.MESSAGES.ADD_PRODUCTS, httpStatus.FORBIDDEN)
+        }
+
         let [{ amount }] = await cartService.getTotalAmount(userId)
 
         if (!amount) {

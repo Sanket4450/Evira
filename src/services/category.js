@@ -1,5 +1,32 @@
+const mongoose = require('mongoose')
 const dbRepo = require('../dbRepo')
 const constant = require('../constants')
+
+exports.getCategoryById = (id) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(id)
+    }
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.CATEGORY, { query, data })
+}
+
+exports.getFullCategoryById = (id) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(id)
+    }
+    return dbRepo.findOne(constant.COLLECTIONS.CATEGORY, { query })
+}
+
+exports.getFullCategoryByName = (name) => {
+    const query = {
+        name: { $regex: name, $options: 'i' }
+    }
+    return dbRepo.findOne(constant.COLLECTIONS.CATEGORY, { query })
+}
 
 exports.getCategories = ({ page, limit }) => {
     Logger.info(`Inside getCategories => page = ${page} & limit = ${limit}`)
@@ -28,4 +55,30 @@ exports.getAllCategories = () => {
         icon: 1
     }
     return dbRepo.find(constant.COLLECTIONS.CATEGORY, { query, data })
+}
+
+exports.postCategory = (categoryBody) => {
+    const data = {
+        ...categoryBody
+    }
+    return dbRepo.create(constant.COLLECTIONS.CATEGORY, { data })
+}
+
+exports.updateCategory = (categoryId, categoryBody) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(categoryId)
+    }
+
+    const data = {
+        ...categoryBody
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.CATEGORY, { query, data })
+}
+
+exports.deleteCategory = (categoryId) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(categoryId)
+    }
+    return dbRepo.deleteOne(constant.COLLECTIONS.CATEGORY, { query })
 }

@@ -2,11 +2,15 @@ const joi = require('joi')
 
 const {
     pageAndLimit,
-    idValidation,
+    idReqValidation,
     stringReqValidation,
     integerNumberValidation,
     stringValidation,
-    toggleValidation
+    toggleValidation,
+    numberReqValidation,
+    integerNumberReqValidation,
+    numberValidation,
+    idValidation
 } = require('./common')
 
 const getProducts = {
@@ -20,13 +24,13 @@ const getProductsByCategory = {
         ...pageAndLimit
     }),
     params: joi.object().keys({
-        categoryId: idValidation
+        categoryId: idReqValidation
     })
 }
 
 const getFullProductById = {
     params: joi.object().keys({
-        productId: idValidation
+        productId: idReqValidation
     })
 }
 
@@ -41,10 +45,10 @@ const getProductsBySearch = {
         ...pageAndLimit
     })
 }
-  
+
 const toggleLike = {
     params: joi.object().keys({
-        productId: idValidation
+        productId: idReqValidation
     }),
     query: joi.object().keys({
         like: toggleValidation
@@ -53,7 +57,7 @@ const toggleLike = {
 
 const toggleCart = {
     params: joi.object().keys({
-        productId: idValidation
+        productId: idReqValidation
     }),
     query: joi.object().keys({
         action: stringReqValidation.valid('add', 'remove', 'increase', 'decrease'),
@@ -71,6 +75,83 @@ const searchWithOnlyKeyword = {
     })
 }
 
+const getVariants = {
+    params: joi.object().keys({
+        productId: idReqValidation
+    })
+}
+
+const postVariant = {
+    params: joi.object().keys({
+        productId: idReqValidation
+    }),
+    body: joi.object().keys({
+        name: stringValidation.max(30),
+        size: [stringValidation, integerNumberValidation],
+        color: stringValidation,
+        price: numberReqValidation.precision(2),
+        quantity: integerNumberValidation
+    })
+}
+
+const updateVariant = {
+    params: joi.object().keys({
+        variantId: idReqValidation
+    }),
+    body: joi.object().keys({
+        name: stringValidation.max(30),
+        size: [stringValidation, integerNumberValidation],
+        color: stringValidation,
+        price: numberValidation.precision(2),
+        quantity: integerNumberValidation
+    })
+}
+
+const deleteVariant = {
+    params: joi.object().keys({
+        variantId: idReqValidation
+    })
+}
+
+const postProduct = {
+    body: joi.object().keys({
+        name: stringReqValidation.max(80),
+        image: stringValidation,
+        description: stringValidation,
+        category: idReqValidation,
+        price: numberReqValidation.precision(2),
+        quantity: integerNumberReqValidation,
+        defaultVariant: {
+            name: stringValidation.max(30),
+            size: [stringValidation, integerNumberValidation],
+            color: stringValidation,
+            price: numberValidation.precision(2),
+            quantity: integerNumberValidation
+        }
+    })
+}
+
+const updateProduct = {
+    params: joi.object().keys({
+        productId: idReqValidation
+    }),
+    body: joi.object().keys({
+        name: stringValidation.max(80),
+        image: stringValidation,
+        description: stringValidation,
+        category: idValidation,
+        price: numberValidation.precision(2),
+        quantity: integerNumberValidation,
+        defaultVariant: idValidation
+    })
+}
+
+const deleteProduct = {
+    params: joi.object().keys({
+        productId: idReqValidation
+    })
+}
+
 module.exports = {
     getProducts,
     getProductsByCategory,
@@ -78,5 +159,12 @@ module.exports = {
     getProductsBySearch,
     toggleLike,
     toggleCart,
-    searchWithOnlyKeyword
+    searchWithOnlyKeyword,
+    getVariants,
+    postVariant,
+    updateVariant,
+    deleteVariant,
+    postProduct,
+    updateProduct,
+    deleteProduct,
 }

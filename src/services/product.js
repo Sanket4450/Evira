@@ -16,7 +16,19 @@ exports.getProductById = (id) => {
     return dbRepo.findOne(constant.COLLECTIONS.PRODUCT, { query, data })
 }
 
-exports.getVariantById = (variantId, productId) => {
+exports.getProductByName = (name) => {
+    const query = {
+        name: { $regex: name, $options: 'i' }
+    }
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.PRODUCT, { query, data })
+}
+
+exports.getVariant = (variantId, productId) => {
     const query = {
         _id: new mongoose.Types.ObjectId(variantId),
         product: new mongoose.Types.ObjectId(productId)
@@ -27,6 +39,14 @@ exports.getVariantById = (variantId, productId) => {
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.VARIANT, { query, data })
+}
+
+exports.getVariantById = (id) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(id)
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.VARIANT, { query })
 }
 
 exports.getProducts = ({ matchCriteria, page, limit }) => {
@@ -389,4 +409,70 @@ exports.getFullProductById = (productId) => {
     ]
 
     return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
+}
+
+exports.getVariants = (productId) => {
+    const query = {
+        product: new mongoose.Types.ObjectId(productId)
+    }
+
+    const data = {
+        product: 0
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.VARIANT, { query, data })
+}
+
+exports.createVariant = (productId, variantBody) => {
+    const data = {
+        product: new mongoose.Types.ObjectId(productId),
+        ...variantBody
+    }
+    return dbRepo.create(constant.COLLECTIONS.VARIANT, { data })
+}
+
+exports.updateVariant = (variantId, variantBody) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(variantId)
+    }
+
+    const data = {
+        ...variantBody
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.VARIANT, { query, data })
+}
+
+exports.deleteVariant = (variantId) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(variantId)
+    }
+    return dbRepo.deleteOne(constant.COLLECTIONS.VARIANT, { query })
+}
+
+exports.createProduct = (userId, productBody) => {
+    const data = {
+        user: new mongoose.Types.ObjectId(userId),
+        ...productBody
+    }
+    return dbRepo.create(constant.COLLECTIONS.PRODUCT, { data })
+}
+
+exports.updateProduct = (productId, productBody) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(productId)
+    }
+
+    const data = {
+        ...productBody
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.PRODUCT, { query, data })
+}
+
+exports.deleteProduct = (productId) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(productId)
+    }
+    return dbRepo.deleteOne(constant.COLLECTIONS.PRODUCT, { query })
 }

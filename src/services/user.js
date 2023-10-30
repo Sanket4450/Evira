@@ -7,24 +7,61 @@ const ApiError = require('../utils/ApiError')
 const User = require('../models/user')
 
 exports.getUserById = async (userId) => {
+
     const query = {
         _id: new mongoose.Types.ObjectId(userId)
     }
-    return dbRepo.findOne(constant.COLLECTIONS.USER, { query })
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
 }
 
 exports.getUserByEmail = async (email) => {
     const query = {
         email
     }
-    return dbRepo.findOne(constant.COLLECTIONS.USER, { query })
+
+    const data = {
+        email: 1,
+        password: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
 }
 
 exports.getUserByMobile = async (mobile) => {
     const query = {
         mobile
     }
-    return dbRepo.findOne(constant.COLLECTIONS.USER, { query })
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
+}
+
+exports.getFullUserById = async (userId, userData) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(userId)
+    }
+
+    const data = (typeof userData === 'object' && Object.keys(userData).length >= 1)
+        ? { ...userData }
+        : {
+            fullName: 1,
+            nickName: 1,
+            profileImage: 1,
+            dateOfBirth: 1,
+            email: 1,
+            mobile: 1,
+            gender: 1
+        }
+
+    return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
 }
 
 exports.createUser = async (userBody) => {
@@ -176,4 +213,15 @@ exports.deleteAddress = (addressId, userId) => {
         user: new mongoose.Types.ObjectId(userId)
     }
     return dbRepo.deleteOne(constant.COLLECTIONS.ADDRESS, { query })
+}
+
+exports.getUsers = (adminId, { page, limit }) => {
+    page ||= 1
+    limit ||= 10
+
+    const query = {
+        _id: { $ne: new mongoose.Types.ObjectId(adminId) }
+    }
+
+    return dbRepo.findPage(constant.COLLECTIONS.USER, { query }, {}, page, limit)
 }

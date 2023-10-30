@@ -4,7 +4,11 @@ const fieldsRemoval = require('./plugins/fieldsRemoval')
 const variantSchema = new mongoose.Schema({
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
+        ref: 'Product',
+        required: true
+    },
+    name: {
+        type: String
     },
     size: {
         type: String,

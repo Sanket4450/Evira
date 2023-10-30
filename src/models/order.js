@@ -30,7 +30,7 @@ const orderSchema = new mongoose.Schema({
     },
     shippingType: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'ShippingTypes',
+        ref: 'ShippingType',
         required: true
     },
     amount: {
@@ -54,8 +54,7 @@ const orderSchema = new mongoose.Schema({
             default: 'Ordered'
         },
         description: {
-            type: String,
-            default: 'Order placed successfully'
+            type: String
         },
         date: {
             type: Date,

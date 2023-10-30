@@ -169,7 +169,7 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
 
     const variantId = variant || product.defaultVariant.id.toString()
 
-    if (!await productService.getVariantById(variantId, productId)) {
+    if (!await productService.getVariant(variantId, productId)) {
         throw new ApiError(constant.MESSAGES.VARIANT_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
@@ -234,5 +234,182 @@ exports.getCartProductsBySearch = catchAsyncErrors(async (req, res) => {
         httpStatus.OK,
         { products },
         'Cart Products retrieved successfully'
+    )
+})
+
+exports.getVariants = catchAsyncErrors(async (req, res) => {
+    const { productId } = req.params
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    if (!await productService.getProductById(productId)) {
+        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const variants = await productService.getVariants(productId)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { variants },
+        'Variant posted successfully'
+    )
+})
+
+exports.postVariant = catchAsyncErrors(async (req, res) => {
+    const { productId } = req.params
+    const body = req.body
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    if (!await productService.getProductById(productId)) {
+        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const variant = await productService.createVariant(productId, body)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { variant },
+        'Variant posted successfully'
+    )
+})
+
+exports.updateVariant = catchAsyncErrors(async (req, res) => {
+    const { variantId } = req.params
+    const body = req.body
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    if (!await productService.getVariantById(variantId)) {
+        throw new ApiError(constant.MESSAGES.VARIANT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    await productService.updateVariant(variantId, body)
+
+    const variant = await productService.getVariantById(variantId)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { variant },
+        'Variant updated successfully'
+    )
+})
+
+exports.deleteVariant = catchAsyncErrors(async (req, res) => {
+    const { variantId } = req.params
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const variant = await productService.getVariantById(variantId)
+
+    if (!variant) {
+        throw new ApiError(constant.MESSAGES.VARIANT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    await productService.deleteVariant(variantId)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { variant },
+        'Variant deleted successfully'
+    )
+})
+
+exports.postProduct = catchAsyncErrors(async (req, res) => {
+    const body = req.body
+
+    const user = await userService.getUserById(req.user.sub)
+
+    if (!user) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    if (body.name && await productService.getProductByName(body.name)) {
+        throw new ApiError(constant.MESSAGES.PRODUCT_NAME_TAKEN, httpStatus.NOT_FOUND)
+    }
+
+    if (body.defaultVariant) {
+        const variantBody = Object.assign({}, body.defaultVariant)
+        delete body.defaultVariant
+
+        const product = await productService.createProduct(user._id, body)
+        const variant = await productService.createVariant(product._id, variantBody)
+
+        await productService.updateProduct(product._id, { defaultVariant: variant._id })
+
+        return sendResponse(
+            res,
+            httpStatus.OK,
+            { product },
+            'Product posted successfully'
+        )
+    }
+
+    const product = await productService.createProduct(user._id, body)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { product },
+        'Product posted successfully'
+    )
+})
+
+exports.updateProduct = catchAsyncErrors(async (req, res) => {
+    const { productId } = req.params
+    const body = req.body
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    if (!await productService.getProductById(productId)) {
+        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    await productService.updateProduct(productId, body)
+
+    const [product] = await productService.getFullProductById(productId)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { product },
+        'Product updated successfully'
+    )
+})
+
+exports.deleteProduct = catchAsyncErrors(async (req, res) => {
+    const { productId } = req.params
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const [product] = await productService.getFullProductById(productId)
+
+    if (!product) {
+        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    await productService.deleteProduct(productId)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { product },
+        'Product deleted successfully'
     )
 })

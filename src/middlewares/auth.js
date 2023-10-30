@@ -1,3 +1,6 @@
+const httpStatus = require('http-status')
+const ApiError = require('../utils/ApiError')
+const constant = require('../constants')
 const {
     tokenService
 } = require('../services/index.service')
@@ -17,4 +20,21 @@ const authChecker = async (req, res, next) => {
     }
 }
 
-module.exports = authChecker
+const authorizeRole = (role) => async (req, res, next) => {
+    try {
+        if (role !== req.user.role) {
+            return next(
+                new ApiError(constant.MESSAGES.NOT_ALLOWED, httpStatus.FORBIDDEN)
+            )
+        }
+        next()
+    } catch (error) {
+        Logger.error(error)
+        next(error)
+    }
+}
+
+module.exports = {
+    authChecker,
+    authorizeRole
+}

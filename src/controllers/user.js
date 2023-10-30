@@ -9,7 +9,7 @@ const {
 } = require('../services/index.service')
 
 exports.getProfile = catchAsyncErrors(async (req, res) => {
-    const user = await userService.getUserById(req.user.sub)
+    const user = await userService.getFullUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -33,7 +33,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res) => {
 
     await userService.updateUser(user._id, body)
 
-    user = await userService.getUserById(user._id)
+    user = await userService.getFullUserById(user._id)
 
     return sendResponse(
         res,
@@ -44,7 +44,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res) => {
 })
 
 exports.deleteProfile = catchAsyncErrors(async (req, res) => {
-    const user = await userService.getUserById(req.user.sub)
+    const user = await userService.getFullUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -151,13 +151,13 @@ exports.deleteAddress = catchAsyncErrors(async (req, res) => {
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
-    
+
     const address = await userService.getAddressById(addressId, user._id)
 
     if (!address) {
         throw new ApiError(constant.MESSAGES.ADDRESS_NOT_FOUND, httpStatus.NOT_FOUND)
     }
-    
+
     await userService.deleteAddress(addressId, user._id)
 
     return sendResponse(
@@ -165,5 +165,83 @@ exports.deleteAddress = catchAsyncErrors(async (req, res) => {
         httpStatus.OK,
         {},
         'Address deleted successfully'
+    )
+})
+
+exports.getUsers = catchAsyncErrors(async (req, res) => {
+    const { page, limit } = req.query
+
+    const user = await userService.getUserById(req.user.sub)
+
+    if (!user) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const users = await userService.getUsers(user._id, { page, limit })
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { users },
+        'Users retrieved successfully'
+    )
+})
+
+exports.getUser = catchAsyncErrors(async (req, res) => {
+    const { userId } = req.params
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const user = await userService.getFullUserById(userId)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { user },
+        'User retrieved successfully'
+    )
+})
+
+exports.updateUser = catchAsyncErrors(async (req, res) => {
+    const { userId } = req.params
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    if (!await userService.getUserById(userId)) {
+        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    await userService.updateUser(userId, req.body)
+
+    const user = await userService.getFullUserById(userId)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { user },
+        'User updated successfully'
+    )
+})
+
+exports.deleteUser = catchAsyncErrors(async (req, res) => {
+    const { userId } = req.params
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const user = await userService.getFullUserById(userId)
+
+    await userService.deleteUserById(userId)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { user },
+        'User deleted successfully'
     )
 })

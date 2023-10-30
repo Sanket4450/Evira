@@ -8,7 +8,8 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     name: {
-        type: String
+        type: String,
+        required: true
     },
     image: {
         type: String,
@@ -19,14 +20,16 @@ const productSchema = new mongoose.Schema({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category'
+        ref: 'Category',
+        required: true
     },
     price: {
         type: Number,
         required: true
     },
     quantity: {
-        type: Number
+        type: Number,
+        required: true
     },
     defaultVariant: {
         type: mongoose.Schema.Types.ObjectId,

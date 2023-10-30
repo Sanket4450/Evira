@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const authChecker = require('../middlewares/auth')
+const { authChecker } = require('../middlewares/auth')
 const validate = require('../middlewares/validate')
 const checkoutValidation = require('../validations/checkout')
 const checkoutController = require('../controllers/checkout')

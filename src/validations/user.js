@@ -8,21 +8,22 @@ const {
     stringReqValidation,
     integerNumberReqValidation,
     booleanValidation,
-    idValidation,
-    integerNumberValidation
+    idReqValidation,
+    integerNumberValidation,
+    pageAndLimit
 } = require('./common')
 
 const profile = {
     body: joi.object().keys({
         email: stringValidation.email().lowercase(),
-        fullName: stringValidation,
-        nickName: stringValidation,
+        fullName: stringValidation.max(30),
+        nickName: stringValidation.max(15),
         profileImage: stringValidation,
         dateOfBirth: dateValidation,
-        mobile: numberValidation,
-        gender: stringValidation,
+        mobile: numberValidation.label('Mobile Number'),
+        gender: stringValidation.valid('male', 'female', 'other'),
         language: stringValidation,
-        role: stringValidation
+        role: stringValidation.valid('user', 'admin')
     })
 }
 
@@ -46,7 +47,7 @@ const postAddress = {
 
 const updateAddress = {
     params: joi.object().keys({
-        addressId: idValidation
+        addressId: idReqValidation
     }),
     body: joi.object().keys({
         type: stringValidation.valid('home', 'office', 'other'),
@@ -61,7 +62,42 @@ const updateAddress = {
 
 const deleteAddress = {
     params: joi.object().keys({
-        addressId: idValidation
+        addressId: idReqValidation
+    })
+}
+
+const getUsers = {
+    query: joi.object().keys({
+        ...pageAndLimit
+    })
+}
+
+const getUser = {
+    params: joi.object().keys({
+        userId: idReqValidation
+    })
+}
+
+const updateUser = {
+    params: joi.object().keys({
+        userId: idReqValidation
+    }),
+    body: {
+        email: stringValidation.email().lowercase(),
+        fullName: stringValidation.max(30),
+        nickName: stringValidation.max(15),
+        profileImage: stringValidation,
+        dateOfBirth: dateValidation,
+        mobile: numberValidation.label('Mobile Number'),
+        gender: stringValidation.valid('male', 'female', 'other'),
+        language: stringValidation,
+        role: stringValidation.valid('user', 'admin')
+    }
+}
+
+const deleteUser = {
+    params: joi.object().keys({
+        userId: idReqValidation
     })
 }
 
@@ -70,5 +106,9 @@ module.exports = {
     toggleNotifications,
     postAddress,
     updateAddress,
-    deleteAddress
+    deleteAddress,
+    getUsers,
+    getUser,
+    updateUser,
+    deleteUser
 }

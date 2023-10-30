@@ -103,7 +103,7 @@ exports.refreshTokens = async (token) => {
 
     const { sub } = await tokenService.verifyToken(token, config.REFRESH_TOKEN_SECRET)
 
-    const user = await userService.getUserById(sub)
+    const user = await userService.getFullUserById(sub, { role: 1, token: 1 })
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_EXIST, httpStatus.CONFLICT)

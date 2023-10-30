@@ -155,3 +155,26 @@ exports.toggleLike = catchAsyncErrors(async (req, res) => {
         `Review ${like ? 'liked' : 'unliked'} successfully`
     )
 })
+
+exports.deleteAdminReview = catchAsyncErrors(async (req, res) => {
+    const { reviewId } = req.params
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const review = await reviewService.getReviewById(reviewId)
+
+    if (!review) {
+        throw new ApiError(constant.MESSAGES.REVIEW_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    await reviewService.deleteReview(reviewId)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { review },
+        'Review deleted successfully'
+    )
+})

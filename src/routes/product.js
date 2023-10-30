@@ -1,10 +1,11 @@
 const router1 = require('express').Router()
 const router2 = require('express').Router()
 const router3 = require('express').Router()
+const adminRouter = require('express').Router()
 const validate = require('../middlewares/validate')
 const productValidation = require('../validations/product')
 const productController = require('../controllers/product')
-const authChecker = require('../middlewares/auth')
+const { authChecker, authorizeRole } = require('../middlewares/auth')
 
 router1.get('/', validate(productValidation.getProducts), productController.getProducts)
 
@@ -28,8 +29,15 @@ router3.get('/', authChecker, validate(productValidation.getProducts), productCo
 
 router3.get('/search', authChecker, validate(productValidation.searchWithOnlyKeyword), productController.getCartProductsBySearch)
 
+adminRouter.post('/', authChecker, authorizeRole('admin'), validate(productValidation.postProduct), productController.postProduct)
+
+adminRouter.put('/:productId', authChecker, authorizeRole('admin'), validate(productValidation.updateProduct), productController.updateProduct)
+
+adminRouter.delete('/:productId', authChecker, authorizeRole('admin'), validate(productValidation.deleteProduct), productController.deleteProduct)
+
 module.exports = {
     router1,
     router2,
-    router3
+    router3,
+    adminRouter
 }

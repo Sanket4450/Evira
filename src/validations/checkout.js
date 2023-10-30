@@ -1,22 +1,21 @@
 const joi = require('joi')
 
 const {
-    idValidation,
+    idReqValidation,
     stringValidation,
-    stringReqValidation,
     numberReqValidation
 } = require('./common')
 
 const addPromoCode = {
     params: joi.object().keys({
-        promoId: idValidation
+        promoId: idReqValidation
     })
 }
 
 const postCheckout = {
     body: joi.object().keys({
-        address: idValidation.label('Address'),
-        shipping: idValidation.label('Shipping-type'),
+        address: idReqValidation.label('Address'),
+        shipping: idReqValidation.label('Shipping-type'),
         promo: stringValidation.label('Promo-code'),
         amount: numberReqValidation.precision(2).label('Total Amount')
     })
