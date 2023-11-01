@@ -8,7 +8,8 @@ const {
     productService,
     userService,
     wishlistService,
-    cartService
+    cartService,
+    categoryService
 } = require('../services/index.service')
 
 exports.getProducts = catchAsyncErrors(async (req, res) => {
@@ -27,6 +28,10 @@ exports.getProducts = catchAsyncErrors(async (req, res) => {
 exports.getProductsByCategory = catchAsyncErrors(async (req, res) => {
     const { page, limit } = req.query
     const { categoryId } = req.params
+
+    if (!await categoryService.getCategoryById(categoryId)) {
+        throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
 
     const products = await productService.getProductsByCategory(categoryId, { page, limit })
 
@@ -124,6 +129,10 @@ exports.getWishlistProductsByCategory = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
+    if (!await categoryService.getCategoryById(categoryId)) {
+        throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
     const products = await wishlistService.getWishlistProductsByCategory(user._id, categoryId, { page, limit })
 
     return sendResponse(
@@ -169,8 +178,14 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
 
     const variantId = variant || product.defaultVariant.id.toString()
 
-    if (!await productService.getVariant(variantId, productId)) {
+    const productVariant = await productService.getVariant(variantId, productId)
+
+    if (!productVariant) {
         throw new ApiError(constant.MESSAGES.VARIANT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    if (productVariant.quantity < quantity) {
+        throw new ApiError(constant.MESSAGES.NOT_HAVE_ENOUGH_QUANTITY, httpStatus.FORBIDDEN)
     }
 
     const cartProductVariant = await cartService.getCartProductVariant(productId, variantId, user._id)
@@ -200,15 +215,13 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
 })
 
 exports.getCartProducts = catchAsyncErrors(async (req, res) => {
-    const { page, limit } = req.query
-
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    const items = await cartService.getCartProducts(user._id, { page, limit })
+    const items = await cartService.getCartProducts(user._id)
 
     const [{ amount }] = await cartService.getTotalAmount(user._id)
 
@@ -221,13 +234,14 @@ exports.getCartProducts = catchAsyncErrors(async (req, res) => {
 })
 
 exports.getCartProductsBySearch = catchAsyncErrors(async (req, res) => {
+    const { keyword } = req.query
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    const products = await cartService.getCartProductsBySearch(user._id, req.query)
+    const products = await cartService.getCartProductsBySearch(user._id, keyword)
 
     return sendResponse(
         res,
@@ -334,6 +348,10 @@ exports.postProduct = catchAsyncErrors(async (req, res) => {
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    if (!await categoryService.getCategoryById(body.category)) {
+        throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
     if (body.name && await productService.getProductByName(body.name)) {

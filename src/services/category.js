@@ -57,6 +57,13 @@ exports.getAllCategories = () => {
     return dbRepo.find(constant.COLLECTIONS.CATEGORY, { query, data })
 }
 
+exports.getAdminCategories = ({ page, limit }) => {
+    page ||= 1
+    limit ||= 8
+
+    return dbRepo.findPage(constant.COLLECTIONS.CATEGORY, {}, {}, page, limit)
+}
+
 exports.postCategory = (categoryBody) => {
     const data = {
         ...categoryBody

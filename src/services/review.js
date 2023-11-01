@@ -191,12 +191,10 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
     return dbRepo.aggregate(constant.COLLECTIONS.REVIEW, pipeline)
 }
 
-exports.postReview = ({ productId, userId, ...reviewBody }) => {
-    Logger.info(`Inside postReview => productId = ${productId} userId = ${userId}`)
+exports.postReview = (reviewBody) => {
+    Logger.info(`Inside postReview => productId = ${reviewBody.product} userId = ${reviewBody.userId}`)
 
     const data = {
-        product: new mongoose.Types.ObjectId(productId),
-        user: new mongoose.Types.ObjectId(userId),
         ...reviewBody
     }
 

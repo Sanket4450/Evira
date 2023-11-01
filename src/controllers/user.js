@@ -30,7 +30,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res) => {
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
-
+    
     await userService.updateUser(user._id, body)
 
     user = await userService.getFullUserById(user._id)

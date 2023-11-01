@@ -7,8 +7,7 @@ dotenv.config({ path: envFilePath })
 
 module.exports = {
     environment,
-    PORT: process.env.PORT,
-    DB_URI: process.env.DB_URI,
+    ADMIN_SECRET: process.env.ADMIN_SECRET,
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
     RESET_TOKEN_SECRET: process.env.RESET_TOKEN_SECRET,

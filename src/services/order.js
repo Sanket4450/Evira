@@ -25,7 +25,7 @@ exports.createOrder = (userId, orderBody) => {
     return dbRepo.create(constant.COLLECTIONS.ORDER, { data })
 }
 
-exports.updateOrder = (orderId, updateBody, pushBody) => {
+exports.updateOrder = (orderId, updateBody) => {
     const query = {
         _id: new mongoose.Types.ObjectId(orderId)
     }
@@ -33,7 +33,18 @@ exports.updateOrder = (orderId, updateBody, pushBody) => {
     const data = {
         $set: {
             ...updateBody
-        },
+        }
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.ORDER, { query, data })
+}
+
+exports.updateOrderStatus = (orderId, pushBody) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(orderId)
+    }
+
+    const data = {
         $push: {
             status: {
                 $each: [pushBody],

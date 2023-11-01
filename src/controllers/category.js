@@ -19,6 +19,23 @@ exports.getCategories = catchAsyncErrros(async (req, res) => {
     )
 })
 
+exports.getAdminCategories = catchAsyncErrros(async (req, res) => {
+    const { page, limit } = req.query
+
+    if (!await userService.getUserById(req.user.sub)) {
+        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const categories = await categoryService.getAdminCategories({ page, limit })
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { categories },
+        'Categories retrieved successfully'
+    )
+})
+
 exports.postCategory = catchAsyncErrros(async (req, res) => {
     const body = req.body
 
@@ -52,7 +69,7 @@ exports.updateCategory = catchAsyncErrros(async (req, res) => {
         throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    if (await categoryService.getFullCategoryByName(body.name)) {
+    if (body.name && await categoryService.getFullCategoryByName(body.name)) {
         throw new ApiError(constant.MESSAGES.CATEGORY_NAME_TAKEN, httpStatus.CONFLICT)
     }
 

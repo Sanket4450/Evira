@@ -4,14 +4,17 @@ const sendResponse = require('../utils/responseHandler')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
 const {
+    shippingService,
+    promotionService,
     checkoutService,
     userService,
+    cartService,
     orderService,
     paymentService
 } = require('../services/index.service')
 
 exports.getShippingTypes = catchAsyncErrors(async (req, res) => {
-    const shippingTypes = await checkoutService.getShippingTypes()
+    const shippingTypes = await shippingService.getShippingTypes()
 
     return sendResponse(
         res,
@@ -22,7 +25,7 @@ exports.getShippingTypes = catchAsyncErrors(async (req, res) => {
 })
 
 exports.getPromoCodes = catchAsyncErrors(async (req, res) => {
-    const promoCodes = await checkoutService.getPromoCodes(Date.now())
+    const promoCodes = await promotionService.getPromoCodes(Date.now())
 
     return sendResponse(
         res,
@@ -32,7 +35,7 @@ exports.getPromoCodes = catchAsyncErrors(async (req, res) => {
     )
 })
 
-exports.addPromoCode = catchAsyncErrors(async (req, res) => {
+exports.applyPromoCode = catchAsyncErrors(async (req, res) => {
     const { promoId } = req.params
 
     const user = await userService.getUserById(req.user.sub)
@@ -41,16 +44,20 @@ exports.addPromoCode = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    const { discountPercentage } = await checkoutService.checkPromoCodeValidity(promoId, Date.now())
-
-    if (!discountPercentage) {
+    if (!await promotionService.getPromoCodeById(promoId)) {
         throw new ApiError(constant.MESSAGES.PROMO_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const promo = await promotionService.checkPromoCodeValidity(promoId, Date.now())
+
+    if (!promo) {
+        throw new ApiError(constant.MESSAGES.PROMO_EXPIRED, httpStatus.CONFLICT)
     }
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { discountPercentage },
+        { discountPercentage: promo.discountPercentage },
         'Promo-code validated successfully'
     )
 })
@@ -99,6 +106,8 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
         const order = await orderService.createOrder(user._id, orderBody)
         orders.push(order._id)
     }
+
+    await cartService.emptyCart(user._id)
 
     return sendResponse(
         res,

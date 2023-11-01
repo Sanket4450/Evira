@@ -4,7 +4,8 @@ const fieldsRemoval = require('./plugins/fieldsRemoval')
 const reviewSchema = new mongoose.Schema({
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
+        ref: 'Product',
+        required: true
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -16,7 +17,8 @@ const reviewSchema = new mongoose.Schema({
     },
     star: {
         type: Number,
-        enum: [1, 2, 3, 4, 5]
+        enum: [1, 2, 3, 4, 5],
+        required: true
     },
     likedBy: [{
         type: mongoose.Schema.Types.ObjectId,

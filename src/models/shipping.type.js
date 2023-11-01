@@ -15,7 +15,8 @@ const shippingSchema = new mongoose.Schema({
     }
 },
     {
-        autoIndex: false
+        autoIndex: false,
+        timestamps: true
     })
 
 shippingSchema.plugin(fieldsRemoval)

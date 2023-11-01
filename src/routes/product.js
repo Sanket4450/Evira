@@ -25,7 +25,7 @@ router2.get('/search', authChecker, validate(productValidation.getProductsBySear
 
 router3.patch('/:productId/toggle-cart', authChecker, validate(productValidation.toggleCart), productController.toggleCart)
 
-router3.get('/', authChecker, validate(productValidation.getProducts), productController.getCartProducts)
+router3.get('/', authChecker, productController.getCartProducts)
 
 router3.get('/search', authChecker, validate(productValidation.searchWithOnlyKeyword), productController.getCartProductsBySearch)
 

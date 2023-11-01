@@ -10,7 +10,7 @@ router.get('/shipping-types', checkoutController.getShippingTypes)
 
 router.get('/promo-codes', checkoutController.getPromoCodes)
 
-router.post('/promo-code/:promoId', authChecker, validate(checkoutValidation.addPromoCode), checkoutController.addPromoCode)
+router.post('/promo/apply/:promoId', authChecker, validate(checkoutValidation.applyPromoCode), checkoutController.applyPromoCode)
 
 router.get('/payment-methods', authChecker, checkoutController.getPaymentMethods)
 

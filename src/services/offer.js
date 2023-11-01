@@ -1,11 +1,47 @@
+const mongoose = require('mongoose')
 const dbRepo = require('../dbRepo')
 const constant = require('../constants')
+
+exports.getOfferById = (id) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(id)
+    }
+    return dbRepo.findOne(constant.COLLECTIONS.OFFER, { query })
+}
+
+exports.getOfferByProduct = (productId) => {
+    const query = {
+        product: new mongoose.Types.ObjectId(productId)
+    }
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.OFFER, { query, data })
+}
+
+exports.checkOfferValidity = (productId, date = Date.now()) => {
+    date = (typeof date !== 'number') ? date.getTime() : date
+
+    const query = {
+        product: new mongoose.Types.ObjectId(productId),
+        startDate: { $lte: date },
+        endDate: { $gte: date }
+    }
+
+    const data = {
+        discountPercentage: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.OFFER, { query, data })
+}
 
 exports.getOffers = ({ page, limit }) => {
     Logger.info(`Inside getOffers => page = ${page} & limit = ${limit}`)
 
     page ||= 1
-    limit ||= 3
+    limit ||= 10
 
     const query = {
         // query for offers
@@ -26,4 +62,30 @@ exports.getAllOffers = () => {
         image: 1
     }
     return dbRepo.find(constant.COLLECTIONS.OFFER, { query, data })
+}
+
+exports.createOffer = (offerBody) => {
+    const data = {
+        ...offerBody
+    }
+    return dbRepo.create(constant.COLLECTIONS.OFFER, { data })
+}
+
+exports.updateOffer = (offerId, offerBody) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(offerId)
+    }
+
+    const data = {
+        ...offerBody
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.OFFER, { query, data })
+}
+
+exports.deleteOffer = (offerId) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(offerId)
+    }
+    return dbRepo.deleteOne(constant.COLLECTIONS.OFFER, { query })
 }

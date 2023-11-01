@@ -35,7 +35,7 @@ exports.getVariant = (variantId, productId) => {
     }
 
     const data = {
-        _id: 1
+        quantity: 1
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.VARIANT, { query, data })

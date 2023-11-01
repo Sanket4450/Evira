@@ -3,8 +3,15 @@ const joi = require('joi')
 const {
     idReqValidation,
     stringReqValidation,
-    stringValidation
+    stringValidation,
+    pageAndLimit
 } = require('./common')
+
+const getAdminCategories = {
+    query: joi.object().keys({
+        ...pageAndLimit
+    })
+}
 
 const postCategory = {
     body: joi.object().keys({
@@ -32,6 +39,7 @@ const deleteCategory = {
 }
 
 module.exports = {
+    getAdminCategories,
     postCategory,
     updateCategory,
     deleteCategory

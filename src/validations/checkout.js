@@ -6,7 +6,7 @@ const {
     numberReqValidation
 } = require('./common')
 
-const addPromoCode = {
+const applyPromoCode = {
     params: joi.object().keys({
         promoId: idReqValidation
     })
@@ -22,6 +22,6 @@ const postCheckout = {
 }
 
 module.exports = {
-    addPromoCode,
+    applyPromoCode,
     postCheckout
 }

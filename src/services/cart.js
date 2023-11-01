@@ -73,11 +73,8 @@ exports.cartAction = ({ action, productId, variantId, userId, quantity }) => {
     return dbRepo.updateOne(constant.COLLECTIONS.CART, { query, data, options })
 }
 
-exports.getCartProducts = (userId, { page, limit }) => {
-    Logger.info(`Inside getCartProducts => page = ${page} & limit = ${limit}`)
-
-    page ||= 1
-    limit ||= 10
+exports.getCartProducts = (userId) => {
+    Logger.info('Inside getCartProducts')
 
     const pipeline = [
         {
@@ -116,7 +113,7 @@ exports.getCartProducts = (userId, { page, limit }) => {
                 product: { $first: '$product._id' },
                 name: { $first: '$product.name' },
                 image: { $first: '$product.image' },
-                size: {$first: '$variant.size'},
+                size: { $first: '$variant.size' },
                 color: { $first: '$variant.color' },
                 quantity: { $first: '$items.quantity' },
                 price: { $first: { $multiply: ['$items.quantity', '$variant.price'] } }
@@ -134,24 +131,14 @@ exports.getCartProducts = (userId, { page, limit }) => {
                 _id: 0,
                 id: '$_id'
             }
-        },
-        // { $sort: logic }
-        {
-            $skip: ((page - 1) * limit)
-        },
-        {
-            $limit: limit
         }
     ]
 
     return dbRepo.aggregate(constant.COLLECTIONS.CART, pipeline)
 }
 
-exports.getCartProductsBySearch = (userId, { keyword, page, limit }) => {
-    Logger.info(`Inside getProductsBySearch => keyword = ${keyword} page = ${page} & limit = ${limit}`)
-
-    page ||= 1
-    limit ||= 10
+exports.getCartProductsBySearch = (userId, keyword) => {
+    Logger.info(`Inside getProductsBySearch => keyword = ${keyword}`)
 
     const pipeline = [
         {
@@ -218,13 +205,6 @@ exports.getCartProductsBySearch = (userId, { keyword, page, limit }) => {
                 _id: 0,
                 id: '$_id'
             }
-        },
-        // { $sort: logic }
-        {
-            $skip: ((page - 1) * limit)
-        },
-        {
-            $limit: limit
         }
     ]
 
@@ -312,4 +292,16 @@ exports.getCheckoutProducts = (userId) => {
     ]
 
     return dbRepo.aggregate(constant.COLLECTIONS.CART, pipeline)
+}
+
+exports.emptyCart = (userId) => {
+    const query = {
+        user: new mongoose.Types.ObjectId(userId)
+    }
+
+    const data = {
+        items: []
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.CART, { query, data })
 }

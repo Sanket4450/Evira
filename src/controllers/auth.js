@@ -6,13 +6,18 @@ const constant = require('../constants')
 const {
     authService,
     userService,
-    tokenService
+    tokenService,
+    notificationService
 } = require('../services/index.service')
 
 exports.register = catchAsyncErrors(async (req, res) => {
     const body = req.body
 
     await authService.checkUserWithEmail(body.email)
+    console.log(config.ADMIN_SECRET)
+    if (body.role === 'admin' && body.secret !== config.ADMIN_SECRET) {
+        throw new ApiError(constant.MESSAGES.INVALID_SECRET, httpStatus.FORBIDDEN)
+    }
 
     const user = await userService.createUser(body)
 
@@ -20,7 +25,13 @@ exports.register = catchAsyncErrors(async (req, res) => {
         ? await tokenService.generateAuthTokens(user._id, 'admin')
         : await tokenService.generateAuthTokens(user._id)
 
-    Logger.info('User signup successfully => ' + body.email)
+    const notificationBody = {
+        title: 'Account Setup Successfull!',
+        message: 'Your account has been created!',
+        icon: 'icon1.svg'
+    }
+
+    await notificationService.createNotification(user._id, notificationBody)
 
     return sendResponse(
         res,

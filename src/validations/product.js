@@ -40,7 +40,7 @@ const getProductsBySearch = {
         category: stringValidation,
         min_price: integerNumberValidation,
         max_price: integerNumberValidation,
-        sortBy: stringReqValidation.valid('popular', 'recent', 'price_desc', 'price_asc'),
+        sortBy: stringReqValidation.lowercase().valid('popular', 'recent', 'price_desc', 'price_asc'),
         rating: integerNumberValidation.valid(1, 2, 3, 4, 5),
         ...pageAndLimit
     })
@@ -60,7 +60,7 @@ const toggleCart = {
         productId: idReqValidation
     }),
     query: joi.object().keys({
-        action: stringReqValidation.valid('add', 'remove', 'increase', 'decrease'),
+        action: stringReqValidation.lowercase().valid('add', 'remove', 'increase', 'decrease'),
         variant: stringValidation
             .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
             .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' }),
@@ -70,8 +70,7 @@ const toggleCart = {
 
 const searchWithOnlyKeyword = {
     query: joi.object().keys({
-        keyword: stringReqValidation.label('Search Keyword'),
-        ...pageAndLimit
+        keyword: stringReqValidation.label('Search Keyword')
     })
 }
 

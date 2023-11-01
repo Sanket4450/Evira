@@ -8,7 +8,7 @@ const {
 } = require('../services/index.service')
 
 exports.getHomeData = catchAsyncErrors(async (req, res) => {
-    const specialOffers = await offerService.getOffers({})
+    const specialOffers = await offerService.getOffers({ page: 1, limit: 3 })
     const categories = await categoryService.getCategories({})
     const products = await productService.getProducts({ page: 1, limit: 20 })
 

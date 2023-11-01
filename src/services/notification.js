@@ -30,12 +30,21 @@ exports.getNotifications = (userId, { page, limit }) => {
     return dbRepo.findPage(constant.COLLECTIONS.NOTIFICATION, { query, data }, { createdAt: -1 }, page, limit)
 }
 
-exports.updateNotification = (userId, notificationId) => {
+exports.createNotification = (userId, notificationBody) => {
+    const data = {
+        user: new mongoose.Types.ObjectId(userId),
+        isRead: false,
+        createdAt: Date.now(),
+        ...notificationBody
+    }
+    return dbRepo.create(constant.COLLECTIONS.NOTIFICATION, { data })
+}
+
+exports.updateNotification = (notificationId) => {
     Logger.info(`Inside updateNotification => notificationId = ${notificationId}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(notificationId),
-        user: new mongoose.Types.ObjectId(userId)
+        _id: new mongoose.Types.ObjectId(notificationId)
     }
 
     const data = {
@@ -46,8 +55,8 @@ exports.updateNotification = (userId, notificationId) => {
 }
 
 exports.deleteNotification = (notificationId) => {
-    Logger.info(`Inside updateNotification => notificationId = ${notificationId}`)
-    
+    Logger.info(`Inside deleteNotification => notificationId = ${notificationId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(notificationId)
     }

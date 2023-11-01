@@ -9,7 +9,8 @@ const {
     numberValidation,
     numberReqValidation,
     dateValidation,
-    booleanValidation
+    booleanValidation,
+    secretValidation,
 } = require('./common')
 
 const register = {
@@ -20,10 +21,14 @@ const register = {
         nickName: stringValidation.max(15),
         profileImage: stringValidation,
         dateOfBirth: dateValidation,
-        mobile: numberValidation.label('Mobile Number'),
-        gender: stringValidation.valid('male', 'female', 'other'),
+        mobile: numberValidation.min(10 ** 9).max(10 ** 10 - 1).messages({
+            'number.min': 'Mobile number should be 10 digit',
+            'number.max': 'Mobile number should be 10 digit'
+        }),
+        gender: stringValidation.lowercase().valid('male', 'female', 'other'),
         language: stringValidation,
-        role: stringValidation.valid('user', 'admin'),
+        role: stringValidation.lowercase().valid('user', 'admin'),
+        secret: secretValidation,
         isNotificationEnabled: booleanValidation
     })
 }
@@ -43,7 +48,10 @@ const forgotPasswordWithEmail = {
 
 const forgotPasswordWithMobile = {
     body: joi.object().keys({
-        mobile: numberReqValidation.label('Mobile Number')
+        mobile: numberReqValidation.min(10 ** 9).max(10 ** 10 - 1).messages({
+            'number.min': 'Mobile number should be 10 digit',
+            'number.max': 'Mobile number should be 10 digit'
+        }),
     })
 }
 

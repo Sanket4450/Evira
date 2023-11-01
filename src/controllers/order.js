@@ -79,7 +79,8 @@ exports.cancelOrder = catchAsyncErrors(async (req, res) => {
         date: Date.now()
     }
 
-    await orderService.updateOrder(orderId, updateBody, pushBody)
+    await orderService.updateOrder(orderId, updateBody)
+    await orderService.updateOrderStatus(orderId, pushBody)
 
     order = await orderService.getOrderById(orderId, user._id)
 
@@ -146,6 +147,9 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         await orderService.updateOrder(orderId, { address })
     }
 
+    type ||= 'Ongoing'
+    await orderService.updateOrder(orderId, { type })
+
     if (status) {
         if (order.status.find(sts => sts.title === status.title)) {
             throw new ApiError(constant.MESSAGES.STATUS_ALREADY_UPDATED, httpStatus.CONFLICT)
@@ -157,7 +161,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
             date: status.date || Date.now()
         }
 
-        await orderService.updateOrder(orderId, {}, body)
+        await orderService.updateOrderStatus(orderId, body)
     }
 
     order = await orderService.getAdminOrderById(orderId)

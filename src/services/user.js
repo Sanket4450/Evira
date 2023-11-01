@@ -58,7 +58,8 @@ exports.getFullUserById = async (userId, userData) => {
             dateOfBirth: 1,
             email: 1,
             mobile: 1,
-            gender: 1
+            gender: 1,
+            language: 1
         }
 
     return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })

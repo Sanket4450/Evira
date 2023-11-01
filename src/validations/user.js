@@ -20,10 +20,12 @@ const profile = {
         nickName: stringValidation.max(15),
         profileImage: stringValidation,
         dateOfBirth: dateValidation,
-        mobile: numberValidation.label('Mobile Number'),
-        gender: stringValidation.valid('male', 'female', 'other'),
-        language: stringValidation,
-        role: stringValidation.valid('user', 'admin')
+        mobile: numberValidation.min(10 ** 9).max(10 ** 10 - 1).messages({
+            'number.min': 'Mobile number should be 10 digit',
+            'number.max': 'Mobile number should be 10 digit'
+        }),
+        gender: stringValidation.lowercase().valid('male', 'female', 'other'),
+        language: stringValidation
     })
 }
 
@@ -35,11 +37,12 @@ const toggleNotifications = {
 
 const postAddress = {
     body: joi.object().keys({
-        type: stringReqValidation.valid('home', 'office', 'other'),
+        type: stringReqValidation.lowercase().valid('home', 'office', 'other'),
         street: stringReqValidation.max(100),
         city: stringReqValidation,
         landmark: stringValidation,
         state: stringReqValidation,
+        country: stringReqValidation,
         postalCode: integerNumberReqValidation,
         default: booleanValidation
     })
@@ -50,11 +53,12 @@ const updateAddress = {
         addressId: idReqValidation
     }),
     body: joi.object().keys({
-        type: stringValidation.valid('home', 'office', 'other'),
+        type: stringValidation.lowercase().valid('home', 'office', 'other'),
         street: stringValidation.max(100),
         city: stringValidation,
         landmark: stringValidation,
         state: stringValidation,
+        country: stringValidation,
         postalCode: integerNumberValidation,
         default: booleanValidation
     })
@@ -88,10 +92,13 @@ const updateUser = {
         nickName: stringValidation.max(15),
         profileImage: stringValidation,
         dateOfBirth: dateValidation,
-        mobile: numberValidation.label('Mobile Number'),
-        gender: stringValidation.valid('male', 'female', 'other'),
+        mobile: numberValidation.min(10 ** 9).max(10 ** 10 - 1).messages({
+            'number.min': 'Mobile number should be 10 digit',
+            'number.max': 'Mobile number should be 10 digit'
+        }),
+        gender: stringValidation.lowercase().valid('male', 'female', 'other'),
         language: stringValidation,
-        role: stringValidation.valid('user', 'admin')
+        role: stringValidation.lowercase().valid('user', 'admin')
     }
 }
 

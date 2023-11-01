@@ -16,22 +16,25 @@ const promotionSchema = new mongoose.Schema({
     },
     maxUses: {
         type: Number,
-        default: 100
+        required: true
     },
     remainingUses: {
         type: Number,
-        default: 0
+        required: true
     },
     validFrom: {
-    type: Date
-},
+        type: Date,
+        default: Date.now()
+    },
     validUntil: {
-    type: Date
-}
+        type: Date,
+        required: true
+    }
 },
-{
-    timestamps: true
-})
+    {
+        autoIndex: false,
+        timestamps: true
+    })
 
 promotionSchema.plugin(fieldsRemoval)
 

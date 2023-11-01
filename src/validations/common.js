@@ -17,16 +17,18 @@ const pageAndLimit = {
     limit: integerNumberValidation.min(1)
 }
 
+const secretValidation = stringValidation
+    .pattern(new RegExp('^[A-Za-z0-9_@/?%]*$'))
+    .messages({ 'string.pattern.base': 'Invalid secret. Secret does not match with the pattern' })
+
 const idValidation = stringValidation
     .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
     .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' })
 
-const idReqValidation = stringReqValidation
-    .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
-    .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' })
+const idReqValidation = idValidation.required()
 
 const toggleValidation = [
-    stringValidation.valid('true', 'false'), numberValidation.valid(1, 0)
+    stringValidation.lowercase().valid('true', 'false'), numberValidation.valid(1, 0)
 ]
 
 module.exports = {
@@ -42,6 +44,7 @@ module.exports = {
     dateValidation,
     arrayValidation,
     pageAndLimit,
+    secretValidation,
     idValidation,
     idReqValidation,
     toggleValidation

@@ -64,8 +64,8 @@ exports.postReview = catchAsyncErrors(async (req, res) => {
     }
 
     const review = await reviewService.postReview({
-        productId,
-        userId: user._id,
+        product: productId,
+        user: user._id,
         ...req.body
     })
 
@@ -80,9 +80,7 @@ exports.postReview = catchAsyncErrors(async (req, res) => {
 exports.updateReview = catchAsyncErrors(async (req, res) => {
     const { reviewId } = req.params
 
-    let review = await reviewService.getReviewById(reviewId)
-
-    if (!review) {
+    if (!await reviewService.getReviewById(reviewId)) {
         throw new ApiError(constant.MESSAGES.REVIEW_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
@@ -92,7 +90,7 @@ exports.updateReview = catchAsyncErrors(async (req, res) => {
 
     await reviewService.updateReview(reviewId, req.body)
 
-    review = reviewService.getReviewById(reviewId)
+    const review = await reviewService.getReviewById(reviewId)
 
     return sendResponse(
         res,

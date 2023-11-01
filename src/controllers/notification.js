@@ -22,7 +22,7 @@ exports.getNotifications = catchAsyncErrors(async (req, res) => {
     const notificationIds = notifications.map(value => value._id.toString())
 
     notificationIds.forEach(async notificationId => {
-        await notificationService.updateNotification(user._id, notificationId)
+        await notificationService.updateNotification(notificationId)
     })
 
     return sendResponse(
