@@ -16,7 +16,7 @@ exports.checkProductLikedWithUserId = (productId, userId) => {
 }
 
 exports.likeUnlineProduct = (productId, userId, like) => {
-    Logger.info(`Inside likeUnlineProduct => productId = ${productId} userId = ${userId}`)
+    Logger.info(`Inside likeUnlineProduct => product = ${productId}, like = ${like}`)
 
     const query = {
         user: new mongoose.Types.ObjectId(userId)
@@ -44,7 +44,7 @@ exports.likeUnlineProduct = (productId, userId, like) => {
 }
 
 exports.getWishlistProducts = (userId, { page, limit }) => {
-    Logger.info(`Inside getWishlistProducts => page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getWishlistProducts => page = ${page}, limit = ${limit}`)
 
     page ||= 1
     limit ||= 10
@@ -122,7 +122,7 @@ exports.getWishlistProducts = (userId, { page, limit }) => {
 }
 
 exports.getWishlistProductsByCategory = (userId, categoryId, { page, limit }) => {
-    Logger.info(`Inside getWishlistProducts => category = ${categoryId} page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getWishlistProducts => category = ${categoryId}, page = ${page}, limit = ${limit}`)
 
     page ||= 1
     limit ||= 10
@@ -205,7 +205,8 @@ exports.getWishlistProductsByCategory = (userId, categoryId, { page, limit }) =>
 }
 
 exports.getWishlistProductsBySearch = (userId, { keyword, category, min_price, max_price, sortBy, rating, page, limit }) => {
-    Logger.info(`Inside getProductsBySearch => keyword = ${keyword} sortBy = ${sortBy} page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getProductsBySearch => keyword = ${keyword}, category = ${category}, min_price = ${min_price},
+    max_price = ${max_price}, sortBy = ${sortBy}, rating = ${rating}, page = ${page}, limit = ${limit}`)
 
     page ||= 1
     limit ||= 10

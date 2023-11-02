@@ -18,10 +18,14 @@ exports.getShippingTypeByTitle = (title) => {
 }
 
 exports.getShippingTypes = () => {
+    Logger.info('Inside getShippingTypes')
+    
     return dbRepo.find(constant.COLLECTIONS.SHIPPINGTYPE, {})
 }
 
 exports.createShippingType = (shippingBody) => {
+    Logger.info('Inside createShippingType')
+
     const data = {
         ...shippingBody
     }
@@ -29,6 +33,8 @@ exports.createShippingType = (shippingBody) => {
 }
 
 exports.updateShippingType = (shippingId, shippingBody) => {
+    Logger.info(`Inside updateShippingType => shippingType = ${shippingId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(shippingId)
     }
@@ -41,6 +47,8 @@ exports.updateShippingType = (shippingId, shippingBody) => {
 }
 
 exports.deleteShippingType = (shippingId) => {
+    Logger.info(`Inside deleteShippingType => shippingType = ${shippingId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(shippingId)
     }

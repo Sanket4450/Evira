@@ -3,6 +3,8 @@ const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 
 exports.getOfferById = (id) => {
+    Logger.info(`Inside getOfferById => offer = ${id}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(id)
     }
@@ -22,6 +24,8 @@ exports.getOfferByProduct = (productId) => {
 }
 
 exports.checkOfferValidity = (productId, date = Date.now()) => {
+    Logger.info(`Inside checkOfferValidity => product = ${productId}, date = ${date}`)
+
     date = (typeof date !== 'number') ? date.getTime() : date
 
     const query = {
@@ -38,7 +42,7 @@ exports.checkOfferValidity = (productId, date = Date.now()) => {
 }
 
 exports.getOffers = ({ page, limit }) => {
-    Logger.info(`Inside getOffers => page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getOffers => page = ${page}, limit = ${limit}`)
 
     page ||= 1
     limit ||= 10
@@ -65,6 +69,8 @@ exports.getAllOffers = () => {
 }
 
 exports.createOffer = (offerBody) => {
+    Logger.info('Inside createOffer')
+
     const data = {
         ...offerBody
     }
@@ -72,6 +78,8 @@ exports.createOffer = (offerBody) => {
 }
 
 exports.updateOffer = (offerId, offerBody) => {
+    Logger.info(`Inside updateOffer => offer = ${offerId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(offerId)
     }
@@ -84,6 +92,8 @@ exports.updateOffer = (offerId, offerBody) => {
 }
 
 exports.deleteOffer = (offerId) => {
+    Logger.info(`Inside deleteOffer => offer = ${offerId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(offerId)
     }

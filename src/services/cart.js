@@ -21,9 +21,9 @@ exports.getCartProductVariant = (productId, variantId, userId) => {
 }
 
 exports.cartAction = ({ action, productId, variantId, userId, quantity }) => {
-    quantity ||= 1
+    Logger.info(`Inside cartAction => action = ${action}, product = ${productId}, variant = ${variantId}, quantity = ${quantity}`)
 
-    Logger.info(`Inside cartAction => action = ${action} productId = ${productId} variantId = ${variantId} quantity = ${quantity}`)
+    quantity ||= 1
 
     const query = (action === 'add' || action === 'remove')
         ? {
@@ -138,7 +138,7 @@ exports.getCartProducts = (userId) => {
 }
 
 exports.getCartProductsBySearch = (userId, keyword) => {
-    Logger.info(`Inside getProductsBySearch => keyword = ${keyword}`)
+    Logger.info(`Inside getCartProductsBySearch => keyword = ${keyword}`)
 
     const pipeline = [
         {
@@ -212,6 +212,8 @@ exports.getCartProductsBySearch = (userId, keyword) => {
 }
 
 exports.getTotalAmount = (userId) => {
+    Logger.info('Inside getTotalAmount')
+
     const pipeline = [
         {
             $match: {
@@ -252,6 +254,8 @@ exports.getTotalAmount = (userId) => {
 }
 
 exports.getCheckoutProducts = (userId) => {
+    Logger.info('Inside getCheckoutProducts')
+
     const pipeline = [
         {
             $match: {
@@ -295,6 +299,8 @@ exports.getCheckoutProducts = (userId) => {
 }
 
 exports.emptyCart = (userId) => {
+    Logger.info('Inside emptyCart')
+
     const query = {
         user: new mongoose.Types.ObjectId(userId)
     }

@@ -27,6 +27,8 @@ exports.getPromoCodeByIdAndCode = (promoId, code) => {
 }
 
 exports.getPromoCodes = (date) => {
+    Logger.info(`Inside getPromoCodes => date = ${date}`)
+
     date = (typeof date !== 'number') ? date.getTime() : date
 
     const query = {
@@ -43,6 +45,8 @@ exports.getPromoCodes = (date) => {
 }
 
 exports.checkPromoCodeValidity = (promoId, date) => {
+    Logger.info(`Inside checkPromoCodeValidity => promoCode = ${promoId}, date = ${date}`)
+
     date = (typeof date !== 'number') ? date.getTime() : date
 
     const query = {
@@ -60,6 +64,8 @@ exports.checkPromoCodeValidity = (promoId, date) => {
 }
 
 exports.getAdminPromoCodes = ({ page, limit }) => {
+    Logger.info(`Inside getAdminPromoCodes => page = ${page}, limit = ${limit}`)
+
     page ||= 1
     limit ||= 10
 
@@ -76,6 +82,8 @@ exports.getAdminPromoCodes = ({ page, limit }) => {
 }
 
 exports.createPromoCode = (promoBody) => {
+    Logger.info('Inside createPromoCode')
+    
     const data = {
         ...promoBody
     }
@@ -83,6 +91,8 @@ exports.createPromoCode = (promoBody) => {
 }
 
 exports.updatePromoCode = (promoId, promoBody) => {
+    Logger.info(`Inside updatePromoCode => promoCode = ${promoId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(promoId)
     }
@@ -95,6 +105,8 @@ exports.updatePromoCode = (promoId, promoBody) => {
 }
 
 exports.deleteShippingType = (promoId) => {
+    Logger.info(`Inside deleteShippingType => promoCode = ${promoId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(promoId)
     }

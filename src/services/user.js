@@ -74,7 +74,7 @@ exports.createUser = async (userBody) => {
 
         return dbRepo.create(constant.COLLECTIONS.USER, { data: userBody })
     } catch (error) {
-        Logger.error('createUser error => ' + error)
+        Logger.error(`createUser error => ${error}`)
 
         throw new ApiError(constant.MESSAGES.SOMETHING_WENT_WRONG, httpStatus.INTERNAL_SERVER_ERROR)
     }
@@ -95,7 +95,7 @@ exports.updatePassword = async (userId, password) => {
         await dbRepo.updateOne(constant.COLLECTIONS.USER, { query, data })
         return true
     } catch (error) {
-        Logger.error('updatePassword error => ' + error)
+        Logger.error(`updatePassword error => ${error}`)
 
         throw new ApiError(constant.MESSAGES.SOMETHING_WENT_WRONG, httpStatus.INTERNAL_SERVER_ERROR)
     }
@@ -132,7 +132,7 @@ exports.updateUser = async (userId, userBody) => {
 
         return true
     } catch (error) {
-        Logger.error('updateUser error => ' + error)
+        Logger.error(`updateUser error => ${error}`)
 
         if (error.message === constant.MESSAGES.USER_ALREADY_EXISTS) {
             throw new ApiError(constant.MESSAGES.USER_ALREADY_EXISTS, httpStatus.CONFLICT)
@@ -142,6 +142,8 @@ exports.updateUser = async (userId, userBody) => {
 }
 
 exports.deleteUserById = async (userId) => {
+    Logger.info('Inside deleteUserById')
+
     const query = {
         _id: new mongoose.Types.ObjectId(userId)
     }
@@ -157,10 +159,13 @@ exports.getDefaultAddressById = (userId) => {
     const data = {
         user: 0
     }
+
     return dbRepo.findOne(constant.COLLECTIONS.ADDRESS, { query, data })
 }
 
 exports.getAddressById = (addressId, userId) => {
+    Logger.info(`Inside getAddressById => address = ${addressId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(addressId),
         user: new mongoose.Types.ObjectId(userId)
@@ -174,6 +179,8 @@ exports.getAddressById = (addressId, userId) => {
 }
 
 exports.getAddresses = (userId) => {
+    Logger.info('Inside getAddresses')
+
     const query = {
         user: new mongoose.Types.ObjectId(userId)
     }
@@ -186,6 +193,8 @@ exports.getAddresses = (userId) => {
 }
 
 exports.createAddress = (userId, addressBody) => {
+    Logger.info('Inside updateAddress')
+
     const data = {
         user: new mongoose.Types.ObjectId(userId),
         ...addressBody
@@ -194,6 +203,8 @@ exports.createAddress = (userId, addressBody) => {
 }
 
 exports.updateAddress = (addressId, userId, addressBody) => {
+    Logger.info(`Inside updateAddress => address = ${addressId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(addressId),
         user: new mongoose.Types.ObjectId(userId)
@@ -209,6 +220,8 @@ exports.updateAddress = (addressId, userId, addressBody) => {
 }
 
 exports.deleteAddress = (addressId, userId) => {
+    Logger.info(`Inside deleteAddress => address = ${addressId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(addressId),
         user: new mongoose.Types.ObjectId(userId)
@@ -217,6 +230,8 @@ exports.deleteAddress = (addressId, userId) => {
 }
 
 exports.getUsers = (adminId, { page, limit }) => {
+    Logger.info(`Inside getUsers => page = ${page}, limit = ${limit}`)
+
     page ||= 1
     limit ||= 10
 

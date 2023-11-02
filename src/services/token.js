@@ -24,7 +24,7 @@ const verifyToken = (token, secret) => {
 }
 
 const generateAuthTokens = async (userId, role = 'user') => {
-    Logger.info('Inside generateAuthTokens => ', + userId)
+    Logger.info(`Inside generateAuthTokens => role = ${role}`)
 
     const payload = {
         sub: userId,

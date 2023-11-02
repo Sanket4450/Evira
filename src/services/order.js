@@ -3,6 +3,8 @@ const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 
 exports.getOrderById = (orderId, userId) => {
+    Logger.info(`Inside getOrderById => order = ${orderId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(orderId),
         user: new mongoose.Types.ObjectId(userId)
@@ -17,6 +19,8 @@ exports.getOrderById = (orderId, userId) => {
 }
 
 exports.createOrder = (userId, orderBody) => {
+    Logger.info('Inside createOrder')
+
     const data = {
         user: new mongoose.Types.ObjectId(userId),
         ...orderBody
@@ -26,6 +30,8 @@ exports.createOrder = (userId, orderBody) => {
 }
 
 exports.updateOrder = (orderId, updateBody) => {
+    Logger.info(`Inside updateOrder => order = ${orderId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(orderId)
     }
@@ -40,6 +46,8 @@ exports.updateOrder = (orderId, updateBody) => {
 }
 
 exports.updateOrderStatus = (orderId, pushBody) => {
+    Logger.info(`Inside updateOrderStatus => order = ${orderId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(orderId)
     }
@@ -57,6 +65,8 @@ exports.updateOrderStatus = (orderId, pushBody) => {
 }
 
 exports.getOrders = (type, userId, { page, limit }) => {
+    Logger.info(`Inside getOrders => type = ${type}, page = ${page}, limit = ${limit}`)
+
     page ||= 1
     limit ||= 10
 
@@ -133,6 +143,8 @@ exports.getOrders = (type, userId, { page, limit }) => {
 }
 
 exports.getTrackOrder = (orderId, userId) => {
+    Logger.info(`Inside getTrackOrder => order = ${orderId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(orderId),
         user: new mongoose.Types.ObjectId(userId),
@@ -147,6 +159,8 @@ exports.getTrackOrder = (orderId, userId) => {
 }
 
 exports.getAdminOrderById = (id) => {
+    Logger.info(`Inside getAdminOrderById => order = ${id}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(id)
     }
@@ -155,6 +169,8 @@ exports.getAdminOrderById = (id) => {
 }
 
 exports.getAdminOrders = (type, { page, limit }) => {
+    Logger.info(`Inside getAdminOrders => type = ${type}, page = ${page}, limit = ${limit}`)
+
     page ||= 1
     limit ||= 10
 

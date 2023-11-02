@@ -6,7 +6,7 @@ const userService = require('./user')
 const tokenService = require('./token')
 
 exports.checkUserWithEmail = async (email) => {
-    Logger.info('Inside checkUserWithEmail => ' + email)
+    Logger.info(`Inside checkUserWithEmail => email = ${email}`)
 
     const user = await userService.getUserByEmail(email)
 
@@ -19,14 +19,13 @@ exports.checkUserWithEmail = async (email) => {
 }
 
 exports.loginWithEmailAndPassword = async (email, password) => {
-    Logger.info('Inside loginWithEmailAndPassword => ' + email)
+    Logger.info(`Inside loginWithEmailAndPassword => email = ${email}`)
 
     const user = await userService.getUserByEmail(email)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_EXIST, httpStatus.NOT_FOUND)
     }
-    Logger.info('User found inside loginWithEmailAndPassword')
 
     if (!(await bcrypt.compare(password, user.password))) {
         throw new ApiError(constant.MESSAGES.INCORRECT_PASSWROD, httpStatus.UNAUTHORIZED)
@@ -35,7 +34,7 @@ exports.loginWithEmailAndPassword = async (email, password) => {
 }
 
 exports.forgotPasswordWithEmail = async (email) => {
-    Logger.info('Inside forgotPasswordWithEmail => ' + email)
+    Logger.info(`Inside forgotPasswordWithEmail => email = ${email}`)
 
     const user = await userService.getUserByEmail(email)
 
@@ -53,7 +52,7 @@ exports.forgotPasswordWithEmail = async (email) => {
 }
 
 exports.forgotPasswordWithMobile = async (mobile) => {
-    Logger.info('Inside forgotPasswordWithMobile => ' + mobile)
+    Logger.info(`Inside forgotPasswordWithMobile => mobile = ${mobile}`)
 
     const user = await userService.getUserByMobile(mobile)
 
@@ -99,7 +98,7 @@ exports.resetPassword = async ({ token, password }) => {
 }
 
 exports.refreshTokens = async (token) => {
-    Logger.info('Inside refreshTokens => ', + token)
+    Logger.info(`Inside refreshTokens => token = ${token}`)
 
     const { sub } = await tokenService.verifyToken(token, config.REFRESH_TOKEN_SECRET)
 

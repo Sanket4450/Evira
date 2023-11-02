@@ -8,7 +8,7 @@ const promotionService = require('./promotion')
 
 exports.postCheckout = async ({ userId, address, shipping, promo }) => {
     try {
-        Logger.info(`Inside postCheckout => address = ${address} shipping-type = ${shipping} promo-code = ${promo}`)
+        Logger.info(`Inside postCheckout => address = ${address}, shippingType = ${shipping}, promoCode = ${promo}`)
 
         if (!await userService.getAddressById(address, userId)) {
             throw new ApiError(constant.MESSAGES.ADDRESS_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -56,7 +56,7 @@ exports.postCheckout = async ({ userId, address, shipping, promo }) => {
 
         return { items, finalAmount }
     } catch (error) {
-        Logger.error(error)
+        Logger.error(`postCheckout error => ${error}`)
 
         throw new ApiError(error.message, httpStatus.CONFLICT, error.stack)
     }

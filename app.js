@@ -5,6 +5,7 @@ const config = require('./src/config/config')
 const connectDB = require('./src/config/db')
 const Logger = require('./src/middlewares/logger')
 const domain = require('./src/models/index.model')
+const swaggerRoutes = require('./src/utils/swagger')
 const { userRoutes, adminRoutes } = require('./src/routes/index.route')
 const ApiError = require('./src/utils/ApiError')
 const { errorConverter, errorHandler } = require('./src/middlewares/error')
@@ -30,6 +31,8 @@ global.domain = domain
 app.use(cors({ allowedHeaders: ['Origin', 'Authorization', 'Content-Type', 'Accept'] }))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+
+app.use('/api/docs', swaggerRoutes)
 
 app.use('/api/v1', userRoutes)
 app.use('/api/v1/admin', adminRoutes)

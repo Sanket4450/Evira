@@ -11,7 +11,7 @@ exports.getNotificationById = (notificationId, userId) => {
 }
 
 exports.getNotifications = (userId, { page, limit }) => {
-    Logger.info(`Inside getNotifications => page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getNotifications => page = ${page}, limit = ${limit}`)
 
     page ||= 1
     limit ||= 20
@@ -31,6 +31,8 @@ exports.getNotifications = (userId, { page, limit }) => {
 }
 
 exports.createNotification = (userId, notificationBody) => {
+    Logger.info('Inside createNotification')
+
     const data = {
         user: new mongoose.Types.ObjectId(userId),
         isRead: false,
@@ -41,7 +43,7 @@ exports.createNotification = (userId, notificationBody) => {
 }
 
 exports.updateNotification = (notificationId) => {
-    Logger.info(`Inside updateNotification => notificationId = ${notificationId}`)
+    Logger.info(`Inside updateNotification => notification = ${notificationId}`)
 
     const query = {
         _id: new mongoose.Types.ObjectId(notificationId)
@@ -55,7 +57,7 @@ exports.updateNotification = (notificationId) => {
 }
 
 exports.deleteNotification = (notificationId) => {
-    Logger.info(`Inside deleteNotification => notificationId = ${notificationId}`)
+    Logger.info(`Inside deleteNotification => notification = ${notificationId}`)
 
     const query = {
         _id: new mongoose.Types.ObjectId(notificationId)

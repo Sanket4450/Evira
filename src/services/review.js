@@ -3,7 +3,7 @@ const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 
 exports.getReviews = (productId, { rating, page, limit }) => {
-    Logger.info(`Inside getReviews => productId = ${productId} rating = ${rating} page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getReviews => product = ${productId}, rating = ${rating}, page = ${page}, limit = ${limit}`)
 
     page ||= 1
     limit ||= 15
@@ -91,7 +91,7 @@ exports.getReviews = (productId, { rating, page, limit }) => {
 }
 
 exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
-    Logger.info(`Inside getReviewsBySearch => productId = ${productId} keyword = ${keyword} rating = ${rating} page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getReviewsBySearch => product = ${productId}, keyword = ${keyword}, rating = ${rating}, page = ${page}, limit = ${limit}`)
 
     page ||= 1
     limit ||= 15
@@ -192,7 +192,7 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
 }
 
 exports.postReview = (reviewBody) => {
-    Logger.info(`Inside postReview => productId = ${reviewBody.product} userId = ${reviewBody.userId}`)
+    Logger.info(`Inside postReview => product = ${reviewBody.product}`)
 
     const data = {
         ...reviewBody
@@ -202,6 +202,8 @@ exports.postReview = (reviewBody) => {
 }
 
 exports.getReviewById = (id) => {
+    Logger.info(`Inside getReviewById => review = ${id}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(id)
     }
@@ -227,7 +229,8 @@ exports.checkReviewWithUserId = (reviewId, userId) => {
 }
 
 exports.updateReview = (reviewId, reviewBody) => {
-    Logger.info(`Inside updateReview => reviewId = ${reviewId}`)
+    Logger.info(`Inside updateReview => review = ${reviewId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(reviewId)
     }
@@ -242,7 +245,8 @@ exports.updateReview = (reviewId, reviewBody) => {
 }
 
 exports.deleteReview = (reviewId) => {
-    Logger.info(`Inside deleteReview => reviewId = ${reviewId}`)
+    Logger.info(`Inside deleteReview => review = ${reviewId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(reviewId)
     }
@@ -264,7 +268,8 @@ exports.checkReviewLikedWithUserId = (reviewId, userId) => {
 }
 
 exports.likeUnlikeReview = (reviewId, userId, like) => {
-    Logger.info(`Inside likeUnlikeReview => reviewId = ${reviewId} userId = ${userId}`)
+    Logger.info(`Inside likeUnlikeReview => review = ${reviewId}, like = ${like}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(reviewId)
     }

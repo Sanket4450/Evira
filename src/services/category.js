@@ -58,6 +58,8 @@ exports.getAllCategories = () => {
 }
 
 exports.getAdminCategories = ({ page, limit }) => {
+    Logger.info(`Inside getAdminCategories => page = ${page}, limit = ${limit}`)
+
     page ||= 1
     limit ||= 8
 
@@ -65,6 +67,8 @@ exports.getAdminCategories = ({ page, limit }) => {
 }
 
 exports.postCategory = (categoryBody) => {
+    Logger.info('Inside postCategory')
+
     const data = {
         ...categoryBody
     }
@@ -72,6 +76,8 @@ exports.postCategory = (categoryBody) => {
 }
 
 exports.updateCategory = (categoryId, categoryBody) => {
+    Logger.info(`Inside updateCategory => category = ${categoryId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(categoryId)
     }
@@ -84,6 +90,8 @@ exports.updateCategory = (categoryId, categoryBody) => {
 }
 
 exports.deleteCategory = (categoryId) => {
+    Logger.info(`Inside deleteCategory => category = ${categoryId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(categoryId)
     }

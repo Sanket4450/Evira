@@ -50,7 +50,7 @@ exports.getVariantById = (id) => {
 }
 
 exports.getProducts = ({ matchCriteria, page, limit }) => {
-    Logger.info(`Inside getProducts => page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getProducts => page = ${page}, limit = ${limit}`)
 
     matchCriteria ||= {}
     page ||= 1
@@ -119,7 +119,7 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
 }
 
 exports.getProductsByCategory = (categoryId, { matchCriteria, page, limit }) => {
-    Logger.info(`Inside getProductsByCategory => page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getProductsByCategory => category = ${categoryId}, page = ${page}, limit = ${limit}`)
 
     matchCriteria ||= {}
     page ||= 1
@@ -193,7 +193,8 @@ exports.getProductsByCategory = (categoryId, { matchCriteria, page, limit }) => 
 }
 
 exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy, rating, page, limit }) => {
-    Logger.info(`Inside getProductsBySearch => keyword = ${keyword} sortBy = ${sortBy} page = ${page} & limit = ${limit}`)
+    Logger.info(`Inside getProductsBySearch => keyword = ${keyword}, category = ${category}, min_price = ${min_price},
+    max_price = ${max_price}, sortBy = ${sortBy}, rating = ${rating}, page = ${page}, limit = ${limit}`)
 
     page ||= 1
     limit ||= 10
@@ -326,7 +327,7 @@ exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy
 }
 
 exports.getFullProductById = (productId) => {
-    Logger.info('Inside getFullProductById => ' + productId)
+    Logger.info(`Inside getFullProductById => product = ${productId}`)
 
     const pipeline = [
         {
@@ -412,6 +413,8 @@ exports.getFullProductById = (productId) => {
 }
 
 exports.getVariants = (productId) => {
+    Logger.info(`Inside getVariants => product = ${productId}`)
+
     const query = {
         product: new mongoose.Types.ObjectId(productId)
     }
@@ -424,6 +427,8 @@ exports.getVariants = (productId) => {
 }
 
 exports.createVariant = (productId, variantBody) => {
+    Logger.info(`Inside createVariant => product = ${productId}`)
+
     const data = {
         product: new mongoose.Types.ObjectId(productId),
         ...variantBody
@@ -432,6 +437,8 @@ exports.createVariant = (productId, variantBody) => {
 }
 
 exports.updateVariant = (variantId, variantBody) => {
+    Logger.info(`Inside updateVariant => variant = ${variantId}`)
+    
     const query = {
         _id: new mongoose.Types.ObjectId(variantId)
     }
@@ -444,6 +451,8 @@ exports.updateVariant = (variantId, variantBody) => {
 }
 
 exports.deleteVariant = (variantId) => {
+    Logger.info(`Inside deleteVariant => variant = ${variantId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(variantId)
     }
@@ -451,6 +460,8 @@ exports.deleteVariant = (variantId) => {
 }
 
 exports.createProduct = (userId, productBody) => {
+    Logger.info('Inside createProduct')
+
     const data = {
         user: new mongoose.Types.ObjectId(userId),
         ...productBody
@@ -459,6 +470,8 @@ exports.createProduct = (userId, productBody) => {
 }
 
 exports.updateProduct = (productId, productBody) => {
+    Logger.info(`Inside updateProduct => product = ${productId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(productId)
     }
@@ -471,6 +484,8 @@ exports.updateProduct = (productId, productBody) => {
 }
 
 exports.deleteProduct = (productId) => {
+    Logger.info(`Inside deleteProduct => product = ${productId}`)
+
     const query = {
         _id: new mongoose.Types.ObjectId(productId)
     }
