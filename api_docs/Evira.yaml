@@ -1,0 +1,2140 @@
+openapi: 3.0.0
+info:
+  title: Evira
+  version: 1.0.0
+  description: Evira E-commerce APIs with Swagger
+  contact: {
+    email: talaviyasanket01@gmail.com
+  }
+servers:
+  - url: http://localhost:8000/api/v1
+components:
+  securitySchemes:
+    userAuth:
+      type: http
+      scheme: bearer
+    adminAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: Auth
+  - name: Users
+  - name: Root
+  - name: Notifications
+  - name: Offers
+  - name: Categories
+  - name: Products
+  - name: Reviews
+  - name: Checkout
+  - name: Orders
+  - name: Admin Users
+  - name: Admin Categories
+  - name: Admin Products
+  - name: Admin Variants
+  - name: Admin Reviews
+  - name: Admin Offers
+  - name: Admin Shipping
+  - name: Admin Promotions
+  - name: Admin Orders
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                fullName:
+                  type: string
+                nickName:
+                  type: string
+                profileImage:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+                mobile:
+                  type: number
+                gender:
+                  type: string
+                  enum: [male, female, other]
+                language:
+                  type: string
+              required:
+                - email
+                - password
+              example:
+                email: example_user@gmail.com
+                password: user1234
+      responses:
+        '200':
+          description: User Object with Tokens
+          content:
+            application/json: {}
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string,
+                  format: email
+                password:
+                  type: string
+              required:
+                - email
+                - password
+              example:
+                email: user1@gmail.com
+                password: user1234
+      responses:
+        '200':
+          description: User object with Tokens
+          content:
+            application/json: {}
+  /auth/forgot-password/email:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+              example:
+                email: user1@gmail.com
+      responses:
+        '200':
+          description: Success response with reset Token
+          content:
+            application/json: {}
+  /auth/forgot-password/mobile:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mobile: number
+                format: mobile
+              required:
+                - mobile
+              example:
+                mobile: 9876543210
+      responses:
+        '200':
+          description: Success response with reset Token
+          content:
+            application/json: {}
+  /auth/verify-reset-otp:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  format: token
+                otp:
+                  type: integer
+                  format: otp
+              required:
+                - token
+                - otp
+              example:
+                otp: 1234
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json: {}
+  /auth/reset-password:
+    put:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  format: token
+                password:
+                  type: string
+              required:
+                - token
+                - password
+              example:
+                password: user5678
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json: {}
+  /auth/refresh-tokens:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  format: token
+              required:
+                - token
+      responses:
+        '200':
+          description: Access & Refresh Token Objects
+          content:
+            application/json: {}
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      security:
+        - userAuth: []
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json: {}
+  /users/profile:
+    get:
+      tags:
+        - Users
+      security:
+        - userAuth: []
+      responses:
+        '200':
+          description: User profile object
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Users
+      security:
+        - userAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                fullName:
+                  type: string
+                nickName:
+                  type: string
+                profileImage:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+                mobile:
+                  type: number
+                gender:
+                  type: string
+                  enum: [male, female, other]
+                language:
+                  type: string
+              example:
+                fullName: Steve Rogers
+                nickName: Steve
+                profileImage: https://picsum.photos/200
+                dateOfBirth: 2002-02-08T23:28:56.782Z
+                mobile: 9876543210
+                gender: male
+                language: English
+      responses:
+        '200':
+          description: updated User profile object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Users
+      security:
+        - userAuth: []
+      responses:
+        '200':
+          description: deleted User object
+          content:
+            application/json: {}
+  /users/toggle-notifications:
+    patch:
+      tags:
+        - Users
+      requestBody:
+        content: {}
+      security:
+        - userAuth: []
+      parameters:
+        - name: enable
+          in: query
+          schema:
+            type: boolean
+          default: true
+          description: boolean to toggle notifications (on & off)
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json: {}
+  /users/addresses:
+    get:
+      tags:
+        - Users
+      security:
+        - userAuth: []
+      responses:
+        '200':
+          description: array of all addresses for the user
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Users
+      security:
+        - userAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [home, office, other]
+                street:
+                  type: string
+                city:
+                  type: string
+                landmark:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                postalCode:
+                  type: integer
+                default:
+                  type: boolean
+              required:
+                - type
+                - street
+                - city
+                - state
+                - country
+                - postalCode
+              example:
+                type: home
+                street: A-501, Pushkar-hights, Yogi-chowk Road
+                city: Surat
+                landmark: Yogi-chowk ground
+                state: Gujarat
+                country: India
+                postalCode: 395010
+                default: true
+      responses:
+        '200':
+          description: posted address object
+          content:
+            application/json: {}
+  /users/addresses/{addressId}:
+    put:
+      tags:
+        - Users
+      security:
+        - userAuth: []
+      parameters:
+        - name: addressId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the address
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [home, office, other]
+                street:
+                  type: string
+                city:
+                  type: string
+                landmark:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                postalCode:
+                  type: integer
+                default:
+                  type: boolean
+              example:
+                type: home
+                street: 208, Yogi-Heights, Savaliya Circle, Yogi-Chowk Road
+                landmark: Yogi-chowk ground
+                postalCode: 395006
+      responses:
+        '200':
+          description: updated address object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Users
+      security:
+        - userAuth: []
+      parameters:
+        - name: addressId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the address
+      responses:
+        '200':
+          description: deleted address object
+          content:
+            application/json: {}
+  /home:
+    get:
+      tags:
+        - Root
+      responses:
+        '200':
+          description: arrays of offers, categories & products
+          content:
+            application/json: {}
+  /notifications:
+    get:
+      tags:
+        - Notifications
+      security:
+        - userAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for notifications
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 20
+          description: number of notifications per page
+      responses:
+        '200':
+          description: notifications array
+          content:
+            application/json: {}
+  /notifications/{notificationId}:
+    delete:
+      tags:
+        - Notifications
+      security:
+        - userAuth: []
+      paramaters:
+        - name: notificationId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the notification
+      responses:
+        '200':
+          description: deleted notification object
+          content:
+            application/json: {}
+  /offers:
+    get:
+      tags:
+        - Offers
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for offers
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of offers per page
+      responses:
+        '200':
+          description: offers array
+          content:
+            application/json: {}
+  /categories:
+    get:
+      tags:
+        - Categories
+      responses:
+        '200':
+          description: categories array
+          content:
+            application/json: {}
+  /products:
+    get:
+      tags:
+        - Products
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for products
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of products per page
+      responses:
+        '200':
+          description: products array
+          content:
+            application/json: {}
+  /products/category/{categoryId}:
+    get:
+      tags:
+        - Products
+      parameters:
+        - name: categoryId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the category
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for products
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of products per page
+      responses:
+        '200':
+          description: category wise products array
+          content:
+            application/json: {}
+  /products/search:
+    get:
+      tags:
+        - Products
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          required: true
+          description: keyword to be searched
+          example: with
+        - name: category
+          in: query
+          schema:
+            type: string
+            format: objectId
+          description: objectId for the category
+        - name: min_price
+          in: query
+          schema:
+            type: number
+          description: minimum price for products
+        - name: max_price
+          in: query
+          schema:
+            type: number
+          description: maximum price for products
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [popular, recent, price_desc, price_asc]
+            default: popular
+          required: true
+          description: products sorted by
+        - name: rating
+          in: query
+          schema:
+            type: integer
+          description: average rating of product out of 5
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for products
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of products per page
+      responses:
+        '200':
+          description: products array for search results
+          content:
+            application/json: {}
+  /products/{productId}:
+    get:
+      tags:
+        - Products
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the product
+      responses:
+        '200':
+          description: full product object
+          content:
+            application/json: {}
+  /products/{productId}/toggle-like:
+    patch:
+      tags:
+        - Products
+      security:
+        - userAuth: []
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+        - name: like
+          in: query
+          schema:
+            type: boolean
+            default: true
+          required: true
+          description: like product to add to wishlist
+      responses:
+        '200':
+          description: product object
+          content:
+            application/json: {}
+  /products/wishlist:
+    get:
+      tags:
+        - Products
+      security:
+        - userAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for products
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of products per page
+      responses:
+        '200':
+          description: wishlist products array
+          content:
+            application/json: {}
+  /products/wishlist/category/{categoryId}:
+    get:
+      tags:
+        - Products
+      security:
+        - userAuth: []
+      parameters:
+        - name: categoryId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          description: objectId for the category
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for products
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of products per page
+      responses:
+        '200':
+          description: category wise wishlist products array
+          content:
+            application/json: {}
+  /products/wishlist/search:
+    get:
+      tags:
+        - Products
+      security:
+        - userAuth: []
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          required: true
+          description: keyword to be searched
+          example: with
+        - name: category
+          in: query
+          schema:
+            type: string
+            format: objectId
+          description: objectId for the category
+        - name: min_price
+          in: query
+          schema:
+            type: number
+          description: minimum price for products
+        - name: max_price
+          in: query
+          schema:
+            type: number
+          description: maximum price for products
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [popular, recent, price_desc, price_asc]
+            default: popular
+          required: true
+          description: products sorted by
+        - name: rating
+          in: query
+          schema:
+            type: integer
+          description: average rating of products out of 5
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for products
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of products per page
+      responses:
+        '200':
+          description: wishlist products array for search results
+          content:
+            application/json: {}
+  /products/cart/{productId}/toggle-cart:
+    patch:
+      tags:
+        - Products
+      security:
+        - userAuth: []
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+        - name: action
+          in: query
+          schema:
+            type: string
+            enum: [add, remove, increase, decrease]
+          required: true
+          description: cart action to be taken
+        - name: variant
+          in: query
+          schema:
+            type: string
+            format: objectId
+          description: objectId for the product variant
+        - name: quantity
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: product quantity
+      responses:
+        '200':
+          description: product object
+          content:
+            application/json: {}
+  /products/cart:
+    get:
+      tags:
+        - Products
+      security:
+        - userAuth: []
+      responses:
+        '200':
+          description: cart products array
+          content:
+            application/json: {}
+  /products/cart/search:
+    get:
+      tags:
+        - Products
+      security:
+        - userAuth: []
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          required: true
+          example: gold
+      responses:
+        '200':
+          description: cart products array for search results
+          content:
+            application/json: {}
+  /products/{productId}/reviews:
+    get:
+      tags:
+        - Reviews
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the product
+        - name: rating
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+          description: rating stars of review
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for reviews
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 15
+          description: number of reviews per page
+      responses:
+        '200':
+          description: reviews array
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Reviews
+      security:
+        - userAuth: []
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                star:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+              required:
+                - message
+                - star
+              example:
+                message: excellent! good quality as compared to price
+                star: 5
+      responses:
+        '200':
+          description: posted review object
+          content:
+            application/json: {}
+  /products/{productId}/reviews/search:
+    get:
+      tags:
+        - Reviews
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the product
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          required: true
+          description: keyword to be searched
+          example: joNnY
+        - name: rating
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+          description: rating stars of review
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for reviews
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 15
+          description: number of reviews per page
+      responses:
+        '200':
+          description: reviews array
+          content:
+            application/json: {}
+  /reviews/{reviewId}:
+    put:
+      tags:
+        - Reviews
+      security:
+        - userAuth: []
+      parameters:
+        - name: reviewId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the review
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                star:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+              example:
+                message: not so good! pretty average quality
+                star: 3
+      responses:
+        '200':
+          description: updated review object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Reviews
+      security:
+        - userAuth: []
+      parameters:
+        - name: reviewId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the review
+      responses:
+        '200':
+          description: deleted review object
+          content:
+            application/json: {}
+  /reviews/{reviewId}/toggle-like:
+    patch:
+      tags:
+        - Reviews
+      security:
+        - userAuth: []
+      parameters:
+        - name: reviewId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the review
+        - name: like
+          in: query
+          schema:
+            type: boolean
+            default: true
+          required: true
+          description: like a review
+      responses:
+        '200':
+          description: review object
+          content:
+            application/json: {}
+  /checkout/shipping-types:
+    get:
+      tags:
+        - Checkout
+      responses:
+        '200':
+          description: shipping-types array
+          content:
+            application/json: {}
+  /checkout/promo-codes:
+    get:
+      tags:
+        - Checkout
+      responses:
+        '200':
+          description: promo-codes array
+          content:
+            application/json: {}
+  /checkout/promo/apply/{promoId}:
+    post:
+      tags:
+        - Checkout
+      security:
+        - userAuth: []
+      parameters:
+        - name: promoId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the promo-code
+      responses:
+        '200':
+          description: Success response with discount percentage
+          content:
+            application/json: {}
+  /checkout:
+    post:
+      tags:
+        - Checkout
+      security:
+        - userAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  format: objectId
+                shipping:
+                  type: string
+                  format: objectId
+                promo:
+                  type: string
+                  format: objectId
+                amount:
+                  type: number
+              required:
+                - address
+                - shipping
+                - amount
+              example:
+                address: 653fafffb2b0eb2bf3debbc0
+                shipping: 6540f65058fd3635d79ce1bf
+                promo: 6540fa3cc1405138b2c14c2b
+                amount: 945015
+      responses:
+        '200':
+          description: array of orderIds
+          content:
+            application/json: {}
+  /checkout/payment-methods:
+    get:
+      tags:
+        - Checkout
+      security:
+        - userAuth: []
+      responses:
+        '200':
+          description: payment-methods array
+          content:
+            application/json: {}
+  /orders/{type}:
+    get:
+      tags:
+        - Orders
+      security:
+        - userAuth: []
+      parameters:
+        - name: type
+          in: path
+          schema:
+            type: string
+            enum: [ongoing, completed]
+          required: true
+          description: type or status of orders
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for orders
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of orders per page
+      responses:
+        '200':
+          description: orders array
+          content:
+            application/json: {}
+  /orders/track/{orderId}:
+    get:
+      tags:
+        - Orders
+      parameters:
+        - name: orderId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the order
+      security:
+        - userAuth: []
+      responses:
+        '200':
+          description: order object
+          content:
+            application/json: {}
+  /orders/cancel/{orderId}:
+    put:
+      tags:
+        - Orders
+      security:
+        - userAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the order
+      responses:
+        '200':
+          description: canceled order object
+          content:
+            application/json: {}
+  /admin/users:
+    get:
+      tags:
+        - Admin Users
+      security:
+        - adminAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for users
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of users per page
+      responses:
+        '200':
+          description: users array
+          content:
+            application/json: {}
+  /admin/users/{userId}:
+    get:
+      tags:
+        - Admin Users
+      security:
+        - adminAuth: []
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the user
+      responses:
+        '200':
+          description: user object
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Admin Users
+      security:
+        - adminAuth: []
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                fullName:
+                  type: string
+                nickName:
+                  type: string
+                profileImage:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+                mobile:
+                  type: number
+                  format: mobile
+                gender:
+                  type: string
+                  enum: [male, female, other]
+                language:
+                  type: string
+                role:
+                  type: string
+                  enum: [user, admin]
+              example:
+                fullName: David Malan
+                nickName: David
+                profileImage: https://picsum.photos/200
+                mobile: 9977553311
+      responses:
+        '200':
+          description: updated user object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Admin Users
+      security:
+        - adminAuth: []
+      parameters:
+        - name: userId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the user
+      responses:
+        '200':
+          description: deleted user object
+          content:
+            application/json: {}
+  /admin/categories:
+    get:
+      tags:
+        - Admin Categories
+      security:
+        - adminAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for categories
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 8
+          description: number of categories per page
+      responses:
+        '200':
+          description: categories array
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Admin Categories
+      security:
+        - adminAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                icon:
+                  type: string
+                description:
+                  type: string
+              required:
+                - name
+              example:
+                name: Clothes
+                icon: icon8.svg
+                description: All variety of clothes with different brands for men, women & children
+      responses:
+        '200':
+          description: posted category object
+          content:
+            application/json: {}
+  /admin/categories/{categoryId}:
+    put:
+      tags:
+        - Admin Categories
+      security:
+        - adminAuth: []
+      parameters:
+        - name: categoryId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                icon:
+                  type: string
+                description:
+                  type: stirng
+              example:
+                name: Electronics
+                description: A to Z Electronics products with many brands & choices
+      responses:
+        '200':
+          description: updated category object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Admin Categories
+      security:
+        - adminAuth: []
+      parameters:
+        - name: categoryId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the category
+      responses:
+        '200':
+          description: deleted category object
+          content:
+            application/json: {}
+  /admin/products:
+    post:
+      tags:
+        - Admin Products
+      security:
+        - adminAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                image:
+                  type: string
+                description:
+                  type: string
+                category:
+                  type: string
+                  format: objectId
+                price:
+                  type: number
+                quantity:
+                  type: integer
+                defaultVariant:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    size:
+                      type: string | integer
+                    color:
+                      type: string
+                    price:
+                      type: number
+                    quantity:
+                      type: integer
+              required:
+                - name
+                - category
+                - price
+                - quantity
+              example:
+                name: MacBook M1
+                category: 6540c438f028c16ad2ba11f2
+                image: https://picsum.photos/400
+                description: Latest Apple MacBook | with Apple Silicon cheap | Apple M1 chip | fast speed & fast optimization
+                price: 84000
+                quantity: 200
+                defaultVariant:
+                  name: M1 Space Grey
+                  size: 13
+                  price: 84000
+                  color: Space Grey
+                  quantity: 80
+      responses:
+        '200':
+          description: posted product object
+          content:
+            application/json: {}
+  /admin/products/{productId}:
+    put:
+      tags:
+        - Admin Products
+      security:
+        - adminAuth: []
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                image:
+                  type: string
+                description:
+                  type: string
+                category:
+                  type: string
+                  format: objectId
+                price:
+                  type: number
+                quantity:
+                  type: integer
+                defaultVariant:
+                  type: object
+              example:
+                name: Apple MacBook M1
+                price: 83000
+                quantity: 250
+      responses:
+        '200':
+          description: updated product object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Admin Products
+      security:
+        - adminAuth: []
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the product
+      responses:
+        '200':
+          description: deleted product object
+          content:
+            application/json: {}
+  /admin/products/{productId}/variants:
+    get:
+      tags:
+        - Admin Variants
+      security:
+        - adminAuth: []
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the product
+      responses:
+        '200':
+          description: product variants array
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Admin Variants
+      security:
+        - adminAuth: []
+      parameters:
+        - name: productId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                size:
+                  type: string | integer
+                color:
+                  type: string
+                price:
+                  type: number
+                quantity:
+                  type: integer
+              required:
+                - price
+                - quantity
+              example:
+                name: M1 Gold
+                color: Gold
+                price: 82000
+                quantity: 70
+      responses:
+        '200':
+          description: posted variant object
+          content:
+            application/json: {}
+  /admin/variants/{variantId}:
+    put:
+      tags:
+        - Admin Variants
+      security:
+        - adminAuth: []
+      parameters:
+        - name: variantId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the variant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                size:
+                  type: string | integer
+                color:
+                  type: string
+                price:
+                  type: number
+                quantity:
+                  type: integer
+              example:
+                name: M1 Shining Black
+                color: Black
+      responses:
+        '200':
+          description: updated variant object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Admin Variants
+      security:
+        - adminAuth: []
+      parameters:
+        - name: variantId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the variant
+      responses:
+        '200':
+          description: deleted variant object
+          content:
+            application/json: {}
+  /admin/reviews/{reviewId}:
+    delete:
+      tags:
+        - Admin Reviews
+      security:
+        - adminAuth: []
+      parameters:
+        - name: reviewId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the review
+      responses:
+        '200':
+          description: review object
+          content:
+            application/json: {}
+  /admin/offers/{offerId}:
+    get:
+      tags:
+        - Admin Offers
+      security:
+        - adminAuth: []
+      parameters:
+        - name: offerId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the offer
+      responses:
+        '200':
+          description: offer object
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Admin Offers
+      security:
+        - adminAuth: []
+      parameters:
+        - name: offerId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the offer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product:
+                  type: string
+                  format: objectId
+                image:
+                  type: string
+                discountPercentage:
+                  type: number
+                  maximum: 90
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+              example:
+                discountPercentage: 15
+                endDate: 2024-01-14T12:05:23.235Z
+      responses:
+        '200':
+          description: updated offer object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Admin Offers
+      security:
+        - adminAuth: []
+      parameters:
+        - name: offerId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the offer
+      responses:
+        '200':
+          description: deleted offer object
+          content:
+            application/json: {}
+  /admin/offers:
+    post:
+      tags:
+        - Admin Offers
+      security:
+        - adminAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product:
+                  type: string
+                  format: objectId
+                image:
+                  type: string
+                discountPercentage:
+                  type: number
+                  maximum: 90
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+              required:
+                - product
+                - image
+                - discountPercentage
+                - endDate
+              example:
+                product: 6540d10abb523421b2fcb9a8
+                image: https://picsum.photos/400/200
+                discountPercentage: 10
+                startDate: '2023-10-31T11:42:22.572Z'
+                endDate: '2023-12-31T11:42:22.572Z'
+      responses:
+        '200':
+          description: posted offer object
+          content:
+            application/json: {}
+  /admin/shipping:
+    get:
+      tags:
+        - Admin Shipping
+      security:
+        - adminAuth: []
+      responses:
+        '200':
+          description: shipping-type array
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Admin Shipping
+      security:
+        - adminAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                charge:
+                  type: number
+              required:
+                - title
+                - charge
+              example:
+                title: Express
+                description: Estimated Arrival, In 2-3 days
+                charge: 30
+      responses:
+        '200':
+          description: posted shipping-type object
+          content:
+            application/json: {}
+  /admin/shipping/{shippingId}:
+    put:
+      tags:
+        - Admin Shipping
+      security:
+        - adminAuth: []
+      parameters:
+        - name: shippingId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the shipping-type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                charge:
+                  type: number
+              example:
+                description: Estimated Arrival, In 1-3 days
+                charge: 25
+      responses:
+        '200':
+          description: updated shipping-type object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Admin Shipping
+      security:
+        - adminAuth: []
+      parameters:
+        - name: shippingId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the shipping-type
+      responses:
+        '200':
+          description: deleted shipping-type object
+          content:
+            application/json: {}
+  /admin/promo:
+    get:
+      tags:
+        - Admin Promotions
+      security:
+        - adminAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for promo-code
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of promo-codes per page
+      responses:
+        '200':
+          description: promo-codes array
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Admin Promotions
+      security:
+        - adminAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                description:
+                  type: string
+                discountPercentage:
+                  type: number
+                  maximum: 90
+                maxUses:
+                  type: integer
+                validFrom:
+                  type: string
+                  format: date
+                validUntil:
+                  type: string
+                  format: date
+              required:
+                - code
+                - discountPercentage
+                - maxUses
+                - validUntil
+              example:
+                code: Special20
+                description: Flat 20% off for 7 days!
+                discountPercentage: 20
+                maxUses: 50
+                validFrom: 2023-10-31T15:58:16.396Z
+                validUntil: 2023-12-31T15:58:16.396Z
+      responses:
+        '200':
+          description: posted promo-code object
+          content:
+            application/json: {}
+  /admin/promo/{promoId}:
+    put:
+      tags:
+        - Admin Promotions
+      security:
+        - adminAuth: []
+      parameters:
+        - name: promoId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the promo-code
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                description:
+                  type: string
+                discountPercentage:
+                  type: number
+                  maximum: 90
+                maxUses:
+                  type: integer
+                remainingUses:
+                  type: integer
+                validFrom:
+                  type: string
+                  format: date
+                validUntil:
+                  type: string
+                  format: date
+              example:
+                code: Flat20
+                description: Flat 20% off for 3 days!
+                maxUses: 100
+                validUntil: 2023-12-25T15:58:16.396Z
+      responses:
+        '200':
+          description: updated promo-code object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Admin Promotions
+      security:
+        - adminAuth: []
+      parameters:
+        - name: promoId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the promo-code
+      responses:
+        '200':
+          description: deleted promo-code object
+          content:
+            application/json: {}
+  /admin/orders:
+    get:
+      tags:
+        - Admin Orders
+      security:
+        - adminAuth: []
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [ongoing, completed]
+          description: type or status of orders
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for orders
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of orders per page
+      responses:
+        '200':
+          description: orders array
+          content:
+            application/json: {}
+  /admin/orders/{orderId}:
+    get:
+      tags:
+        - Admin Orders
+      security:
+        - adminAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the order
+      responses:
+        '200':
+          description: order object
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Admin Orders
+      security:
+        - adminAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                  format: objectId
+                type:
+                  type: string
+                  enum: [ongoing, completed]
+                status:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                      enum: [Ordered, Shipped, Out for Delivery, Delivered, Canceled]
+                    description:
+                      type: string
+                    date:
+                      type: string
+                      format: date
+              example:
+                type: Ongoing
+                status:
+                  title: Shipped
+                  description: Order Shipped successfully
+                  date: '2023-11-01T08:42:21.510Z'
+      responses:
+        '200':
+          description: updated order object
+          content:
+            application/json: {}
