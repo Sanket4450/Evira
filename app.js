@@ -36,6 +36,10 @@ app.use(express.static(pathToSwaggerUi))
 
 app.use('/api/docs', swaggerRoutes)
 
+app.get('/', (req, res) => {
+    res.send('App is running...')
+})
+
 app.use('/api/v1', userRoutes)
 app.use('/api/v1/admin', adminRoutes)
 
