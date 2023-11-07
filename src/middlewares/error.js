@@ -16,14 +16,14 @@ exports.errorConverter = (err, req, res, next) => {
 
 exports.errorHandler = (err, req, res, next) => {
     const { message, statusCode } = err
-    
+
     const response = {
         type: "error",
         message,
-        ...(config.environment === 'development' && { stack: err.stack })
+        ...(process.env.environment === 'development' && { stack: err.stack })
 
     }
-    if (config.environment === 'development') {
+    if (process.env.environment === 'development') {
         Logger.error(err)
     }
 

@@ -42,8 +42,8 @@ exports.forgotPasswordWithEmail = async (email) => {
 
     const resetToken = tokenService.generateToken({
         payload: { sub: user._id },
-        secret: config.RESET_TOKEN_SECRET,
-        options: { expiresIn: config.RESET_TOKEN_EXPIRY }
+        secret: process.env.RESET_TOKEN_SECRET,
+        options: { expiresIn: process.env.RESET_TOKEN_EXPIRY }
     })
 
     return resetToken
@@ -60,8 +60,8 @@ exports.forgotPasswordWithMobile = async (mobile) => {
 
     const resetToken = tokenService.generateToken({
         payload: { sub: user._id },
-        secret: config.RESET_TOKEN_SECRET,
-        options: { expiresIn: config.RESET_TOKEN_EXPIRY }
+        secret: process.env.RESET_TOKEN_SECRET,
+        options: { expiresIn: process.env.RESET_TOKEN_EXPIRY }
     })
 
     return resetToken
@@ -70,7 +70,7 @@ exports.forgotPasswordWithMobile = async (mobile) => {
 exports.verifyResetOtp = async ({ token, otp }) => {
     Logger.info('Inside verifyResetOtp')
 
-    const { sub } = await tokenService.verifyToken(token, config.RESET_TOKEN_SECRET)
+    const { sub } = await tokenService.verifyToken(token, process.env.RESET_TOKEN_SECRET)
 
     const user = await userService.getUserById(sub)
 
@@ -87,7 +87,7 @@ exports.verifyResetOtp = async ({ token, otp }) => {
 exports.resetPassword = async ({ token, password }) => {
     Logger.info('Inside resetPassword')
 
-    const { sub } = await tokenService.verifyToken(token, config.RESET_TOKEN_SECRET)
+    const { sub } = await tokenService.verifyToken(token, process.env.RESET_TOKEN_SECRET)
 
     await userService.updatePassword(sub, password)
 }
@@ -95,7 +95,7 @@ exports.resetPassword = async ({ token, password }) => {
 exports.refreshTokens = async (token) => {
     Logger.info(`Inside refreshTokens => token = ${token}`)
 
-    const { sub } = await tokenService.verifyToken(token, config.REFRESH_TOKEN_SECRET)
+    const { sub } = await tokenService.verifyToken(token, process.env.REFRESH_TOKEN_SECRET)
 
     const user = await userService.getFullUserById(sub, { role: 1, token: 1 })
 

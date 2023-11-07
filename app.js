@@ -1,7 +1,10 @@
+const environment = process.env.NODE_ENV || 'development'
+const envFilePath = environment === 'production' ? '.env.production' : '.env.local'
+
+require('dotenv').config({ path: envFilePath })
 const express = require('express')
 const cors = require('cors')
 const httpStatus = require('http-status')
-const config = require('./src/config/config')
 const connectDB = require('./src/config/db')
 const Logger = require('./src/middlewares/logger')
 const domain = require('./src/models/index.model')
@@ -12,6 +15,10 @@ const ApiError = require('./src/utils/ApiError')
 const { errorConverter, errorHandler } = require('./src/middlewares/error')
 
 const app = express()
+
+global.Logger = Logger
+global.domain = domain
+
 connectDB()
 
 app.use((req, res, next) => {
@@ -24,10 +31,6 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'Content-Type')
     next()
 })
-
-global.config = config
-global.Logger = Logger
-global.domain = domain
 
 app.use(cors({ allowedHeaders: ['Origin', 'Authorization', 'Content-Type', 'Accept'] }))
 app.use(express.urlencoded({ extended: true }))

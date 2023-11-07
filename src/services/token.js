@@ -32,13 +32,13 @@ const generateAuthTokens = async (userId, role = 'user') => {
     }
     const accessToken = generateToken({
         payload,
-        secret: config.ACCESS_TOKEN_SECRET,
-        options: { expiresIn: config.ACCESS_TOKEN_EXPIRY }
+        secret: process.env.ACCESS_TOKEN_SECRET,
+        options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
     })
     const refreshToken = generateToken({
         payload,
-        secret: config.REFRESH_TOKEN_SECRET,
-        options: { expiresIn: config.REFRESH_TOKEN_EXPIRY }
+        secret: process.env.REFRESH_TOKEN_SECRET,
+        options: { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
     })
     await userService.updateUser(userId, { token: refreshToken })
 

@@ -15,7 +15,7 @@ exports.register = catchAsyncErrors(async (req, res) => {
 
     await authService.checkUserWithEmail(body.email)
 
-    if (body.role === 'admin' && body.secret !== config.ADMIN_SECRET) {
+    if (body.role === 'admin' && body.secret !== process.env.ADMIN_SECRET) {
         throw new ApiError(constant.MESSAGES.INVALID_SECRET, httpStatus.FORBIDDEN)
     }
 
@@ -118,7 +118,7 @@ exports.refreshTokens = catchAsyncErrors(async (req, res) => {
     const tokens = (user.role === 'admin')
         ? await tokenService.generateAuthTokens(user._id, 'admin')
         : await tokenService.generateAuthTokens(user._id)
-        
+
     return sendResponse(
         res,
         httpStatus.OK,
