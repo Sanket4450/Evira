@@ -5,6 +5,8 @@ const config = require('./src/config/config')
 const connectDB = require('./src/config/db')
 const Logger = require('./src/middlewares/logger')
 const domain = require('./src/models/index.model')
+const pathToSwaggerUi = require('swagger-ui-dist').absolutePath()
+const swaggerUiCss = 'https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css'
 const swaggerRoutes = require('./src/utils/swagger')
 const { userRoutes, adminRoutes } = require('./src/routes/index.route')
 const ApiError = require('./src/utils/ApiError')
@@ -31,6 +33,8 @@ global.domain = domain
 app.use(cors({ allowedHeaders: ['Origin', 'Authorization', 'Content-Type', 'Accept'] }))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(express.static(pathToSwaggerUi))
+app.use(express.static(swaggerUiCss))
 
 app.use('/api/docs', swaggerRoutes)
 
