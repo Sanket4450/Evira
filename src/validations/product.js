@@ -37,9 +37,9 @@ const getFullProductById = {
 const getProductsBySearch = {
     query: joi.object().keys({
         keyword: stringReqValidation.label('Search Keyword'),
-        category: stringValidation,
-        min_price: integerNumberValidation,
-        max_price: integerNumberValidation,
+        category: idValidation,
+        min_price: numberValidation.precision(2),
+        max_price: numberValidation.precision(2),
         sortBy: stringReqValidation.lowercase().valid('popular', 'recent', 'price_desc', 'price_asc'),
         rating: integerNumberValidation.valid(1, 2, 3, 4, 5),
         ...pageAndLimit
@@ -61,9 +61,7 @@ const toggleCart = {
     }),
     query: joi.object().keys({
         action: stringReqValidation.lowercase().valid('add', 'remove', 'increase', 'decrease'),
-        variant: stringValidation
-            .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
-            .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' }),
+        variant: idValidation,
         quantity: integerNumberValidation.min(0)
     })
 }
@@ -89,7 +87,7 @@ const postVariant = {
         size: [stringValidation, integerNumberValidation],
         color: stringValidation,
         price: numberReqValidation.precision(2),
-        quantity: integerNumberValidation
+        quantity: integerNumberReqValidation
     })
 }
 
@@ -120,13 +118,13 @@ const postProduct = {
         category: idReqValidation,
         price: numberReqValidation.precision(2),
         quantity: integerNumberReqValidation,
-        defaultVariant: {
+        defaultVariant: joi.object().keys({
             name: stringValidation.max(30),
             size: [stringValidation, integerNumberValidation],
             color: stringValidation,
             price: numberValidation.precision(2),
             quantity: integerNumberValidation
-        }
+        })
     })
 }
 

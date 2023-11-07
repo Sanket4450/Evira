@@ -33,9 +33,6 @@ exports.postCheckout = async ({ userId, address, shipping, promo }) => {
         }
 
         if (promo) {
-            if (!new RegExp('^[0-9a-fA-F]{24}$').test(promo)) {
-                throw new ApiError(constant.MESSAGES.ENTER_VALID_OBJECTID, httpStatus.BAD_REQUEST)
-            }
             const promoCode = await promotionService.checkPromoCodeValidity(promo, Date.now())
 
             if (!promoCode) {

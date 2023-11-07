@@ -29,25 +29,6 @@ exports.getReviews = catchAsyncErrors(async (req, res) => {
     )
 })
 
-exports.getReviewsBySearch = catchAsyncErrors(async (req, res) => {
-    const { productId } = req.params
-
-    const product = await productService.getProductById(productId)
-
-    if (!product) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
-    }
-
-    const reviews = await reviewService.getReviewsBySearch(productId, req.query)
-
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        { reviews },
-        'Reviews retrieved successfully'
-    )
-})
-
 exports.postReview = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
 
@@ -74,6 +55,25 @@ exports.postReview = catchAsyncErrors(async (req, res) => {
         httpStatus.OK,
         { review },
         'Review posted succcssfully'
+    )
+})
+
+exports.getReviewsBySearch = catchAsyncErrors(async (req, res) => {
+    const { productId } = req.params
+
+    const product = await productService.getProductById(productId)
+
+    if (!product) {
+        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    }
+
+    const reviews = await reviewService.getReviewsBySearch(productId, req.query)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { reviews },
+        'Reviews retrieved successfully'
     )
 })
 

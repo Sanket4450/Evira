@@ -3,6 +3,7 @@ const httpStatus = require('http-status')
 const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 const ApiError = require('../utils/ApiError')
+const categoryService = require('./category')
 
 exports.getProductById = (id) => {
     const query = {
@@ -211,8 +212,8 @@ exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy
             }
         })
 
-    if (category) {
-        if (new RegExp('^[0-9a-fA-F]{24}$').test(category)) {
+    const checkCategory = async (category) => {
+        if (await categoryService.getCategoryById(category)) {
             pipeline.push(
                 {
                     $match: {
@@ -221,9 +222,11 @@ exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy
                 })
         }
         else {
-            throw new ApiError(constant.MESSAGES.ENTER_VALID_CATEGORY, httpStatus.CONFLICT)
+            throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
         }
     }
+
+    checkCategory(category)
 
     if (min_price) {
         pipeline.push(

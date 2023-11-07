@@ -14,7 +14,7 @@ exports.register = catchAsyncErrors(async (req, res) => {
     const body = req.body
 
     await authService.checkUserWithEmail(body.email)
-    console.log(config.ADMIN_SECRET)
+
     if (body.role === 'admin' && body.secret !== config.ADMIN_SECRET) {
         throw new ApiError(constant.MESSAGES.INVALID_SECRET, httpStatus.FORBIDDEN)
     }

@@ -50,11 +50,11 @@ const updateOrder = {
     body: joi.object().keys({
         address: idValidation,
         type: stringValidation.lowercase().valid('ongoing', 'completed').label('Order Status'),
-        status: {
+        status: joi.object().keys({
             title: stringValidation.valid('Ordered', 'Shipped', 'Out for Delivery', 'Delivered', 'Canceled'),
             description: stringValidation,
             date: dateValidation
-        }
+        })
     })
 }
 

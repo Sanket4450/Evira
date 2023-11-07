@@ -8,9 +8,9 @@ const { authChecker, authorizeRole } = require('../middlewares/auth')
 
 router1.get('/:productId/reviews', validate(reviewValidation.getReviews), reviewController.getReviews)
 
-router1.get('/:productId/reviews/search', validate(reviewValidation.getReviewsBySearch), reviewController.getReviewsBySearch)
-
 router1.post('/:productId/reviews', authChecker, validate(reviewValidation.postReview), reviewController.postReview)
+
+router1.get('/:productId/reviews/search', validate(reviewValidation.getReviewsBySearch), reviewController.getReviewsBySearch)
 
 router2.put('/:reviewId', authChecker, validate(reviewValidation.updateReview), reviewController.updateReview)
 

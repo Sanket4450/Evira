@@ -14,8 +14,6 @@ exports.checkUserWithEmail = async (email) => {
         throw new ApiError(constant.MESSAGES.USER_ALREADY_EXISTS, httpStatus.CONFLICT)
     }
     Logger.info('User not found inside checkUserWithEmail')
-
-    return true
 }
 
 exports.loginWithEmailAndPassword = async (email, password) => {
@@ -84,7 +82,6 @@ exports.verifyResetOtp = async ({ token, otp }) => {
     if (otp != 1234) {
         throw new ApiError(constant.MESSAGES.INCORRECT_OTP, httpStatus.UNAUTHORIZED)
     }
-    return true
 }
 
 exports.resetPassword = async ({ token, password }) => {
@@ -93,8 +90,6 @@ exports.resetPassword = async ({ token, password }) => {
     const { sub } = await tokenService.verifyToken(token, config.RESET_TOKEN_SECRET)
 
     await userService.updatePassword(sub, password)
-
-    return true
 }
 
 exports.refreshTokens = async (token) => {

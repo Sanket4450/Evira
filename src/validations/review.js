@@ -13,18 +13,7 @@ const {
 const getReviews = {
     query: joi.object().keys({
         ...pageAndLimit,
-        rating: integerNumberValidation.valid(1, 2, 3, 4, 5)
-    }),
-    params: joi.object().keys({
-        productId: idReqValidation
-    })
-}
-
-const getReviewsBySearch = {
-    query: joi.object().keys({
-        ...pageAndLimit,
-        keyword: stringReqValidation.label('Search Keyword'),
-        rating: integerNumberValidation.valid(1, 2, 3, 4, 5)
+        rating: integerNumberValidation.min(1).max(5)
     }),
     params: joi.object().keys({
         productId: idReqValidation
@@ -37,7 +26,18 @@ const postReview = {
     }),
     body: joi.object().keys({
         message: stringReqValidation,
-        star: integerNumberReqValidation
+        star: integerNumberReqValidation.min(1).max(5)
+    })
+}
+
+const getReviewsBySearch = {
+    query: joi.object().keys({
+        ...pageAndLimit,
+        keyword: stringReqValidation.label('Search Keyword'),
+        rating: integerNumberValidation.min(1).max(5)
+    }),
+    params: joi.object().keys({
+        productId: idReqValidation
     })
 }
 
@@ -47,7 +47,7 @@ const updateReview = {
     }),
     body: joi.object().keys({
         message: stringValidation,
-        star: integerNumberValidation
+        star: integerNumberValidation.min(1).max(5)
     })
 }
 

@@ -69,8 +69,7 @@ exports.createUser = async (userBody) => {
     try {
         Logger.info('Inside createUser')
 
-        const hashedPassword = await bcrypt.hash(userBody.password, 10)
-        userBody.password = hashedPassword
+        userBody.password = await bcrypt.hash(userBody.password, 10)
 
         return dbRepo.create(constant.COLLECTIONS.USER, { data: userBody })
     } catch (error) {
@@ -87,13 +86,11 @@ exports.updatePassword = async (userId, password) => {
         const query = {
             _id: new mongoose.Types.ObjectId(userId)
         }
-        const hashedPassword = await bcrypt.hash(password, 10)
         const data = {
-            password: hashedPassword
+            password: await bcrypt.hash(password, 10)
         }
 
         await dbRepo.updateOne(constant.COLLECTIONS.USER, { query, data })
-        return true
     } catch (error) {
         Logger.error(`updatePassword error => ${error}`)
 
@@ -129,8 +126,6 @@ exports.updateUser = async (userId, userBody) => {
             // send a verification link to email & mobile
         }
         await dbRepo.updateOne(constant.COLLECTIONS.USER, { query, data })
-
-        return true
     } catch (error) {
         Logger.error(`updateUser error => ${error}`)
 
