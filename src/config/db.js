@@ -1,7 +1,11 @@
 const mongoose = require('mongoose')
 
+const DB_URI = process.env.DB_URI
+
 const connectDB = () => {
-    mongoose.connect(process.env.DB_URI)
+    console.log(`Inside connectDB => ${DB_URI}`)
+
+    mongoose.connect(DB_URI)
         .then(data => {
             console.log(`Database connected successfully: ${data.connection.name}`)
         })

@@ -7,7 +7,7 @@ info:
     email: talaviyasanket01@gmail.com
   }
 servers:
-  - url: https://evira.vercel.app/api/v1
+  - url: https://evira.cyclic.app/api/v1
   - url: http://localhost:8000/api/v1
 components:
   securitySchemes:
