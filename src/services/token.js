@@ -13,7 +13,10 @@ const verifyToken = (token, secret) => {
         jwt.verify(token, secret, (err, decoded) => {
             if (err) {
                 if (err.name === 'JsonWebTokenError') {
-                    reject(new ApiError(constant.MESSAGES.AUTHENTICATION_FAILED, httpStatus.UNAUTHORIZED))
+                    reject(new ApiError(constant.MESSAGES.INVALID_TOKEN, httpStatus.UNAUTHORIZED))
+                }
+                if (err.name === 'TokenExpiredError') {
+                    reject(new ApiError(constant.MESSAGES.TOKEN_EXPIRED, httpStatus.NOT_ACCEPTABLE))
                 }
                 reject(new ApiError(err.message, httpStatus.UNAUTHORIZED))
             } else {

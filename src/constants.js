@@ -8,6 +8,8 @@ module.exports = {
         INCORRECT_OTP: 'Incorrect OTP',
         SOMETHING_WENT_WRONG: 'Something went wrong, please try again',
         AUTHENTICATION_FAILED: 'Authentication failed',
+        INVALID_TOKEN: 'Invalid token or signature',
+        TOKEN_EXPIRED: 'Token has expired',
         INVALID_SECRET: 'Invalid admin secret, admin authentication failed!',
         INVALID_TOKEN: 'Invalid token',
         NOT_ALLOWED: 'You are not allowed to access this resource',
