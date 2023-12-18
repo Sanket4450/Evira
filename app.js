@@ -25,14 +25,14 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header(
         'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept',
+        'Origin, X-Requested-With, Authorization, Content-Type, Accept',
     )
     res.header('Access-Control-Allow-Credentials', true)
-    res.header('Access-Control-Allow-Methods', 'Content-Type')
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
     next()
 })
 
-app.use(cors({ allowedHeaders: ['Origin', 'Authorization', 'Content-Type', 'Accept'] }))
+app.use(cors({ allowedHeaders: ['Origin', 'X-Requested-With', 'Authorization', 'Content-Type', 'Accept'] }))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static(pathToSwaggerUi))
