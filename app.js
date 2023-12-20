@@ -4,6 +4,7 @@ const envFilePath = environment === 'production' ? '.env.production' : '.env.loc
 require('dotenv').config({ path: envFilePath })
 const express = require('express')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 const httpStatus = require('http-status')
 const connectDB = require('./src/config/db')
 const Logger = require('./src/middlewares/logger')
@@ -33,6 +34,12 @@ app.use((req, res, next) => {
 })
 
 app.use(cors({ allowedHeaders: ['Origin', 'X-Requested-With', 'Authorization', 'Content-Type', 'Accept'] }))
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+        limit: '1mb'
+    })
+)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static(pathToSwaggerUi))
