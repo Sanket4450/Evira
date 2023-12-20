@@ -36,7 +36,7 @@ exports.register = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        { user, tokens },
+        { tokens },
         'You have signup successfully'
     )
 })
@@ -53,7 +53,7 @@ exports.login = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        { user, tokens },
+        { tokens },
         'You have logged-in successfully'
     )
 })
@@ -139,7 +139,7 @@ exports.logout = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        { user },
-        'User have logged-out successfully'
+        {},
+        'User has logged-out successfully'
     )
 })

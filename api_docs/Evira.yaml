@@ -77,7 +77,7 @@ paths:
                 password: user1234
       responses:
         '200':
-          description: User Object with Tokens
+          description: Tokens Object
           content:
             application/json: {}
   /auth/login:
@@ -103,7 +103,7 @@ paths:
                 password: user1234
       responses:
         '200':
-          description: User object with Tokens
+          description: Tokens Object
           content:
             application/json: {}
   /auth/forgot-password/email:

@@ -65,6 +65,28 @@ exports.getFullUserById = async (userId, userData) => {
     return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
 }
 
+exports.getFullUserExcludingId = async (userId, userData) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(userId)
+    }
+
+    const data = (typeof userData === 'object' && Object.keys(userData).length >= 1)
+        ? { ...userData }
+        : {
+            fullName: 1,
+            nickName: 1,
+            profileImage: 1,
+            dateOfBirth: 1,
+            email: 1,
+            mobile: 1,
+            gender: 1,
+            language: 1,
+            _id: 0
+        }
+
+    return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
+}
+
 exports.createUser = async (userBody) => {
     try {
         Logger.info('Inside createUser')
