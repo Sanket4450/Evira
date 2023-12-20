@@ -26,7 +26,7 @@ exports.loginWithEmailAndPassword = async (email, password) => {
     }
 
     if (!(await bcrypt.compare(password, user.password))) {
-        throw new ApiError(constant.MESSAGES.INCORRECT_PASSWROD, httpStatus.UNAUTHORIZED)
+        throw new ApiError(constant.MESSAGES.INCORRECT_PASSWROD, httpStatus.FORBIDDEN)
     }
     return user
 }
@@ -80,7 +80,7 @@ exports.verifyResetOtp = async ({ token, otp }) => {
 
     // verify otp sent to the email or mobile (ex. 1234)
     if (otp != 1234) {
-        throw new ApiError(constant.MESSAGES.INCORRECT_OTP, httpStatus.UNAUTHORIZED)
+        throw new ApiError(constant.MESSAGES.INCORRECT_OTP, httpStatus.FORBIDDEN)
     }
 }
 
