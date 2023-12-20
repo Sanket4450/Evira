@@ -70,6 +70,7 @@ exports.createUser = async (userBody) => {
         Logger.info('Inside createUser')
 
         userBody.password = await bcrypt.hash(userBody.password, 10)
+        userBody.profileImage ||= 'https://picsum.photos/90'
 
         return dbRepo.create(constant.COLLECTIONS.USER, { data: userBody })
     } catch (error) {
