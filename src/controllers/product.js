@@ -223,7 +223,9 @@ exports.getCartProducts = catchAsyncErrors(async (req, res) => {
 
     const items = await cartService.getCartProducts(user._id)
 
-    const [{ amount }] = await cartService.getTotalAmount(user._id)
+    const totalAmount = await cartService.getTotalAmount(user._id)
+
+    const amount = totalAmount[0].amount || 0
 
     return sendResponse(
         res,
