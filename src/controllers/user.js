@@ -25,7 +25,7 @@ exports.getProfile = catchAsyncErrors(async (req, res) => {
 exports.updateProfile = catchAsyncErrors(async (req, res) => {
     const body = req.body
 
-    let user = await userService.getFullUserExcludingId(req.user.sub)
+    let user = await userService.getFullUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -33,7 +33,7 @@ exports.updateProfile = catchAsyncErrors(async (req, res) => {
     
     await userService.updateUser(user._id, body)
 
-    user = await userService.getFullUserById(user._id)
+    user = await userService.getFullUserExcludingId(user._id)
 
     return sendResponse(
         res,

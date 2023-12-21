@@ -137,8 +137,8 @@ exports.updateUser = async (userId, userBody) => {
         if (userBody.email || userBody.mobile) {
             emailOrMobileTaken = await User.findOne({
                 $or: [
-                    { $and: [{ email: userBody.email }, { _id: { $ne: userId } }] },
-                    { $and: [{ mobile: userBody.mobile }, { _id: { $ne: userId } }] }
+                    { $and: [{ email: userBody.email }, { _id: { $ne: new mongoose.Types.ObjectId(userId) } }] },
+                    { $and: [{ mobile: userBody.mobile }, { _id: { $ne: new mongoose.Types.ObjectId(userId) } }] }
                 ]
             })
 
