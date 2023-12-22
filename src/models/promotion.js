@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const promotionSchema = new mongoose.Schema({
-    code: {
+    title: {
         type: String,
         unique: true,
         required: true

@@ -20,7 +20,7 @@ const getAdminPromoCodes = {
 
 const postPromoCode = {
     body: joi.object().keys({
-        code: stringReqValidation,
+        title: stringReqValidation,
         description: stringValidation.max(80),
         discountPercentage: numberReqValidation.max(90).precision(2),
         maxUses: integerNumberReqValidation,
@@ -34,7 +34,7 @@ const updatePromoCode = {
         promoId: idReqValidation
     }),
     body: joi.object().keys({
-        code: stringValidation,
+        title: stringValidation,
         description: stringValidation.max(80),
         discountPercentage: numberValidation.max(90).precision(2),
         maxUses: integerNumberValidation,

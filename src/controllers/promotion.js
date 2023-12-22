@@ -35,7 +35,7 @@ exports.postPromoCode = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    if (await promotionService.getPromoCodeByCode(body.code)) {
+    if (await promotionService.getPromoCodeByTitle(body.title)) {
         throw new ApiError(constant.MESSAGES.PROMO_CODE_TAKEN, httpStatus.CONFLICT)
     }
 
@@ -61,7 +61,7 @@ exports.updatePromoCode = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.PROMO_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    if (body.code && await promotionService.getPromoCodeByIdAndCode(promoId, body.code)) {
+    if (body.title && await promotionService.getPromoCodeByIdAndTitle(promoId, body.title)) {
         throw new ApiError(constant.MESSAGES.PROMO_CODE_TAKEN, httpStatus.CONFLICT)
     }
 

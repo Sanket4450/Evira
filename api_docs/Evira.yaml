@@ -1952,7 +1952,7 @@ paths:
             schema:
               type: object
               properties:
-                code:
+                title:
                   type: string
                 description:
                   type: string
@@ -1968,12 +1968,12 @@ paths:
                   type: string
                   format: date
               required:
-                - code
+                - title
                 - discountPercentage
                 - maxUses
                 - validUntil
               example:
-                code: Special20
+                title: Special20
                 description: Flat 20% off for 7 days!
                 discountPercentage: 20
                 maxUses: 50
@@ -2004,7 +2004,7 @@ paths:
             schema:
               type: object
               properties:
-                code:
+                title:
                   type: string
                 description:
                   type: string
@@ -2022,7 +2022,7 @@ paths:
                   type: string
                   format: date
               example:
-                code: Flat20
+                title: Flat20
                 description: Flat 20% off for 3 days!
                 maxUses: 100
                 validUntil: 2023-12-25T15:58:16.396Z

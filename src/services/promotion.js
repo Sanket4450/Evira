@@ -9,17 +9,17 @@ exports.getPromoCodeById = (id) => {
     return dbRepo.findOne(constant.COLLECTIONS.PROMOTION, { query })
 }
 
-exports.getPromoCodeByCode = (code) => {
+exports.getPromoCodeByTitle = (title) => {
     const query = {
-        code: { $regex: code, $options: 'i' }
+        title: { $regex: title, $options: 'i' }
     }
     return dbRepo.findOne(constant.COLLECTIONS.PROMOTION, { query })
 }
 
-exports.getPromoCodeByIdAndCode = (promoId, code) => {
+exports.getPromoCodeByIdAndTitle = (promoId, title) => {
     const query = {
         $and: [
-            { code: { $regex: code, $options: 'i' } },
+            { title: { $regex: title, $options: 'i' } },
             { _id: { $ne: new mongoose.Types.ObjectId(promoId) } }
         ]
     }
@@ -37,7 +37,7 @@ exports.getPromoCodes = (date) => {
     }
 
     const data = {
-        code: 1,
+        title: 1,
         description: 1
     }
 
@@ -70,7 +70,7 @@ exports.getAdminPromoCodes = ({ page, limit }) => {
     limit ||= 10
 
     const data = {
-        code: 1,
+        title: 1,
         description: 1
     }
 
