@@ -4,6 +4,7 @@ const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 const ApiError = require('../utils/ApiError')
 const categoryService = require('./category')
+const wishlistService = require('./wishlist')
 
 exports.getProductById = (id) => {
     const query = {
@@ -48,6 +49,19 @@ exports.getVariantById = (id) => {
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.VARIANT, { query })
+}
+
+exports.validateLikedProducts = async (userId, products = []) => {
+    for (let product of products) {
+        if (await wishlistService.checkProductLikedWithUserId(product.id, userId)) {
+            product['isLiked'] = true
+        }
+
+        else {
+            product['isLiked'] = false
+        }
+    }
+    return products
 }
 
 exports.getProducts = ({ matchCriteria, page, limit }) => {
@@ -194,26 +208,26 @@ exports.getProductsByCategory = (categoryId, { matchCriteria, page, limit }) => 
 }
 
 exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy, rating, page, limit }) => {
-    Logger.info(`Inside getProductsBySearch => keyword = ${keyword}, category = ${category}, min_price = ${min_price},
+    try {
+        Logger.info(`Inside getProductsBySearch => keyword = ${keyword}, category = ${category}, min_price = ${min_price},
     max_price = ${max_price}, sortBy = ${sortBy}, rating = ${rating}, page = ${page}, limit = ${limit}`)
 
-    page ||= 1
-    limit ||= 10
+        page ||= 1
+        limit ||= 10
 
-    const pipeline = []
+        const pipeline = []
 
-    pipeline.push(
-        {
-            $match: {
-                $or: [
-                    { name: { $regex: keyword, $options: 'i' } },
-                    { description: { $regex: keyword, $options: 'i' } }
-                ]
-            }
-        })
+        pipeline.push(
+            {
+                $match: {
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { description: { $regex: keyword, $options: 'i' } }
+                    ]
+                }
+            })
 
-    const checkCategory = async (category) => {
-        if (await categoryService.getCategoryById(category)) {
+        if (category) {
             pipeline.push(
                 {
                     $match: {
@@ -221,112 +235,109 @@ exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy
                     }
                 })
         }
-        else {
-            throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
+
+        if (min_price) {
+            pipeline.push(
+                {
+                    $match: {
+                        price: { $gte: min_price }
+                    }
+                })
         }
-    }
 
-    checkCategory(category)
+        if (max_price) {
+            pipeline.push(
+                {
+                    $match: {
+                        price: { $lte: max_price }
+                    }
+                })
+        }
 
-    if (min_price) {
+        if (rating) {
+            pipeline.push(
+                {}
+            )
+        }
+
+        if (sortBy === 'recent') {
+            pipeline.push(
+                {
+                    $sort: {
+                        modifiedAt: -1
+                    }
+                })
+        }
+        else if (sortBy === 'price_desc') {
+            pipeline.push(
+                {
+                    $sort: {
+                        price: -1
+                    }
+                })
+        }
+        else if (sortBy === 'price_asc') {
+            pipeline.push(
+                {
+                    $sort: {
+                        price: 1
+                    }
+                })
+        }
+        else {
+            pipeline.push(
+                {
+                    $sort: {
+                        sold: -1
+                    }
+                })
+        }
+
         pipeline.push(
             {
-                $match: {
-                    price: { $gte: min_price }
-                }
+                $skip: ((page - 1) * limit)
+            },
+            {
+                $limit: limit
             })
-    }
 
-    if (max_price) {
         pipeline.push(
             {
-                $match: {
-                    price: { $lte: max_price }
+                $lookup: {
+                    from: 'reviews',
+                    localField: '_id',
+                    foreignField: 'product',
+                    as: 'reviews'
                 }
-            })
-    }
-
-    if (rating) {
-        pipeline.push(
-            {}
-        )
-    }
-
-    if (sortBy === 'recent') {
-        pipeline.push(
+            },
             {
-                $sort: {
-                    modifiedAt: -1
+                $project: {
+                    name: 1,
+                    image: 1,
+                    price: 1,
+                    sold: 1,
+                    stars: {
+                        $round: [
+                            {
+                                $ifNull: [
+                                    {
+                                        $avg: "$reviews.star"
+                                    },
+                                    0
+                                ]
+                            },
+                            1
+                        ]
+                    },
+                    _id: 0,
+                    id: '$_id'
                 }
             })
-    }
-    else if (sortBy === 'price_desc') {
-        pipeline.push(
-            {
-                $sort: {
-                    price: -1
-                }
-            })
-    }
-    else if (sortBy === 'price_asc') {
-        pipeline.push(
-            {
-                $sort: {
-                    price: 1
-                }
-            })
-    }
-    else {
-        pipeline.push(
-            {
-                $sort: {
-                    sold: -1
-                }
-            })
-    }
 
-    pipeline.push(
-        {
-            $skip: ((page - 1) * limit)
-        },
-        {
-            $limit: limit
-        })
-
-    pipeline.push(
-        {
-            $lookup: {
-                from: 'reviews',
-                localField: '_id',
-                foreignField: 'product',
-                as: 'reviews'
-            }
-        },
-        {
-            $project: {
-                name: 1,
-                image: 1,
-                price: 1,
-                sold: 1,
-                stars: {
-                    $round: [
-                        {
-                            $ifNull: [
-                                {
-                                    $avg: "$reviews.star"
-                                },
-                                0
-                            ]
-                        },
-                        1
-                    ]
-                },
-                _id: 0,
-                id: '$_id'
-            }
-        })
-
-    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
+        return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
+    } catch (error) {
+        console.log('error ----->', error)
+    }
 }
 
 exports.getFullProductById = (productId) => {

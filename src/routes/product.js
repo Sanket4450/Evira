@@ -7,13 +7,13 @@ const productValidation = require('../validations/product')
 const productController = require('../controllers/product')
 const { authChecker, authorizeRole } = require('../middlewares/auth')
 
-router1.get('/', validate(productValidation.getProducts), productController.getProducts)
+router1.get('/', authChecker, validate(productValidation.getProducts), productController.getProducts)
 
-router1.get('/category/:categoryId', validate(productValidation.getProductsByCategory), productController.getProductsByCategory)
+router1.get('/category/:categoryId', authChecker, validate(productValidation.getProductsByCategory), productController.getProductsByCategory)
 
-router1.get('/search', validate(productValidation.getProductsBySearch), productController.getProductsBySearch)
+router1.get('/search', authChecker, validate(productValidation.getProductsBySearch), productController.getProductsBySearch)
 
-router1.get('/:productId', validate(productValidation.getFullProductById), productController.getFullProductById)
+router1.get('/:productId', authChecker, validate(productValidation.getFullProductById), productController.getFullProductById)
 
 router1.patch('/:productId/toggle-like', authChecker, validate(productValidation.toggleLike), productController.toggleLike)
 

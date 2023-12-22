@@ -312,7 +312,7 @@ paths:
           description: boolean to toggle notifications (on & off)
       responses:
         '200':
-          description: Success response
+          description: isEnabled field
           content:
             application/json: {}
   /users/addresses:
@@ -681,7 +681,7 @@ paths:
           description: like product to add to wishlist
       responses:
         '200':
-          description: product object
+          description: isLiked field
           content:
             application/json: {}
   /products/wishlist:
