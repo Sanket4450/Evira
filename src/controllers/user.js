@@ -74,7 +74,7 @@ exports.toggleNotifications = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        {},
+        { isEnabled: enable },
         `Notifications ${enable ? 'enabled' : 'disabled'} successfully`
     )
 })
