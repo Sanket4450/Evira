@@ -61,4 +61,8 @@ app.use(errorConverter)
 
 app.use(errorHandler)
 
-module.exports = app
+const port = process.env.PORT || 8000
+
+app.listen(port, () => {
+    console.log(`Server is listening on PORT: ${port}`)
+})
