@@ -7,7 +7,7 @@ info:
     email: talaviyasanket01@gmail.com
   }
 servers:
-  - url: https://evira.cyclic.app/api/v1
+  - url: https://evira.onrender.com/api/v1
   - url: http://localhost:8000/api/v1
 components:
   securitySchemes:
@@ -444,6 +444,8 @@ paths:
     get:
       tags:
         - Root
+      security:
+        - userAuth: []
       responses:
         '200':
           description: arrays of offers, categories & products
@@ -531,6 +533,8 @@ paths:
     get:
       tags:
         - Products
+      security:
+        - userAuth: []
       parameters:
         - name: page
           in: query
@@ -555,6 +559,8 @@ paths:
     get:
       tags:
         - Products
+      security:
+        - userAuth: []
       parameters:
         - name: categoryId
           in: path
@@ -586,6 +592,8 @@ paths:
     get:
       tags:
         - Products
+      security:
+        - userAuth: []
       parameters:
         - name: keyword
           in: query
@@ -646,6 +654,8 @@ paths:
     get:
       tags:
         - Products
+      security:
+        - userAuth: []
       parameters:
         - name: productId
           in: path
