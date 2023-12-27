@@ -62,8 +62,10 @@ app.use(errorConverter)
 
 app.use(errorHandler)
 
-cron.schedule('*/14 8-23 * * *', () => {
+cron.schedule('*/1 8-23 * * *', () => {
     fetch('https://evira.onrender.com/api/v1/offers?page=1&limit=10')
+
+    Logger.info('Cron job is running...')
 })
 
 const port = process.env.PORT || 8000
