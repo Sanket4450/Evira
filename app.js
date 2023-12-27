@@ -6,6 +6,7 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const httpStatus = require('http-status')
+const cron = require('node-cron')
 const connectDB = require('./src/config/db')
 const Logger = require('./src/middlewares/logger')
 const domain = require('./src/models/index.model')
@@ -60,6 +61,10 @@ app.use((req, res, next) => {
 app.use(errorConverter)
 
 app.use(errorHandler)
+
+cron.schedule('*/14 8-23 * * *', () => {
+    fetch('https://evira.onrender.com/api/v1/offers?page=1&limit=10')
+})
 
 const port = process.env.PORT || 8000
 
