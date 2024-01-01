@@ -299,17 +299,20 @@ paths:
     patch:
       tags:
         - Users
-      requestBody:
-        content: {}
       security:
         - userAuth: []
-      parameters:
-        - name: enable
-          in: query
-          schema:
-            type: boolean
-          default: true
-          description: boolean to toggle notifications (on & off)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isEnabled:
+                  type: boolean
+              required:
+                - isEnabled
+              example:
+                isEnabled: true
       responses:
         '200':
           description: isEnabled field
@@ -675,6 +678,18 @@ paths:
         - Products
       security:
         - userAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isLiked:
+                  type: boolean
+              required:
+                - isLiked
+              example:
+                isLiked: true
       parameters:
         - name: productId
           in: path
@@ -682,13 +697,6 @@ paths:
             type: string
             format: objectId
           required: true
-        - name: like
-          in: query
-          schema:
-            type: boolean
-            default: true
-          required: true
-          description: like product to add to wishlist
       responses:
         '200':
           description: isLiked field
@@ -815,11 +823,30 @@ paths:
           content:
             application/json: {}
   /products/cart/toggle-cart/{productId}:
-    patch:
+    put:
       tags:
         - Products
       security:
         - userAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [add, remove, increase, decrease]
+                variant:
+                  type: string
+                  format: objectId
+                quantity:
+                  type: integer
+              required:
+                - action
+              example:
+                action: add
+                quantity: 1
       parameters:
         - name: productId
           in: path
@@ -827,28 +854,9 @@ paths:
             type: string
             format: objectId
           required: true
-        - name: action
-          in: query
-          schema:
-            type: string
-            enum: [add, remove, increase, decrease]
-          required: true
-          description: cart action to be taken
-        - name: variant
-          in: query
-          schema:
-            type: string
-            format: objectId
-          description: objectId for the product variant
-        - name: quantity
-          in: query
-          schema:
-            type: integer
-            default: 1
-          description: product quantity
       responses:
         '200':
-          description: product object
+          description: action field with value
           content:
             application/json: {}
   /products/cart:
@@ -1057,6 +1065,18 @@ paths:
         - Reviews
       security:
         - userAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isLiked:
+                  type: boolean
+              required:
+                - isLiked
+              example:
+                isLiked: true
       parameters:
         - name: reviewId
           in: path
@@ -1065,16 +1085,9 @@ paths:
             format: objectId
           required: true
           description: objectId for the review
-        - name: like
-          in: query
-          schema:
-            type: boolean
-            default: true
-          required: true
-          description: like a review
       responses:
         '200':
-          description: review object
+          description: isLiked field
           content:
             application/json: {}
   /checkout/shipping-types:

@@ -26,7 +26,7 @@ module.exports = {
         OFFER_ALREADY_EXISTS: 'An offer already exists with this product',
         REVIEW_NOT_FOUND: 'Review not found for this reviewId',
         USER_NOT_ALLOWED: 'User is not allowed to modify this resource',
-        TOGGLE_PARAM_MISSING: 'Please enter a toggle query parameter',
+        TOGGLE_FIELD_MISSING: 'Please enter the toggle field',
         ENTER_VALID_ACTION: 'Please enter a valid cart action',
         NOT_HAVE_ENOUGH_QUANTITY: 'not have enough quantity for this product',
         ADD_PRODUCT_TO_CART: 'Please first add product to cart',

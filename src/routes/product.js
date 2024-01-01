@@ -23,7 +23,7 @@ router2.get('/category/:categoryId', authChecker, validate(productValidation.get
 
 router2.get('/search', authChecker, validate(productValidation.getProductsBySearch), productController.getWishlistProductsBySearch)
 
-router3.patch('/toggle-cart/:productId', authChecker, validate(productValidation.toggleCart), productController.toggleCart)
+router3.put('/toggle-cart/:productId', authChecker, validate(productValidation.toggleCart), productController.toggleCart)
 
 router3.get('/', authChecker, productController.getCartProducts)
 

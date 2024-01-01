@@ -8,7 +8,7 @@ const numberValidation = joi.number()
 const numberReqValidation = numberValidation.required()
 const integerNumberValidation = numberValidation.integer()
 const integerNumberReqValidation = integerNumberValidation.required()
-const booleanValidation = joi.boolean().strict(true)
+const booleanValidation = joi.boolean().strict().required()
 const dateValidation = joi.date()
 const arrayValidation = joi.array()
 
@@ -27,10 +27,6 @@ const idValidation = stringValidation
 
 const idReqValidation = idValidation.required()
 
-const toggleValidation = [
-    stringValidation.lowercase().valid('true', 'false'), numberValidation.valid(1, 0)
-]
-
 module.exports = {
     stringValidation,
     stringReqValidation,
@@ -46,6 +42,5 @@ module.exports = {
     pageAndLimit,
     secretValidation,
     idValidation,
-    idReqValidation,
-    toggleValidation
+    idReqValidation
 }

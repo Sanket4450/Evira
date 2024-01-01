@@ -4,7 +4,6 @@ const {
     stringValidation,
     dateValidation,
     numberValidation,
-    toggleValidation,
     stringReqValidation,
     integerNumberReqValidation,
     booleanValidation,
@@ -30,8 +29,8 @@ const profile = {
 }
 
 const toggleNotifications = {
-    query: joi.object().keys({
-        enable: toggleValidation
+    body: joi.object().keys({
+        isEnabled: booleanValidation
     })
 }
 

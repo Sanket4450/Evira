@@ -3,7 +3,6 @@ const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
 const sendResponse = require('../utils/responseHandler')
-const toBoolean = require('../utils/checkBoolean')
 const {
     userService
 } = require('../services/index.service')
@@ -61,21 +60,21 @@ exports.deleteProfile = catchAsyncErrors(async (req, res) => {
 })
 
 exports.toggleNotifications = catchAsyncErrors(async (req, res) => {
+    const { isEnabled } = req.body
+    
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    const enable = toBoolean(req.query.enable)
-
-    await userService.updateUser(user._id, { isNotificationEnabled: enable })
+    await userService.updateUser(user._id, { isNotificationEnabled: isEnabled })
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { isEnabled: enable },
-        `Notifications ${enable ? 'enabled' : 'disabled'} successfully`
+        { isEnabled },
+        `Notifications ${isEnabled ? 'enabled' : 'disabled'} successfully`
     )
 })
 

@@ -3,7 +3,6 @@ const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
-const toBoolean = require('../utils/checkBoolean')
 const {
     productService,
     userService,
@@ -105,6 +104,7 @@ exports.getFullProductById = catchAsyncErrors(async (req, res) => {
 
 exports.toggleLike = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
+    const { isLiked } = req.body
 
     if (!await productService.getProductById(productId)) {
         throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
@@ -116,17 +116,15 @@ exports.toggleLike = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    const like = toBoolean(req.query.like)
-
-    if (!like || !await wishlistService.checkProductLikedWithUserId(productId, user._id)) {
-        await wishlistService.likeUnlineProduct(productId, user._id, like)
+    if (!isLiked || !await wishlistService.checkProductLikedWithUserId(productId, user._id)) {
+        await wishlistService.likeUnlineProduct(productId, user._id, isLiked)
     }
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { isLiked: like },
-        `Product ${like ? 'added to Wishlist' : 'removed from Wishlist'} successfully`
+        { isLiked },
+        `Product ${isLiked ? 'added to Wishlist' : 'removed from Wishlist'} successfully`
     )
 })
 
@@ -192,7 +190,7 @@ exports.getWishlistProductsBySearch = catchAsyncErrors(async (req, res) => {
 
 exports.toggleCart = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
-    const { action, variant, quantity } = req.query
+    const { action, variant, quantity } = req.body
 
     const user = await userService.getUserById(req.user.sub)
 
@@ -236,7 +234,7 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        { product },
+        { action },
         `${action === 'add' ? 'Product added to cart successfully'
             : action === 'remove' ? 'Product removed from cart successfully'
                 : action === 'increase' ? 'Quantity increasesd successfully'

@@ -3,7 +3,6 @@ const catchAsyncErrors = require("../utils/catchAsyncErrors")
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
 const sendResponse = require('../utils/responseHandler')
-const toBoolean = require('../utils/checkBoolean')
 const {
     reviewService,
     productService,
@@ -123,6 +122,7 @@ exports.deleteReview = catchAsyncErrors(async (req, res) => {
 
 exports.toggleLike = catchAsyncErrors(async (req, res) => {
     const { reviewId } = req.params
+    const { isLiked } = req.body
 
     let review = await reviewService.getReviewById(reviewId)
 
@@ -136,19 +136,15 @@ exports.toggleLike = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    const like = toBoolean(req.query.like)
-
-    if (!like || !await reviewService.checkReviewLikedWithUserId(reviewId, user._id)) {
-        await reviewService.likeUnlikeReview(reviewId, user._id, like)
+    if (!isLiked || !await reviewService.checkReviewLikedWithUserId(reviewId, user._id)) {
+        await reviewService.likeUnlikeReview(reviewId, user._id, isLiked)
     }
-
-    review = await reviewService.getReviewById(reviewId)
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { review },
-        `Review ${like ? 'liked' : 'unliked'} successfully`
+        { isLiked },
+        `Review ${isLiked ? 'liked' : 'unliked'} successfully`
     )
 })
 

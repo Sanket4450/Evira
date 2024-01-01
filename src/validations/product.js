@@ -6,11 +6,11 @@ const {
     stringReqValidation,
     integerNumberValidation,
     stringValidation,
-    toggleValidation,
     numberReqValidation,
     integerNumberReqValidation,
     numberValidation,
-    idValidation
+    idValidation,
+    booleanValidation
 } = require('./common')
 
 const getProducts = {
@@ -50,8 +50,8 @@ const toggleLike = {
     params: joi.object().keys({
         productId: idReqValidation
     }),
-    query: joi.object().keys({
-        like: toggleValidation
+    body: joi.object().keys({
+        isLiked: booleanValidation
     })
 }
 
@@ -59,7 +59,7 @@ const toggleCart = {
     params: joi.object().keys({
         productId: idReqValidation
     }),
-    query: joi.object().keys({
+    body: joi.object().keys({
         action: stringReqValidation.lowercase().valid('add', 'remove', 'increase', 'decrease'),
         variant: idValidation,
         quantity: integerNumberValidation.min(0)
