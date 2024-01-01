@@ -103,9 +103,7 @@ exports.updateReview = catchAsyncErrors(async (req, res) => {
 exports.deleteReview = catchAsyncErrors(async (req, res) => {
     const { reviewId } = req.params
 
-    const review = await reviewService.getReviewById(reviewId)
-
-    if (!review) {
+    if (!await reviewService.getReviewById(reviewId)) {
         throw new ApiError(constant.MESSAGES.REVIEW_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
@@ -118,7 +116,7 @@ exports.deleteReview = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        { review },
+        {},
         'Review deleted successfully'
     )
 })

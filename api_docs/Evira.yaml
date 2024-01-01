@@ -292,7 +292,7 @@ paths:
         - userAuth: []
       responses:
         '200':
-          description: deleted User object
+          description: empty object
           content:
             application/json: {}
   /users/toggle-notifications:
@@ -437,7 +437,7 @@ paths:
           description: objectId for the address
       responses:
         '200':
-          description: deleted address object
+          description: empty object
           content:
             application/json: {}
   /home:
@@ -493,7 +493,7 @@ paths:
           description: objectId for the notification
       responses:
         '200':
-          description: deleted notification object
+          description: empty object
           content:
             application/json: {}
   /offers:
@@ -669,7 +669,7 @@ paths:
           description: full product object
           content:
             application/json: {}
-  /products/{productId}/toggle-like:
+  /products/toggle-like/{productId}:
     patch:
       tags:
         - Products
@@ -814,7 +814,7 @@ paths:
           description: wishlist products array for search results
           content:
             application/json: {}
-  /products/cart/{productId}/toggle-cart:
+  /products/cart/toggle-cart/{productId}:
     patch:
       tags:
         - Products
@@ -880,7 +880,7 @@ paths:
           description: cart products array for search results
           content:
             application/json: {}
-  /products/{productId}/reviews:
+  /products/reviews/{productId}:
     get:
       tags:
         - Reviews
@@ -954,7 +954,7 @@ paths:
           description: posted review object
           content:
             application/json: {}
-  /products/{productId}/reviews/search:
+  /products/reviews/search/{productId}:
     get:
       tags:
         - Reviews
@@ -1048,10 +1048,10 @@ paths:
           description: objectId for the review
       responses:
         '200':
-          description: deleted review object
+          description: empty object
           content:
             application/json: {}
-  /reviews/{reviewId}/toggle-like:
+  /reviews/toggle-like/{reviewId}:
     patch:
       tags:
         - Reviews
@@ -1577,7 +1577,7 @@ paths:
           description: deleted product object
           content:
             application/json: {}
-  /admin/products/{productId}/variants:
+  /admin/products/variants/{productId}:
     get:
       tags:
         - Admin Variants

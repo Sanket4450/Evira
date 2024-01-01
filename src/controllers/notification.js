@@ -42,9 +42,7 @@ exports.deleteNotification = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
-    const notification = await notificationService.getNotificationById(notificationId, user._id)
-
-    if (!notification) {
+    if (!await notificationService.getNotificationById(notificationId, user._id)) {
         throw new ApiError(constant.MESSAGES.NOTIFICATION_NOT_FOUND, httpStatus.NOT_FOUND)
     }
 
@@ -53,7 +51,7 @@ exports.deleteNotification = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        { notification },
+        {},
         'Notification deleted successfully'
     )
 })

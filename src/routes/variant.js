@@ -5,9 +5,9 @@ const productValidation = require('../validations/product')
 const productController = require('../controllers/product')
 const { authChecker, authorizeRole } = require('../middlewares/auth')
 
-adminRouter1.get('/:productId/variants', authChecker, authorizeRole('admin'), validate(productValidation.getVariants), productController.getVariants)
+adminRouter1.get('/variants/:productId', authChecker, authorizeRole('admin'), validate(productValidation.getVariants), productController.getVariants)
 
-adminRouter1.post('/:productId/variants', authChecker, authorizeRole('admin'), validate(productValidation.postVariant), productController.postVariant)
+adminRouter1.post('/variants/:productId', authChecker, authorizeRole('admin'), validate(productValidation.postVariant), productController.postVariant)
 
 adminRouter2.put('/:variantId', authChecker, authorizeRole('admin'), validate(productValidation.updateVariant), productController.updateVariant)
 

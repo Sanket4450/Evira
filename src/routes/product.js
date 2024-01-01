@@ -15,7 +15,7 @@ router1.get('/search', authChecker, validate(productValidation.getProductsBySear
 
 router1.get('/:productId', authChecker, validate(productValidation.getFullProductById), productController.getFullProductById)
 
-router1.patch('/:productId/toggle-like', authChecker, validate(productValidation.toggleLike), productController.toggleLike)
+router1.patch('/toggle-like/:productId', authChecker, validate(productValidation.toggleLike), productController.toggleLike)
 
 router2.get('/', authChecker, validate(productValidation.getProducts), productController.getWishlistProducts)
 
@@ -23,7 +23,7 @@ router2.get('/category/:categoryId', authChecker, validate(productValidation.get
 
 router2.get('/search', authChecker, validate(productValidation.getProductsBySearch), productController.getWishlistProductsBySearch)
 
-router3.patch('/:productId/toggle-cart', authChecker, validate(productValidation.toggleCart), productController.toggleCart)
+router3.patch('/toggle-cart/:productId', authChecker, validate(productValidation.toggleCart), productController.toggleCart)
 
 router3.get('/', authChecker, productController.getCartProducts)
 
