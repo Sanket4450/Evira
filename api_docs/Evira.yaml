@@ -1161,7 +1161,7 @@ paths:
                 amount: 945015
       responses:
         '200':
-          description: array of orderIds
+          description: empty object
           content:
             application/json: {}
   /checkout/payment-methods:

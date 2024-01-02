@@ -84,8 +84,6 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
         throw new ApiError(constant.MESSAGES.AMOUNT_NOT_MATCH, httpStatus.CONFLICT)
     }
 
-    const orders = []
-
     for (let item of items) {
         const orderBody = {
             item: {
@@ -103,8 +101,7 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
                 date: Date.now()
             }
         }
-        const order = await orderService.createOrder(user._id, orderBody)
-        orders.push(order._id)
+        await orderService.createOrder(user._id, orderBody)
     }
 
     await cartService.emptyCart(user._id)
@@ -112,7 +109,7 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        { orders },
+        {},
         'Checkout successfull'
     )
 })
