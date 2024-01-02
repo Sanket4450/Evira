@@ -7,7 +7,7 @@ const {
     stringReqValidation,
     integerNumberReqValidation,
     stringValidation,
-    booleanValidation
+    booleanReqValidation
 } = require('./common')
 
 const getReviews = {
@@ -62,7 +62,7 @@ const toggleLike = {
         reviewId: idReqValidation
     }),
     body: joi.object().keys({
-        isLiked: booleanValidation
+        isLiked: booleanReqValidation
     })
 }
 

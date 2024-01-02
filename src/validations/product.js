@@ -10,7 +10,7 @@ const {
     integerNumberReqValidation,
     numberValidation,
     idValidation,
-    booleanValidation
+    booleanReqValidation
 } = require('./common')
 
 const getProducts = {
@@ -51,7 +51,7 @@ const toggleLike = {
         productId: idReqValidation
     }),
     body: joi.object().keys({
-        isLiked: booleanValidation
+        isLiked: booleanReqValidation
     })
 }
 

@@ -181,6 +181,20 @@ exports.getDefaultAddressById = (userId) => {
     return dbRepo.findOne(constant.COLLECTIONS.ADDRESS, { query, data })
 }
 
+exports.updateDefaultAddressById = (addressId, defaultValue) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(addressId)
+    }
+
+    const data = {
+        $set: {
+            default: defaultValue
+        }
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.ADDRESS, { query, data })
+}
+
 exports.getAddressById = (addressId, userId) => {
     Logger.info(`Inside getAddressById => address = ${addressId}`)
 
@@ -210,8 +224,15 @@ exports.getAddresses = (userId) => {
     return dbRepo.find(constant.COLLECTIONS.ADDRESS, { query, data })
 }
 
-exports.createAddress = (userId, addressBody) => {
+exports.createAddress = async (userId, addressBody) => {
     Logger.info('Inside updateAddress')
+
+    const defaultAddress = await exports.getDefaultAddressById(userId)
+
+    addressBody.default === true && defaultAddress ? exports.updateDefaultAddressById(defaultAddress, false)
+        : (!addressBody.default || addressBody.default === false) && !defaultAddress ? addressBody.default = true
+            : !addressBody.default && defaultAddress ? addressBody.default = false
+                : null
 
     const data = {
         user: new mongoose.Types.ObjectId(userId),
@@ -220,13 +241,21 @@ exports.createAddress = (userId, addressBody) => {
     return dbRepo.create(constant.COLLECTIONS.ADDRESS, { data })
 }
 
-exports.updateAddress = (addressId, userId, addressBody) => {
+exports.updateAddress = async (addressId, userId, addressBody) => {
     Logger.info(`Inside updateAddress => address = ${addressId}`)
+
+    if (addressBody.default === false) {
+        throw new ApiError(constant.MESSAGES.DEFAULT_ADDRESS, httpStatus.CONFLICT)
+    }
 
     const query = {
         _id: new mongoose.Types.ObjectId(addressId),
         user: new mongoose.Types.ObjectId(userId)
     }
+
+    const defaultAddress = await exports.getDefaultAddressById(userId)
+
+    addressBody.default === true && addressId !== defaultAddress ? exports.updateDefaultAddressById(defaultAddress, false) : null
 
     const data = {
         $set: {

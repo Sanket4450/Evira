@@ -31,6 +31,7 @@ module.exports = {
         NOT_HAVE_ENOUGH_QUANTITY: 'not have enough quantity for this product',
         ADD_PRODUCT_TO_CART: 'Please first add product to cart',
         ADDRESS_NOT_FOUND: 'Address not found for this user or addressId',
+        DEFAULT_ADDRESS: 'You cannot perform this action on default address',
         SHIPPING_NOT_FOUND: 'Shipping-type not found with this Id',
         SHIPPING_TITLE_TAKEN: 'Shipping title is already taken!',
         ENTER_VALID_OBJECTID: 'Invalid ID. Please provide a valid ObjectId',

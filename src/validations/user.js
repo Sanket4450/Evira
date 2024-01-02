@@ -6,6 +6,7 @@ const {
     numberValidation,
     stringReqValidation,
     integerNumberReqValidation,
+    booleanReqValidation,
     booleanValidation,
     idReqValidation,
     integerNumberValidation,
@@ -30,7 +31,7 @@ const profile = {
 
 const toggleNotifications = {
     body: joi.object().keys({
-        isEnabled: booleanValidation
+        isEnabled: booleanReqValidation
     })
 }
 

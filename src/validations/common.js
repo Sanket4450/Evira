@@ -8,7 +8,8 @@ const numberValidation = joi.number()
 const numberReqValidation = numberValidation.required()
 const integerNumberValidation = numberValidation.integer()
 const integerNumberReqValidation = integerNumberValidation.required()
-const booleanValidation = joi.boolean().strict().required()
+const booleanValidation = joi.boolean().strict()
+const booleanReqValidation = booleanValidation.required()
 const dateValidation = joi.date()
 const arrayValidation = joi.array()
 
@@ -37,6 +38,7 @@ module.exports = {
     integerNumberValidation,
     integerNumberReqValidation,
     booleanValidation,
+    booleanReqValidation,
     dateValidation,
     arrayValidation,
     pageAndLimit,
