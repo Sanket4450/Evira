@@ -95,7 +95,8 @@ exports.getWishlistProducts = (userId, { page, limit }) => {
                             1
                         ]
                     }
-                }
+                },
+                isLiked: { $first: true }
             }
         },
         {
@@ -105,6 +106,7 @@ exports.getWishlistProducts = (userId, { page, limit }) => {
                 price: 1,
                 sold: 1,
                 stars: 1,
+                isLiked: 1,
                 _id: 0,
                 id: '$_id'
             }
@@ -178,7 +180,8 @@ exports.getWishlistProductsByCategory = (userId, categoryId, { page, limit }) =>
                             1
                         ]
                     }
-                }
+                },
+                isLiked: { $first: true }
             }
         },
         {
@@ -188,6 +191,7 @@ exports.getWishlistProductsByCategory = (userId, categoryId, { page, limit }) =>
                 price: 1,
                 sold: 1,
                 stars: 1,
+                isLiked: 1,
                 _id: 0,
                 id: '$_id'
             }
@@ -350,7 +354,8 @@ exports.getWishlistProductsBySearch = (userId, { keyword, category, min_price, m
                             1
                         ]
                     }
-                }
+                },
+                isLiked: { $first: true }
             }
         },
         {
@@ -360,6 +365,7 @@ exports.getWishlistProductsBySearch = (userId, { keyword, category, min_price, m
                 price: 1,
                 sold: 1,
                 stars: 1,
+                isLiked: 1,
                 _id: 0,
                 id: '$_id'
             }
