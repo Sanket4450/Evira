@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    isProfileCompleted: {
+        type: Boolean,
+        default: false
+    },
     token: {
         type: String,
         default: null

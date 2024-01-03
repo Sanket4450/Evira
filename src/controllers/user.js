@@ -4,8 +4,38 @@ const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
 const sendResponse = require('../utils/responseHandler')
 const {
-    userService
+    userService,
+    notificationService
 } = require('../services/index.service')
+
+exports.postProfile = catchAsyncErrors(async (req, res) => {
+    const body = req.body
+
+    let user = await userService.getUserById(req.user.sub)
+
+    if (!user) {
+        throw new ApiError(constant.MESSAGES.USER_NOT_EXIST, httpStatus.NOT_FOUND)
+    }
+
+    await userService.updateUser(user._id, { ...body, isProfileCompleted: true })
+
+    const notificationBody = {
+        title: 'Account Setup Successfull!',
+        message: 'Your account has been created!',
+        icon: 'icon1.svg'
+    }
+
+    await notificationService.createNotification(user._id, notificationBody)
+
+    user = await userService.getFullUserExcludingId(user._id)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        { user },
+        'Profile created successfully'
+    )
+})
 
 exports.getProfile = catchAsyncErrors(async (req, res) => {
     const user = await userService.getFullUserExcludingId(req.user.sub)
@@ -17,7 +47,8 @@ exports.getProfile = catchAsyncErrors(async (req, res) => {
     return sendResponse(
         res,
         httpStatus.OK,
-        { user }
+        { user },
+        'Profile retrieved successfully'
     )
 })
 

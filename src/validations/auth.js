@@ -6,10 +6,7 @@ const {
     stringValidation,
     stringReqValidation,
     integerNumberReqValidation,
-    numberValidation,
     numberReqValidation,
-    dateValidation,
-    booleanValidation,
     secretValidation,
 } = require('./common')
 
@@ -17,19 +14,8 @@ const register = {
     body: joi.object().keys({
         email: emailValidation,
         password: passwordValidation,
-        fullName: stringValidation.max(30),
-        nickName: stringValidation.max(15),
-        profileImage: stringValidation,
-        dateOfBirth: dateValidation,
-        mobile: numberValidation.min(10 ** 9).max(10 ** 10 - 1).messages({
-            'number.min': 'Mobile number should be 10 digit',
-            'number.max': 'Mobile number should be 10 digit'
-        }),
-        gender: stringValidation.lowercase().valid('male', 'female', 'other'),
-        language: stringValidation,
         role: stringValidation.lowercase().valid('user', 'admin'),
-        secret: secretValidation,
-        isNotificationEnabled: booleanValidation
+        secret: secretValidation
     })
 }
 

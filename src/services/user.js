@@ -25,8 +25,8 @@ exports.getUserByEmail = async (email) => {
     }
 
     const data = {
-        email: 1,
-        password: 1
+        password: 1,
+        isProfileCompleted: 1
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
@@ -80,7 +80,6 @@ exports.getFullUserExcludingId = async (userId, userData) => {
             email: 1,
             mobile: 1,
             gender: 1,
-            language: 1,
             _id: 0
         }
 
@@ -92,7 +91,6 @@ exports.createUser = async (userBody) => {
         Logger.info('Inside createUser')
 
         userBody.password = await bcrypt.hash(userBody.password, 10)
-        userBody.profileImage ||= 'https://picsum.photos/90'
 
         return dbRepo.create(constant.COLLECTIONS.USER, { data: userBody })
     } catch (error) {
@@ -128,14 +126,9 @@ exports.updateUser = async (userId, userBody) => {
         const query = {
             _id: new mongoose.Types.ObjectId(userId)
         }
-        const data = {
-            $set: {
-                ...userBody
-            }
-        }
 
         if (userBody.email || userBody.mobile) {
-            emailOrMobileTaken = await User.findOne({
+            const emailOrMobileTaken = await User.findOne({
                 $or: [
                     { $and: [{ email: userBody.email }, { _id: { $ne: new mongoose.Types.ObjectId(userId) } }] },
                     { $and: [{ mobile: userBody.mobile }, { _id: { $ne: new mongoose.Types.ObjectId(userId) } }] }
@@ -148,6 +141,13 @@ exports.updateUser = async (userId, userBody) => {
 
             // send a verification link to email & mobile
         }
+
+        const data = {
+            $set: {
+                ...userBody
+            }
+        }
+
         await dbRepo.updateOne(constant.COLLECTIONS.USER, { query, data })
     } catch (error) {
         Logger.error(`updateUser error => ${error}`)

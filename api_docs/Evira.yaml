@@ -53,22 +53,6 @@ paths:
                   format: email
                 password:
                   type: string
-                fullName:
-                  type: string
-                nickName:
-                  type: string
-                profileImage:
-                  type: string
-                dateOfBirth:
-                  type: string
-                  format: date
-                mobile:
-                  type: number
-                gender:
-                  type: string
-                  enum: [male, female, other]
-                language:
-                  type: string
               required:
                 - email
                 - password
@@ -103,7 +87,7 @@ paths:
                 password: user1234
       responses:
         '200':
-          description: Tokens Object
+          description: Tokens Object with isProfileCompleted flag
           content:
             application/json: {}
   /auth/forgot-password/email:
@@ -232,6 +216,50 @@ paths:
           content:
             application/json: {}
   /users/profile:
+    post:
+      tags:
+        - Users
+      security:
+        - userAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                nickName:
+                  type: string
+                profileImage:
+                  type: string
+                dateOfBirth:
+                  type: string
+                  format: date
+                mobile:
+                  type: number
+                gender:
+                  type: string
+                  enum: [male, female, other]
+                required:
+                  - fullName
+                  - nickName
+                  - profileImage
+                  - dateOfBirth
+                  - mobile
+                  - gender
+              example:
+                fullName: Steve Rogers
+                nickName: Steve
+                profileImage: https://picsum.photos/200
+                dateOfBirth: 2002-02-08T23:28:56.782Z
+                mobile: 9876543210
+                gender: male
+      responses:
+        '200':
+          description: user object
+          content:
+            application/json: {}
     get:
       tags:
         - Users

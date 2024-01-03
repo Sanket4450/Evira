@@ -10,10 +10,26 @@ const {
     booleanValidation,
     idReqValidation,
     integerNumberValidation,
-    pageAndLimit
+    pageAndLimit,
+    dateReqValidation,
+    numberReqValidation
 } = require('./common')
 
-const profile = {
+const postProfile = {
+    body: joi.object().keys({
+        fullName: stringReqValidation.max(30),
+        nickName: stringReqValidation.max(15),
+        profileImage: stringReqValidation,
+        dateOfBirth: dateReqValidation,
+        mobile: numberReqValidation.min(10 ** 9).max(10 ** 10 - 1).messages({
+            'number.min': 'Mobile number should be 10 digit',
+            'number.max': 'Mobile number should be 10 digit'
+        }),
+        gender: stringReqValidation.lowercase().valid('male', 'female', 'other')
+    })
+}
+
+const updateProfile = {
     body: joi.object().keys({
         email: stringValidation.email().lowercase(),
         fullName: stringValidation.max(30),
@@ -24,8 +40,7 @@ const profile = {
             'number.min': 'Mobile number should be 10 digit',
             'number.max': 'Mobile number should be 10 digit'
         }),
-        gender: stringValidation.lowercase().valid('male', 'female', 'other'),
-        language: stringValidation
+        gender: stringValidation.lowercase().valid('male', 'female', 'other')
     })
 }
 
@@ -109,7 +124,8 @@ const deleteUser = {
 }
 
 module.exports = {
-    profile,
+    postProfile,
+    updateProfile,
     toggleNotifications,
     postAddress,
     updateAddress,

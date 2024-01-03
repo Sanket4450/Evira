@@ -6,8 +6,7 @@ const constant = require('../constants')
 const {
     authService,
     userService,
-    tokenService,
-    notificationService
+    tokenService
 } = require('../services/index.service')
 
 exports.register = catchAsyncErrors(async (req, res) => {
@@ -25,35 +24,27 @@ exports.register = catchAsyncErrors(async (req, res) => {
         ? await tokenService.generateAuthTokens(user._id, 'admin')
         : await tokenService.generateAuthTokens(user._id)
 
-    const notificationBody = {
-        title: 'Account Setup Successfull!',
-        message: 'Your account has been created!',
-        icon: 'icon1.svg'
-    }
-
-    await notificationService.createNotification(user._id, notificationBody)
-
     return sendResponse(
         res,
         httpStatus.OK,
         { tokens },
-        'You have signup successfully'
+        'You have signed-up successfully'
     )
 })
 
 exports.login = catchAsyncErrors(async (req, res) => {
     const { email, password } = req.body
 
-    const user = await authService.loginWithEmailAndPassword(email, password)
+    const { _id, isProfileCompleted } = await authService.loginWithEmailAndPassword(email, password)
 
-    const tokens = await tokenService.generateAuthTokens(user._id)
+    const tokens = await tokenService.generateAuthTokens(_id)
 
     Logger.info('User login successfully => ' + email)
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { tokens },
+        { tokens, isProfileCompleted },
         'You have logged-in successfully'
     )
 })
