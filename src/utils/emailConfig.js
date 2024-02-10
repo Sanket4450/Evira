@@ -1,12 +1,14 @@
 const nodemailer = require('nodemailer')
+const httpStatus = require('http-status')
 const ejs = require('ejs')
 const fs = require('fs')
+const util = require('util')
 const ApiError = require('./ApiError')
-const constant = require('../constants')
+
+const readFileAsync = util.promisify(fs.readFile)
 
 const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: 587,
+    service: process.env.EMAIL_SERVICE,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -14,24 +16,22 @@ const transporter = nodemailer.createTransport({
 })
 
 const sendMail = async ({ email, subject, templateFile, data }) => {
-    ejs.renderFile(templateFile, data, (err, htmlContent) => {
-        if (err) {
-            throw new ApiError(constant.MESSAGES.EMAIL_RENDER_ERROR, 500)
-        }
+    try {
+        const htmlContent = await readFileAsync(templateFile, 'utf-8')
+
+        const renderedHtml = ejs.render(htmlContent, data)
 
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: `${process.env.EMAIL_HOST} <${process.env.EMAIL_USER}>`,
             to: email,
             subject,
-            html: htmlContent,
+            html: renderedHtml,
         }
 
-        transporter.sendMail(mailOptions, (err, _) => {
-            if (err) {
-                throw new ApiError(constant.MESSAGES.EMAIL_SEND_ERROR, 500)
-            }
-        })
-    })
+        await transporter.sendMail(mailOptions)
+    } catch (error) {
+        throw new ApiError(error.message, httpStatus.INTERNAL_SERVER_ERROR)
+    }
 }
 
 module.exports = sendMail

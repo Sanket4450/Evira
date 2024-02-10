@@ -117,8 +117,40 @@ exports.updatePassword = async (userId, password) => {
 
 exports.setResetOTP = async (userId, otp) => {
     try {
+        Logger.info('Inside setResetOTP')
+
+        const query = {
+            _id: new mongoose.Types.ObjectId(userId),
+        }
+        const data = {
+            resetOTP: otp,
+        }
+
+        await dbRepo.updateOne(constant.COLLECTIONS.USER, { query, data })
     } catch (error) {
         Logger.error(`setResetOTP error => ${error}`)
+
+        throw new ApiError(
+            constant.MESSAGES.SOMETHING_WENT_WRONG,
+            httpStatus.INTERNAL_SERVER_ERROR
+        )
+    }
+}
+
+exports.getUserWithOTP = async (userId) => {
+    try {
+        Logger.info('Inside getResetOTP')
+
+        const query = {
+            _id: new mongoose.Types.ObjectId(userId),
+        }
+        const data = {
+            resetOTP: 1,
+        }
+
+        return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
+    } catch (error) {
+        Logger.error(`getResetOTP error => ${error}`)
 
         throw new ApiError(
             constant.MESSAGES.SOMETHING_WENT_WRONG,

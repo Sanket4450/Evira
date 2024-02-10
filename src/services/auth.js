@@ -53,10 +53,14 @@ exports.forgotPasswordWithEmail = async (email) => {
         )
     }
 
+    const otp = Math.floor(Math.random() * 9000) + 1000
+
+    await userService.setResetOTP(user._id, otp)
+
     await emailService.sendResetOTP({
-        name: user.nickName,
-        email: email,
-        otp: Math.floor(Math.random() * 9000) + 1000,
+        name: user.nickName || 'User',
+        email,
+        otp,
     })
 
     const resetToken = tokenService.generateToken({
@@ -69,14 +73,14 @@ exports.forgotPasswordWithEmail = async (email) => {
 }
 
 exports.verifyResetOtp = async ({ token, otp }) => {
-    Logger.info('Inside verifyResetOtp')
+    Logger.info(`Inside verifyResetOtp => otp = ${otp}`)
 
     const { sub } = await tokenService.verifyToken(
         token,
         process.env.RESET_TOKEN_SECRET
     )
 
-    const user = await userService.getUserById(sub)
+    const user = await userService.getUserWithOTP(sub)
 
     if (!user) {
         throw new ApiError(
@@ -85,8 +89,7 @@ exports.verifyResetOtp = async ({ token, otp }) => {
         )
     }
 
-    // verify otp sent to the email or mobile (ex. 1234)
-    if (otp != 1234) {
+    if (user.resetOTP !== otp) {
         throw new ApiError(
             constant.MESSAGES.INCORRECT_OTP,
             httpStatus.FORBIDDEN

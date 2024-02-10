@@ -133,6 +133,7 @@ paths:
                 - otp
               example:
                 otp: 1234
+                token: reset-token
       responses:
         '200':
           description: Success response
@@ -158,6 +159,7 @@ paths:
                 - password
               example:
                 password: user5678
+                token: reset-token
       responses:
         '200':
           description: Success response
@@ -178,6 +180,8 @@ paths:
                   format: token
               required:
                 - token
+              example:
+                token: refresh-token
       responses:
         '200':
           description: Access & Refresh Token Objects
