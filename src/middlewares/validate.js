@@ -14,7 +14,8 @@ const schemaOptions = {
 const validate = (schema) => (req, res, next) => {
     const validSchema = pick(schema, ['query', 'params', 'body'])
     const object = pick(req, Object.keys(validSchema))
-    const { value, error } = joi.compile(validSchema)
+    const { value, error } = joi
+        .compile(validSchema)
         .prefs({ errors: { label: 'key' }, abortEarly: false })
         .validate(object, schemaOptions)
 

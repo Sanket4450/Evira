@@ -3,19 +3,22 @@ const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
-const {
-    promotionService,
-    userService
-} = require('../services/index.service')
+const { promotionService, userService } = require('../services/index.service')
 
 exports.getAdminPromoCodes = catchAsyncErrors(async (req, res) => {
     const { page, limit } = req.query
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    const promoCodes = await promotionService.getAdminPromoCodes({ page, limit })
+    const promoCodes = await promotionService.getAdminPromoCodes({
+        page,
+        limit,
+    })
 
     return sendResponse(
         res,
@@ -28,15 +31,21 @@ exports.getAdminPromoCodes = catchAsyncErrors(async (req, res) => {
 exports.postPromoCode = catchAsyncErrors(async (req, res) => {
     const body = {
         remainingUses: req.body.maxUses,
-        ...req.body
+        ...req.body,
     }
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     if (await promotionService.getPromoCodeByTitle(body.title)) {
-        throw new ApiError(constant.MESSAGES.PROMO_CODE_TAKEN, httpStatus.CONFLICT)
+        throw new ApiError(
+            constant.MESSAGES.PROMO_CODE_TAKEN,
+            httpStatus.CONFLICT
+        )
     }
 
     const promoCode = await promotionService.createPromoCode(body)
@@ -53,16 +62,28 @@ exports.updatePromoCode = catchAsyncErrors(async (req, res) => {
     const { promoId } = req.params
     const body = req.body
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await promotionService.getPromoCodeById(promoId)) {
-        throw new ApiError(constant.MESSAGES.PROMO_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await promotionService.getPromoCodeById(promoId))) {
+        throw new ApiError(
+            constant.MESSAGES.PROMO_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (body.title && await promotionService.getPromoCodeByIdAndTitle(promoId, body.title)) {
-        throw new ApiError(constant.MESSAGES.PROMO_CODE_TAKEN, httpStatus.CONFLICT)
+    if (
+        body.title &&
+        (await promotionService.getPromoCodeByIdAndTitle(promoId, body.title))
+    ) {
+        throw new ApiError(
+            constant.MESSAGES.PROMO_CODE_TAKEN,
+            httpStatus.CONFLICT
+        )
     }
 
     await promotionService.updatePromoCode(promoId, body)
@@ -80,14 +101,20 @@ exports.updatePromoCode = catchAsyncErrors(async (req, res) => {
 exports.deletePromoCode = catchAsyncErrors(async (req, res) => {
     const { promoId } = req.params
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const promoCode = await promotionService.getPromoCodeById(promoId)
 
     if (!promoCode) {
-        throw new ApiError(constant.MESSAGES.PROMO_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.PROMO_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await promotionService.deleteShippingType(promoId)

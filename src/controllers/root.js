@@ -5,14 +5,17 @@ const {
     productService,
     categoryService,
     offerService,
-    userService
+    userService,
 } = require('../services/index.service')
 
 exports.getHomeData = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const specialOffers = await offerService.getOffers({ page: 1, limit: 3 })

@@ -18,10 +18,9 @@ exports.errorHandler = (err, req, res, next) => {
     const { message, statusCode } = err
 
     const response = {
-        type: "error",
+        type: 'error',
         message,
-        ...(process.env.environment === 'development' && { stack: err.stack })
-
+        ...(process.env.environment === 'development' && { stack: err.stack }),
     }
     if (process.env.environment === 'development') {
         Logger.error(err)

@@ -12,7 +12,7 @@ const {
     integerNumberValidation,
     pageAndLimit,
     dateReqValidation,
-    numberReqValidation
+    numberReqValidation,
 } = require('./common')
 
 const postProfile = {
@@ -21,12 +21,17 @@ const postProfile = {
         nickName: stringReqValidation.max(15),
         profileImage: stringReqValidation,
         dateOfBirth: dateReqValidation,
-        mobile: numberReqValidation.min(10 ** 9).max(10 ** 10 - 1).messages({
-            'number.min': 'Mobile number should be 10 digit',
-            'number.max': 'Mobile number should be 10 digit'
-        }),
-        gender: stringReqValidation.lowercase().valid('male', 'female', 'other')
-    })
+        mobile: numberReqValidation
+            .min(10 ** 9)
+            .max(10 ** 10 - 1)
+            .messages({
+                'number.min': 'Mobile number should be 10 digit',
+                'number.max': 'Mobile number should be 10 digit',
+            }),
+        gender: stringReqValidation
+            .lowercase()
+            .valid('male', 'female', 'other'),
+    }),
 }
 
 const updateProfile = {
@@ -36,18 +41,21 @@ const updateProfile = {
         nickName: stringValidation.max(15),
         profileImage: stringValidation,
         dateOfBirth: dateValidation,
-        mobile: numberValidation.min(10 ** 9).max(10 ** 10 - 1).messages({
-            'number.min': 'Mobile number should be 10 digit',
-            'number.max': 'Mobile number should be 10 digit'
-        }),
-        gender: stringValidation.lowercase().valid('male', 'female', 'other')
-    })
+        mobile: numberValidation
+            .min(10 ** 9)
+            .max(10 ** 10 - 1)
+            .messages({
+                'number.min': 'Mobile number should be 10 digit',
+                'number.max': 'Mobile number should be 10 digit',
+            }),
+        gender: stringValidation.lowercase().valid('male', 'female', 'other'),
+    }),
 }
 
 const toggleNotifications = {
     body: joi.object().keys({
-        isEnabled: booleanReqValidation
-    })
+        isEnabled: booleanReqValidation,
+    }),
 }
 
 const postAddress = {
@@ -59,13 +67,13 @@ const postAddress = {
         state: stringReqValidation,
         country: stringReqValidation,
         postalCode: integerNumberReqValidation,
-        default: booleanValidation
-    })
+        default: booleanValidation,
+    }),
 }
 
 const updateAddress = {
     params: joi.object().keys({
-        addressId: idReqValidation
+        addressId: idReqValidation,
     }),
     body: joi.object().keys({
         type: stringValidation.lowercase().valid('home', 'office', 'other'),
@@ -75,31 +83,31 @@ const updateAddress = {
         state: stringValidation,
         country: stringValidation,
         postalCode: integerNumberValidation,
-        default: booleanValidation
-    })
+        default: booleanValidation,
+    }),
 }
 
 const deleteAddress = {
     params: joi.object().keys({
-        addressId: idReqValidation
-    })
+        addressId: idReqValidation,
+    }),
 }
 
 const getUsers = {
     query: joi.object().keys({
-        ...pageAndLimit
-    })
+        ...pageAndLimit,
+    }),
 }
 
 const getUser = {
     params: joi.object().keys({
-        userId: idReqValidation
-    })
+        userId: idReqValidation,
+    }),
 }
 
 const updateUser = {
     params: joi.object().keys({
-        userId: idReqValidation
+        userId: idReqValidation,
     }),
     body: {
         email: stringValidation.email().lowercase(),
@@ -107,20 +115,23 @@ const updateUser = {
         nickName: stringValidation.max(15),
         profileImage: stringValidation,
         dateOfBirth: dateValidation,
-        mobile: numberValidation.min(10 ** 9).max(10 ** 10 - 1).messages({
-            'number.min': 'Mobile number should be 10 digit',
-            'number.max': 'Mobile number should be 10 digit'
-        }),
+        mobile: numberValidation
+            .min(10 ** 9)
+            .max(10 ** 10 - 1)
+            .messages({
+                'number.min': 'Mobile number should be 10 digit',
+                'number.max': 'Mobile number should be 10 digit',
+            }),
         gender: stringValidation.lowercase().valid('male', 'female', 'other'),
         language: stringValidation,
-        role: stringValidation.lowercase().valid('user', 'admin')
-    }
+        role: stringValidation.lowercase().valid('user', 'admin'),
+    },
 }
 
 const deleteUser = {
     params: joi.object().keys({
-        userId: idReqValidation
-    })
+        userId: idReqValidation,
+    }),
 }
 
 module.exports = {
@@ -133,5 +144,5 @@ module.exports = {
     getUsers,
     getUser,
     updateUser,
-    deleteUser
+    deleteUser,
 }

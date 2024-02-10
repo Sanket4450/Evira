@@ -8,7 +8,7 @@ const {
     userService,
     wishlistService,
     cartService,
-    categoryService
+    categoryService,
 } = require('../services/index.service')
 
 exports.getProducts = catchAsyncErrors(async (req, res) => {
@@ -17,7 +17,10 @@ exports.getProducts = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     let products = await productService.getProducts({ page, limit })
@@ -36,17 +39,26 @@ exports.getProductsByCategory = catchAsyncErrors(async (req, res) => {
     const { page, limit } = req.query
     const { categoryId } = req.params
 
-    if (!await categoryService.getCategoryById(categoryId)) {
-        throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await categoryService.getCategoryById(categoryId))) {
+        throw new ApiError(
+            constant.MESSAGES.CATEGORY_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    let products = await productService.getProductsByCategory(categoryId, { page, limit })
+    let products = await productService.getProductsByCategory(categoryId, {
+        page,
+        limit,
+    })
 
     products = await productService.validateLikedProducts(user._id, products)
 
@@ -62,7 +74,10 @@ exports.getProductsBySearch = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     let products = await productService.getProductsBySearch(req.query)
@@ -83,16 +98,22 @@ exports.getFullProductById = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     let [product] = await productService.getFullProductById(productId)
 
     if (!product) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.PRODUCT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    [product] = await productService.validateLikedProducts(user._id, [product])
+    ;[product] = await productService.validateLikedProducts(user._id, [product])
 
     return sendResponse(
         res,
@@ -106,17 +127,29 @@ exports.toggleLike = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
     const { isLiked } = req.body
 
-    if (!await productService.getProductById(productId)) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await productService.getProductById(productId))) {
+        throw new ApiError(
+            constant.MESSAGES.PRODUCT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!isLiked || !await wishlistService.checkProductLikedWithUserId(productId, user._id)) {
+    if (
+        !isLiked ||
+        !(await wishlistService.checkProductLikedWithUserId(
+            productId,
+            user._id
+        ))
+    ) {
         await wishlistService.likeUnlineProduct(productId, user._id, isLiked)
     }
 
@@ -124,7 +157,9 @@ exports.toggleLike = catchAsyncErrors(async (req, res) => {
         res,
         httpStatus.OK,
         { isLiked },
-        `Product ${isLiked ? 'added to Wishlist' : 'removed from Wishlist'} successfully`
+        `Product ${
+            isLiked ? 'added to Wishlist' : 'removed from Wishlist'
+        } successfully`
     )
 })
 
@@ -134,10 +169,16 @@ exports.getWishlistProducts = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    const products = await wishlistService.getWishlistProducts(user._id, { page, limit })
+    const products = await wishlistService.getWishlistProducts(user._id, {
+        page,
+        limit,
+    })
 
     return sendResponse(
         res,
@@ -154,14 +195,24 @@ exports.getWishlistProductsByCategory = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await categoryService.getCategoryById(categoryId)) {
-        throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await categoryService.getCategoryById(categoryId))) {
+        throw new ApiError(
+            constant.MESSAGES.CATEGORY_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    const products = await wishlistService.getWishlistProductsByCategory(user._id, categoryId, { page, limit })
+    const products = await wishlistService.getWishlistProductsByCategory(
+        user._id,
+        categoryId,
+        { page, limit }
+    )
 
     return sendResponse(
         res,
@@ -175,10 +226,16 @@ exports.getWishlistProductsBySearch = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    const products = await wishlistService.getWishlistProductsBySearch(user._id, req.query)
+    const products = await wishlistService.getWishlistProductsBySearch(
+        user._id,
+        req.query
+    )
 
     return sendResponse(
         res,
@@ -195,13 +252,19 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const [product] = await productService.getFullProductById(productId)
 
     if (!product) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.PRODUCT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const variantId = variant || product.defaultVariant.id.toString()
@@ -209,36 +272,76 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
     const productVariant = await productService.getVariant(variantId, productId)
 
     if (!productVariant) {
-        throw new ApiError(constant.MESSAGES.VARIANT_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.VARIANT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     if (productVariant.quantity < quantity) {
-        throw new ApiError(constant.MESSAGES.NOT_HAVE_ENOUGH_QUANTITY, httpStatus.FORBIDDEN)
+        throw new ApiError(
+            constant.MESSAGES.NOT_HAVE_ENOUGH_QUANTITY,
+            httpStatus.FORBIDDEN
+        )
     }
 
-    const cartProductVariant = await cartService.getCartProductVariant(productId, variantId, user._id)
+    const cartProductVariant = await cartService.getCartProductVariant(
+        productId,
+        variantId,
+        user._id
+    )
 
-    if (!cartProductVariant && (action === 'increase' || action === 'decrease')) {
-        throw new ApiError(constant.MESSAGES.ADD_PRODUCT_TO_CART, httpStatus.CONFLICT)
-    }
-    else if (cartProductVariant && action === 'add') {
-        await cartService.cartAction({ action: 'increase', productId, variantId, userId: user._id, quantity })
-    }
-    else if (cartProductVariant && action === 'decrease' && quantity >= cartProductVariant.items[0].quantity) {
-        await cartService.cartAction({ action: 'remove', productId, variantId, userId: user._id, quantity })
-    }
-    else {
-        await cartService.cartAction({ action, productId, variantId, userId: user._id, quantity })
+    if (
+        !cartProductVariant &&
+        (action === 'increase' || action === 'decrease')
+    ) {
+        throw new ApiError(
+            constant.MESSAGES.ADD_PRODUCT_TO_CART,
+            httpStatus.CONFLICT
+        )
+    } else if (cartProductVariant && action === 'add') {
+        await cartService.cartAction({
+            action: 'increase',
+            productId,
+            variantId,
+            userId: user._id,
+            quantity,
+        })
+    } else if (
+        cartProductVariant &&
+        action === 'decrease' &&
+        quantity >= cartProductVariant.items[0].quantity
+    ) {
+        await cartService.cartAction({
+            action: 'remove',
+            productId,
+            variantId,
+            userId: user._id,
+            quantity,
+        })
+    } else {
+        await cartService.cartAction({
+            action,
+            productId,
+            variantId,
+            userId: user._id,
+            quantity,
+        })
     }
 
     return sendResponse(
         res,
         httpStatus.OK,
         { action },
-        `${action === 'add' ? 'Product added to cart successfully'
-            : action === 'remove' ? 'Product removed from cart successfully'
-                : action === 'increase' ? 'Quantity increasesd successfully'
-                    : 'Quantity decreased successfully'}`
+        `${
+            action === 'add'
+                ? 'Product added to cart successfully'
+                : action === 'remove'
+                ? 'Product removed from cart successfully'
+                : action === 'increase'
+                ? 'Quantity increasesd successfully'
+                : 'Quantity decreased successfully'
+        }`
     )
 })
 
@@ -246,7 +349,10 @@ exports.getCartProducts = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const items = await cartService.getCartProducts(user._id)
@@ -268,10 +374,16 @@ exports.getCartProductsBySearch = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    const products = await cartService.getCartProductsBySearch(user._id, keyword)
+    const products = await cartService.getCartProductsBySearch(
+        user._id,
+        keyword
+    )
 
     return sendResponse(
         res,
@@ -284,12 +396,18 @@ exports.getCartProductsBySearch = catchAsyncErrors(async (req, res) => {
 exports.getVariants = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await productService.getProductById(productId)) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await productService.getProductById(productId))) {
+        throw new ApiError(
+            constant.MESSAGES.PRODUCT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const variants = await productService.getVariants(productId)
@@ -306,12 +424,18 @@ exports.postVariant = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
     const body = req.body
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await productService.getProductById(productId)) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await productService.getProductById(productId))) {
+        throw new ApiError(
+            constant.MESSAGES.PRODUCT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const variant = await productService.createVariant(productId, body)
@@ -328,12 +452,18 @@ exports.updateVariant = catchAsyncErrors(async (req, res) => {
     const { variantId } = req.params
     const body = req.body
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await productService.getVariantById(variantId)) {
-        throw new ApiError(constant.MESSAGES.VARIANT_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await productService.getVariantById(variantId))) {
+        throw new ApiError(
+            constant.MESSAGES.VARIANT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await productService.updateVariant(variantId, body)
@@ -351,14 +481,20 @@ exports.updateVariant = catchAsyncErrors(async (req, res) => {
 exports.deleteVariant = catchAsyncErrors(async (req, res) => {
     const { variantId } = req.params
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const variant = await productService.getVariantById(variantId)
 
     if (!variant) {
-        throw new ApiError(constant.MESSAGES.VARIANT_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.VARIANT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await productService.deleteVariant(variantId)
@@ -377,15 +513,24 @@ exports.postProduct = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await categoryService.getCategoryById(body.category)) {
-        throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await categoryService.getCategoryById(body.category))) {
+        throw new ApiError(
+            constant.MESSAGES.CATEGORY_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (body.name && await productService.getProductByName(body.name)) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NAME_TAKEN, httpStatus.NOT_FOUND)
+    if (body.name && (await productService.getProductByName(body.name))) {
+        throw new ApiError(
+            constant.MESSAGES.PRODUCT_NAME_TAKEN,
+            httpStatus.NOT_FOUND
+        )
     }
 
     if (body.defaultVariant) {
@@ -393,9 +538,14 @@ exports.postProduct = catchAsyncErrors(async (req, res) => {
         delete body.defaultVariant
 
         const product = await productService.createProduct(user._id, body)
-        const variant = await productService.createVariant(product._id, variantBody)
+        const variant = await productService.createVariant(
+            product._id,
+            variantBody
+        )
 
-        await productService.updateProduct(product._id, { defaultVariant: variant._id })
+        await productService.updateProduct(product._id, {
+            defaultVariant: variant._id,
+        })
 
         return sendResponse(
             res,
@@ -419,12 +569,18 @@ exports.updateProduct = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
     const body = req.body
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await productService.getProductById(productId)) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await productService.getProductById(productId))) {
+        throw new ApiError(
+            constant.MESSAGES.PRODUCT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await productService.updateProduct(productId, body)
@@ -442,14 +598,20 @@ exports.updateProduct = catchAsyncErrors(async (req, res) => {
 exports.deleteProduct = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const [product] = await productService.getFullProductById(productId)
 
     if (!product) {
-        throw new ApiError(constant.MESSAGES.PRODUCT_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.PRODUCT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await productService.deleteProduct(productId)

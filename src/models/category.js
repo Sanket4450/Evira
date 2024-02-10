@@ -1,22 +1,24 @@
 const mongoose = require('mongoose')
 const fieldsRemoval = require('./plugins/fieldsRemoval')
 
-const categorySchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    icon: {
-        type: String,
-        default: 'myIcon.svg'
-    },
-    description: {
-        type: String
-    }
-},
+const categorySchema = new mongoose.Schema(
     {
-        autoIndex: false
-    })
+        name: {
+            type: String,
+            required: true,
+        },
+        icon: {
+            type: String,
+            default: 'myIcon.svg',
+        },
+        description: {
+            type: String,
+        },
+    },
+    {
+        autoIndex: false,
+    }
+)
 
 categorySchema.plugin(fieldsRemoval)
 

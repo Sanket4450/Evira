@@ -10,7 +10,7 @@ const {
     userService,
     cartService,
     orderService,
-    paymentService
+    paymentService,
 } = require('../services/index.service')
 
 exports.getShippingTypes = catchAsyncErrors(async (req, res) => {
@@ -41,14 +41,23 @@ exports.applyPromoCode = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await promotionService.getPromoCodeById(promoId)) {
-        throw new ApiError(constant.MESSAGES.PROMO_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await promotionService.getPromoCodeById(promoId))) {
+        throw new ApiError(
+            constant.MESSAGES.PROMO_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    const promo = await promotionService.checkPromoCodeValidity(promoId, Date.now())
+    const promo = await promotionService.checkPromoCodeValidity(
+        promoId,
+        Date.now()
+    )
 
     if (!promo) {
         throw new ApiError(constant.MESSAGES.PROMO_EXPIRED, httpStatus.CONFLICT)
@@ -68,20 +77,28 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const checkoutBody = {
         address,
         shipping,
         promo,
-        userId: user._id
+        userId: user._id,
     }
-    
-    const { items, finalAmount } = await checkoutService.postCheckout(checkoutBody)
+
+    const { items, finalAmount } = await checkoutService.postCheckout(
+        checkoutBody
+    )
 
     if (Math.round(amount) !== Math.round(finalAmount)) {
-        throw new ApiError(constant.MESSAGES.AMOUNT_NOT_MATCH, httpStatus.CONFLICT)
+        throw new ApiError(
+            constant.MESSAGES.AMOUNT_NOT_MATCH,
+            httpStatus.CONFLICT
+        )
     }
 
     for (let item of items) {
@@ -89,7 +106,7 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
             item: {
                 product: item.product,
                 variant: item.variant,
-                quantity: item.quantity
+                quantity: item.quantity,
             },
             address,
             shippingType: shipping,
@@ -98,27 +115,25 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
             status: {
                 title: 'Ordered',
                 description: 'Order placed successfully',
-                date: Date.now()
-            }
+                date: Date.now(),
+            },
         }
         await orderService.createOrder(user._id, orderBody)
     }
 
     await cartService.emptyCart(user._id)
 
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        {},
-        'Checkout successfull'
-    )
+    return sendResponse(res, httpStatus.OK, {}, 'Checkout successfull')
 })
 
 exports.getPaymentMethods = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const paymentMethods = await paymentService.getPaymentMethods(user._id)

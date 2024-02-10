@@ -7,12 +7,36 @@ const offerValidation = require('../validations/offer')
 
 router.get('/', validate(offerValidation.getOffers), offerController.getOffers)
 
-adminRouter.get('/:offerId', authChecker, authorizeRole('admin'), validate(offerValidation.getAdminOffer), offerController.getAdminOffer)
+adminRouter.get(
+    '/:offerId',
+    authChecker,
+    authorizeRole('admin'),
+    validate(offerValidation.getAdminOffer),
+    offerController.getAdminOffer
+)
 
-adminRouter.post('/', authChecker, authorizeRole('admin'), validate(offerValidation.postOffer), offerController.postOffer)
+adminRouter.post(
+    '/',
+    authChecker,
+    authorizeRole('admin'),
+    validate(offerValidation.postOffer),
+    offerController.postOffer
+)
 
-adminRouter.put('/:offerId', authChecker, authorizeRole('admin'), validate(offerValidation.updateOffer), offerController.updateOffer)
+adminRouter.put(
+    '/:offerId',
+    authChecker,
+    authorizeRole('admin'),
+    validate(offerValidation.updateOffer),
+    offerController.updateOffer
+)
 
-adminRouter.delete('/:offerId', authChecker, authorizeRole('admin'), validate(offerValidation.deleteOffer), offerController.deleteOffer)
+adminRouter.delete(
+    '/:offerId',
+    authChecker,
+    authorizeRole('admin'),
+    validate(offerValidation.deleteOffer),
+    offerController.deleteOffer
+)
 
 module.exports = { router, adminRouter }

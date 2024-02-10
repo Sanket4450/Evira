@@ -1,4 +1,4 @@
-function fieldsRemoval (schema) {
+function fieldsRemoval(schema) {
     schema.set('toJSON', {
         transform: (doc, ret) => {
             delete ret.password
@@ -10,7 +10,7 @@ function fieldsRemoval (schema) {
 
             ret.id = ret._id
             delete ret._id
-        }
+        },
     })
 }
 

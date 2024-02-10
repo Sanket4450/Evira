@@ -5,7 +5,7 @@ const constant = require('../constants')
 const sendResponse = require('../utils/responseHandler')
 const {
     userService,
-    notificationService
+    notificationService,
 } = require('../services/index.service')
 
 exports.getNotifications = catchAsyncErrors(async (req, res) => {
@@ -14,14 +14,20 @@ exports.getNotifications = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    const notifications = await notificationService.getNotifications(user._id, { page, limit })
+    const notifications = await notificationService.getNotifications(user._id, {
+        page,
+        limit,
+    })
 
-    const notificationIds = notifications.map(value => value._id.toString())
+    const notificationIds = notifications.map((value) => value._id.toString())
 
-    notificationIds.forEach(async notificationId => {
+    notificationIds.forEach(async (notificationId) => {
         await notificationService.updateNotification(notificationId)
     })
 
@@ -39,11 +45,22 @@ exports.deleteNotification = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await notificationService.getNotificationById(notificationId, user._id)) {
-        throw new ApiError(constant.MESSAGES.NOTIFICATION_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (
+        !(await notificationService.getNotificationById(
+            notificationId,
+            user._id
+        ))
+    ) {
+        throw new ApiError(
+            constant.MESSAGES.NOTIFICATION_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await notificationService.deleteNotification(notificationId)

@@ -11,9 +11,13 @@ module.exports = {
         TOKEN_IS_REQUIRED: 'Token is required',
         INVALID_TOKEN: 'Invalid token or signature',
         TOKEN_EXPIRED: 'Token has expired',
+        RESET_PASSWORD: 'Reset Password',
         INVALID_SECRET: 'Invalid admin secret, admin authentication failed!',
+        EMAIL_RENDER_ERROR: 'Error rendering email template',
+        EMAIL_SEND_ERROR: 'Error sending email',
         NOT_ALLOWED: 'You are not allowed to access this resource',
-        NOTIFICATION_NOT_FOUND: 'Notification not found for this user or notificationId',
+        NOTIFICATION_NOT_FOUND:
+            'Notification not found for this user or notificationId',
         ENTER_VALID_CATEGORY: 'Please enter valid category',
         CATEGORY_NOT_FOUND: 'Category not found for this categoryId',
         CATEGORY_NAME_TAKEN: 'Category name is already taken!',
@@ -42,11 +46,13 @@ module.exports = {
         ORDER_NOT_FOUND: 'Order not found for this user or orderId',
         ADD_PRODUCTS: 'Please add products into cart first to checkout',
         AMOUNT_NOT_MATCH: 'Amount not match! please check the total amount',
-        PAYMENT_METHOD_NOT_FOUND: 'Payment-method not found for this user or paymentId',
-        PAYMENT_METHOD_EXPIRED: 'Payment-method expired, please add a new payment-method',
+        PAYMENT_METHOD_NOT_FOUND:
+            'Payment-method not found for this user or paymentId',
+        PAYMENT_METHOD_EXPIRED:
+            'Payment-method expired, please add a new payment-method',
         INSUFFICIENT_BALANCE: 'Not have sufficient balance',
         ORDER_ALREADY_CANCELED: 'Order already canceled',
-        STATUS_ALREADY_UPDATED: 'Order-status already updated'
+        STATUS_ALREADY_UPDATED: 'Order-status already updated',
     },
     COLLECTIONS: {
         USER: 'User',
@@ -62,6 +68,6 @@ module.exports = {
         ADDRESS: 'Address',
         PROMOTION: 'Promotion',
         PAYMENTMETHOD: 'PaymentMethod',
-        SHIPPINGTYPE: 'ShippingType'
-    }
+        SHIPPINGTYPE: 'ShippingType',
+    },
 }

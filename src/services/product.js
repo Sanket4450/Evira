@@ -8,11 +8,11 @@ const wishlistService = require('./wishlist')
 
 exports.getProductById = (id) => {
     const query = {
-        _id: new mongoose.Types.ObjectId(id)
+        _id: new mongoose.Types.ObjectId(id),
     }
 
     const data = {
-        _id: 1
+        _id: 1,
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.PRODUCT, { query, data })
@@ -20,11 +20,11 @@ exports.getProductById = (id) => {
 
 exports.getProductByName = (name) => {
     const query = {
-        name: { $regex: name, $options: 'i' }
+        name: { $regex: name, $options: 'i' },
     }
 
     const data = {
-        _id: 1
+        _id: 1,
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.PRODUCT, { query, data })
@@ -33,11 +33,11 @@ exports.getProductByName = (name) => {
 exports.getVariant = (variantId, productId) => {
     const query = {
         _id: new mongoose.Types.ObjectId(variantId),
-        product: new mongoose.Types.ObjectId(productId)
+        product: new mongoose.Types.ObjectId(productId),
     }
 
     const data = {
-        quantity: 1
+        quantity: 1,
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.VARIANT, { query, data })
@@ -45,7 +45,7 @@ exports.getVariant = (variantId, productId) => {
 
 exports.getVariantById = (id) => {
     const query = {
-        _id: new mongoose.Types.ObjectId(id)
+        _id: new mongoose.Types.ObjectId(id),
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.VARIANT, { query })
@@ -53,11 +53,14 @@ exports.getVariantById = (id) => {
 
 exports.validateLikedProducts = async (userId, products = []) => {
     for (let product of products) {
-        if (await wishlistService.checkProductLikedWithUserId(product.id, userId)) {
+        if (
+            await wishlistService.checkProductLikedWithUserId(
+                product.id,
+                userId
+            )
+        ) {
             product['isLiked'] = true
-        }
-
-        else {
+        } else {
             product['isLiked'] = false
         }
     }
@@ -73,27 +76,27 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
 
     const pipeline = [
         {
-            $match: matchCriteria
+            $match: matchCriteria,
         },
         {
-            $skip: ((page - 1) * limit)
+            $skip: (page - 1) * limit,
         },
         {
-            $limit: limit
+            $limit: limit,
         },
         {
             $lookup: {
                 from: 'reviews',
                 localField: '_id',
                 foreignField: 'product',
-                as: 'reviews'
-            }
+                as: 'reviews',
+            },
         },
         {
             $unwind: {
                 path: '$reviews',
-                preserveNullAndEmptyArrays: true
-            }
+                preserveNullAndEmptyArrays: true,
+            },
         },
         {
             $group: {
@@ -102,8 +105,8 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
                 image: { $first: '$image' },
                 price: { $first: '$price' },
                 sold: { $first: '$sold' },
-                stars: { $avg: '$reviews.star' }
-            }
+                stars: { $avg: '$reviews.star' },
+            },
         },
         {
             $project: {
@@ -116,25 +119,30 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
                         {
                             $ifNull: [
                                 {
-                                    $avg: "$reviews.star"
+                                    $avg: '$reviews.star',
                                 },
-                                0
-                            ]
+                                0,
+                            ],
                         },
-                        1
-                    ]
+                        1,
+                    ],
                 },
                 _id: 0,
-                id: '$_id'
-            }
-        }
+                id: '$_id',
+            },
+        },
     ]
 
     return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
 }
 
-exports.getProductsByCategory = (categoryId, { matchCriteria, page, limit }) => {
-    Logger.info(`Inside getProductsByCategory => category = ${categoryId}, page = ${page}, limit = ${limit}`)
+exports.getProductsByCategory = (
+    categoryId,
+    { matchCriteria, page, limit }
+) => {
+    Logger.info(
+        `Inside getProductsByCategory => category = ${categoryId}, page = ${page}, limit = ${limit}`
+    )
 
     matchCriteria ||= {}
     page ||= 1
@@ -142,32 +150,32 @@ exports.getProductsByCategory = (categoryId, { matchCriteria, page, limit }) => 
 
     const pipeline = [
         {
-            $match: matchCriteria
+            $match: matchCriteria,
         },
         {
             $match: {
-                category: new mongoose.Types.ObjectId(categoryId)
-            }
+                category: new mongoose.Types.ObjectId(categoryId),
+            },
         },
         {
-            $skip: ((page - 1) * limit)
+            $skip: (page - 1) * limit,
         },
         {
-            $limit: limit
+            $limit: limit,
         },
         {
             $lookup: {
                 from: 'reviews',
                 localField: '_id',
                 foreignField: 'product',
-                as: 'reviews'
-            }
+                as: 'reviews',
+            },
         },
         {
             $unwind: {
                 path: '$reviews',
-                preserveNullAndEmptyArrays: true
-            }
+                preserveNullAndEmptyArrays: true,
+            },
         },
         {
             $group: {
@@ -176,8 +184,8 @@ exports.getProductsByCategory = (categoryId, { matchCriteria, page, limit }) => 
                 image: { $first: '$image' },
                 price: { $first: '$price' },
                 sold: { $first: '$sold' },
-                stars: { $avg: '$reviews.star' }
-            }
+                stars: { $avg: '$reviews.star' },
+            },
         },
         {
             $project: {
@@ -190,24 +198,33 @@ exports.getProductsByCategory = (categoryId, { matchCriteria, page, limit }) => 
                         {
                             $ifNull: [
                                 {
-                                    $avg: "$reviews.star"
+                                    $avg: '$reviews.star',
                                 },
-                                0
-                            ]
+                                0,
+                            ],
                         },
-                        1
-                    ]
+                        1,
+                    ],
                 },
                 _id: 0,
-                id: '$_id'
-            }
-        }
+                id: '$_id',
+            },
+        },
     ]
 
     return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
 }
 
-exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy, rating, page, limit }) => {
+exports.getProductsBySearch = ({
+    keyword,
+    category,
+    min_price,
+    max_price,
+    sortBy,
+    rating,
+    page,
+    limit,
+}) => {
     try {
         Logger.info(`Inside getProductsBySearch => keyword = ${keyword}, category = ${category}, min_price = ${min_price},
     max_price = ${max_price}, sortBy = ${sortBy}, rating = ${rating}, page = ${page}, limit = ${limit}`)
@@ -217,89 +234,77 @@ exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy
 
         const pipeline = []
 
-        pipeline.push(
-            {
-                $match: {
-                    $or: [
-                        { name: { $regex: keyword, $options: 'i' } },
-                        { description: { $regex: keyword, $options: 'i' } }
-                    ]
-                }
-            })
+        pipeline.push({
+            $match: {
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { description: { $regex: keyword, $options: 'i' } },
+                ],
+            },
+        })
 
         if (category) {
-            pipeline.push(
-                {
-                    $match: {
-                        category: new mongoose.Types.ObjectId(category)
-                    }
-                })
+            pipeline.push({
+                $match: {
+                    category: new mongoose.Types.ObjectId(category),
+                },
+            })
         }
 
         if (min_price) {
-            pipeline.push(
-                {
-                    $match: {
-                        price: { $gte: min_price }
-                    }
-                })
+            pipeline.push({
+                $match: {
+                    price: { $gte: min_price },
+                },
+            })
         }
 
         if (max_price) {
-            pipeline.push(
-                {
-                    $match: {
-                        price: { $lte: max_price }
-                    }
-                })
+            pipeline.push({
+                $match: {
+                    price: { $lte: max_price },
+                },
+            })
         }
 
         if (rating) {
-            pipeline.push(
-                {}
-            )
+            pipeline.push({})
         }
 
         if (sortBy === 'recent') {
-            pipeline.push(
-                {
-                    $sort: {
-                        modifiedAt: -1
-                    }
-                })
-        }
-        else if (sortBy === 'price_desc') {
-            pipeline.push(
-                {
-                    $sort: {
-                        price: -1
-                    }
-                })
-        }
-        else if (sortBy === 'price_asc') {
-            pipeline.push(
-                {
-                    $sort: {
-                        price: 1
-                    }
-                })
-        }
-        else {
-            pipeline.push(
-                {
-                    $sort: {
-                        sold: -1
-                    }
-                })
+            pipeline.push({
+                $sort: {
+                    modifiedAt: -1,
+                },
+            })
+        } else if (sortBy === 'price_desc') {
+            pipeline.push({
+                $sort: {
+                    price: -1,
+                },
+            })
+        } else if (sortBy === 'price_asc') {
+            pipeline.push({
+                $sort: {
+                    price: 1,
+                },
+            })
+        } else {
+            pipeline.push({
+                $sort: {
+                    sold: -1,
+                },
+            })
         }
 
         pipeline.push(
             {
-                $skip: ((page - 1) * limit)
+                $skip: (page - 1) * limit,
             },
             {
-                $limit: limit
-            })
+                $limit: limit,
+            }
+        )
 
         pipeline.push(
             {
@@ -307,8 +312,8 @@ exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy
                     from: 'reviews',
                     localField: '_id',
                     foreignField: 'product',
-                    as: 'reviews'
-                }
+                    as: 'reviews',
+                },
             },
             {
                 $project: {
@@ -321,18 +326,19 @@ exports.getProductsBySearch = ({ keyword, category, min_price, max_price, sortBy
                             {
                                 $ifNull: [
                                     {
-                                        $avg: "$reviews.star"
+                                        $avg: '$reviews.star',
                                     },
-                                    0
-                                ]
+                                    0,
+                                ],
                             },
-                            1
-                        ]
+                            1,
+                        ],
                     },
                     _id: 0,
-                    id: '$_id'
-                }
-            })
+                    id: '$_id',
+                },
+            }
+        )
 
         return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
     } catch (error) {
@@ -346,35 +352,35 @@ exports.getFullProductById = (productId) => {
     const pipeline = [
         {
             $match: {
-                _id: new mongoose.Types.ObjectId(productId)
-            }
+                _id: new mongoose.Types.ObjectId(productId),
+            },
         },
         {
             $lookup: {
                 from: 'variants',
                 localField: '_id',
                 foreignField: 'product',
-                as: 'variants'
-            }
+                as: 'variants',
+            },
         },
         {
             $lookup: {
                 from: 'variants',
                 localField: 'defaultVariant',
                 foreignField: '_id',
-                as: 'defaultVariant'
-            }
+                as: 'defaultVariant',
+            },
         },
         {
-            $unwind: '$defaultVariant'
+            $unwind: '$defaultVariant',
         },
         {
             $lookup: {
                 from: 'reviews',
                 localField: '_id',
                 foreignField: 'product',
-                as: 'reviews'
-            }
+                as: 'reviews',
+            },
         },
         {
             $project: {
@@ -388,39 +394,39 @@ exports.getFullProductById = (productId) => {
                         {
                             $ifNull: [
                                 {
-                                    $avg: "$reviews.star"
+                                    $avg: '$reviews.star',
                                 },
-                                0
-                            ]
+                                0,
+                            ],
                         },
-                        1
-                    ]
+                        1,
+                    ],
                 },
                 reviewCount: {
-                    $size: '$reviews'
+                    $size: '$reviews',
                 },
                 defaultVariant: {
                     size: '$defaultVariant.size',
                     color: '$defaultVariant.color',
                     price: '$defaultVariant.price',
-                    id: '$defaultVariant._id'
+                    id: '$defaultVariant._id',
                 },
                 variants: {
                     $map: {
-                        input: "$variants",
-                        as: "variant",
+                        input: '$variants',
+                        as: 'variant',
                         in: {
-                            size: "$$variant.size",
-                            color: "$$variant.color",
+                            size: '$$variant.size',
+                            color: '$$variant.color',
                             price: '$$variant.price',
-                            id: '$$variant._id'
-                        }
-                    }
+                            id: '$$variant._id',
+                        },
+                    },
                 },
                 _id: 0,
-                id: '$_id'
-            }
-        }
+                id: '$_id',
+            },
+        },
     ]
 
     return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
@@ -430,11 +436,11 @@ exports.getVariants = (productId) => {
     Logger.info(`Inside getVariants => product = ${productId}`)
 
     const query = {
-        product: new mongoose.Types.ObjectId(productId)
+        product: new mongoose.Types.ObjectId(productId),
     }
 
     const data = {
-        product: 0
+        product: 0,
     }
 
     return dbRepo.find(constant.COLLECTIONS.VARIANT, { query, data })
@@ -445,20 +451,20 @@ exports.createVariant = (productId, variantBody) => {
 
     const data = {
         product: new mongoose.Types.ObjectId(productId),
-        ...variantBody
+        ...variantBody,
     }
     return dbRepo.create(constant.COLLECTIONS.VARIANT, { data })
 }
 
 exports.updateVariant = (variantId, variantBody) => {
     Logger.info(`Inside updateVariant => variant = ${variantId}`)
-    
+
     const query = {
-        _id: new mongoose.Types.ObjectId(variantId)
+        _id: new mongoose.Types.ObjectId(variantId),
     }
 
     const data = {
-        ...variantBody
+        ...variantBody,
     }
 
     return dbRepo.updateOne(constant.COLLECTIONS.VARIANT, { query, data })
@@ -468,7 +474,7 @@ exports.deleteVariant = (variantId) => {
     Logger.info(`Inside deleteVariant => variant = ${variantId}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(variantId)
+        _id: new mongoose.Types.ObjectId(variantId),
     }
     return dbRepo.deleteOne(constant.COLLECTIONS.VARIANT, { query })
 }
@@ -478,7 +484,7 @@ exports.createProduct = (userId, productBody) => {
 
     const data = {
         user: new mongoose.Types.ObjectId(userId),
-        ...productBody
+        ...productBody,
     }
     return dbRepo.create(constant.COLLECTIONS.PRODUCT, { data })
 }
@@ -487,11 +493,11 @@ exports.updateProduct = (productId, productBody) => {
     Logger.info(`Inside updateProduct => product = ${productId}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(productId)
+        _id: new mongoose.Types.ObjectId(productId),
     }
 
     const data = {
-        ...productBody
+        ...productBody,
     }
 
     return dbRepo.updateOne(constant.COLLECTIONS.PRODUCT, { query, data })
@@ -501,7 +507,7 @@ exports.deleteProduct = (productId) => {
     Logger.info(`Inside deleteProduct => product = ${productId}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(productId)
+        _id: new mongoose.Types.ObjectId(productId),
     }
     return dbRepo.deleteOne(constant.COLLECTIONS.PRODUCT, { query })
 }

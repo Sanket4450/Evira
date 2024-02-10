@@ -10,28 +10,28 @@ const {
     integerNumberReqValidation,
     numberValidation,
     idValidation,
-    booleanReqValidation
+    booleanReqValidation,
 } = require('./common')
 
 const getProducts = {
     query: joi.object().keys({
-        ...pageAndLimit
-    })
+        ...pageAndLimit,
+    }),
 }
 
 const getProductsByCategory = {
     query: joi.object().keys({
-        ...pageAndLimit
+        ...pageAndLimit,
     }),
     params: joi.object().keys({
-        categoryId: idReqValidation
-    })
+        categoryId: idReqValidation,
+    }),
 }
 
 const getFullProductById = {
     params: joi.object().keys({
-        productId: idReqValidation
-    })
+        productId: idReqValidation,
+    }),
 }
 
 const getProductsBySearch = {
@@ -40,74 +40,78 @@ const getProductsBySearch = {
         category: idValidation,
         min_price: numberValidation.precision(2),
         max_price: numberValidation.precision(2),
-        sortBy: stringReqValidation.lowercase().valid('popular', 'recent', 'price_desc', 'price_asc'),
+        sortBy: stringReqValidation
+            .lowercase()
+            .valid('popular', 'recent', 'price_desc', 'price_asc'),
         rating: integerNumberValidation.valid(1, 2, 3, 4, 5),
-        ...pageAndLimit
-    })
+        ...pageAndLimit,
+    }),
 }
 
 const toggleLike = {
     params: joi.object().keys({
-        productId: idReqValidation
+        productId: idReqValidation,
     }),
     body: joi.object().keys({
-        isLiked: booleanReqValidation
-    })
+        isLiked: booleanReqValidation,
+    }),
 }
 
 const toggleCart = {
     params: joi.object().keys({
-        productId: idReqValidation
+        productId: idReqValidation,
     }),
     body: joi.object().keys({
-        action: stringReqValidation.lowercase().valid('add', 'remove', 'increase', 'decrease'),
+        action: stringReqValidation
+            .lowercase()
+            .valid('add', 'remove', 'increase', 'decrease'),
         variant: idValidation,
-        quantity: integerNumberValidation.min(0)
-    })
+        quantity: integerNumberValidation.min(0),
+    }),
 }
 
 const searchWithOnlyKeyword = {
     query: joi.object().keys({
-        keyword: stringReqValidation.label('Search Keyword')
-    })
+        keyword: stringReqValidation.label('Search Keyword'),
+    }),
 }
 
 const getVariants = {
     params: joi.object().keys({
-        productId: idReqValidation
-    })
+        productId: idReqValidation,
+    }),
 }
 
 const postVariant = {
     params: joi.object().keys({
-        productId: idReqValidation
+        productId: idReqValidation,
     }),
     body: joi.object().keys({
         name: stringValidation.max(30),
         size: [stringValidation, integerNumberValidation],
         color: stringValidation,
         price: numberReqValidation.precision(2),
-        quantity: integerNumberReqValidation
-    })
+        quantity: integerNumberReqValidation,
+    }),
 }
 
 const updateVariant = {
     params: joi.object().keys({
-        variantId: idReqValidation
+        variantId: idReqValidation,
     }),
     body: joi.object().keys({
         name: stringValidation.max(30),
         size: [stringValidation, integerNumberValidation],
         color: stringValidation,
         price: numberValidation.precision(2),
-        quantity: integerNumberValidation
-    })
+        quantity: integerNumberValidation,
+    }),
 }
 
 const deleteVariant = {
     params: joi.object().keys({
-        variantId: idReqValidation
-    })
+        variantId: idReqValidation,
+    }),
 }
 
 const postProduct = {
@@ -123,14 +127,14 @@ const postProduct = {
             size: [stringValidation, integerNumberValidation],
             color: stringValidation,
             price: numberValidation.precision(2),
-            quantity: integerNumberValidation
-        })
-    })
+            quantity: integerNumberValidation,
+        }),
+    }),
 }
 
 const updateProduct = {
     params: joi.object().keys({
-        productId: idReqValidation
+        productId: idReqValidation,
     }),
     body: joi.object().keys({
         name: stringValidation.max(80),
@@ -139,14 +143,14 @@ const updateProduct = {
         category: idValidation,
         price: numberValidation.precision(2),
         quantity: integerNumberValidation,
-        defaultVariant: idValidation
-    })
+        defaultVariant: idValidation,
+    }),
 }
 
 const deleteProduct = {
     params: joi.object().keys({
-        productId: idReqValidation
-    })
+        productId: idReqValidation,
+    }),
 }
 
 module.exports = {

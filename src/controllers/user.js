@@ -5,7 +5,7 @@ const constant = require('../constants')
 const sendResponse = require('../utils/responseHandler')
 const {
     userService,
-    notificationService
+    notificationService,
 } = require('../services/index.service')
 
 exports.postProfile = catchAsyncErrors(async (req, res) => {
@@ -14,15 +14,21 @@ exports.postProfile = catchAsyncErrors(async (req, res) => {
     let user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_EXIST, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_EXIST,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    await userService.updateUser(user._id, { ...body, isProfileCompleted: true })
+    await userService.updateUser(user._id, {
+        ...body,
+        isProfileCompleted: true,
+    })
 
     const notificationBody = {
         title: 'Account Setup Successfull!',
         message: 'Your account has been created!',
-        icon: 'icon1.svg'
+        icon: 'icon1.svg',
     }
 
     await notificationService.createNotification(user._id, notificationBody)
@@ -41,7 +47,10 @@ exports.getProfile = catchAsyncErrors(async (req, res) => {
     const user = await userService.getFullUserExcludingId(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     return sendResponse(
@@ -58,9 +67,12 @@ exports.updateProfile = catchAsyncErrors(async (req, res) => {
     let user = await userService.getFullUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
-    
+
     await userService.updateUser(user._id, body)
 
     user = await userService.getFullUserExcludingId(user._id)
@@ -77,26 +89,27 @@ exports.deleteProfile = catchAsyncErrors(async (req, res) => {
     const user = await userService.getFullUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await userService.deleteUserById(user._id)
 
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        {},
-        'Profile deleted successfully'
-    )
+    return sendResponse(res, httpStatus.OK, {}, 'Profile deleted successfully')
 })
 
 exports.toggleNotifications = catchAsyncErrors(async (req, res) => {
     const { isEnabled } = req.body
-    
+
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await userService.updateUser(user._id, { isNotificationEnabled: isEnabled })
@@ -113,7 +126,10 @@ exports.getAddresses = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const addresses = await userService.getAddresses(user._id)
@@ -132,7 +148,10 @@ exports.postAddress = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const address = await userService.createAddress(user._id, body)
@@ -152,13 +171,19 @@ exports.updateAddress = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     let address = await userService.getAddressById(addressId, user._id)
 
     if (!address) {
-        throw new ApiError(constant.MESSAGES.ADDRESS_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.ADDRESS_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await userService.updateAddress(addressId, user._id, body)
@@ -179,23 +204,24 @@ exports.deleteAddress = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const address = await userService.getAddressById(addressId, user._id)
 
     if (!address) {
-        throw new ApiError(constant.MESSAGES.ADDRESS_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.ADDRESS_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await userService.deleteAddress(addressId, user._id)
 
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        {},
-        'Address deleted successfully'
-    )
+    return sendResponse(res, httpStatus.OK, {}, 'Address deleted successfully')
 })
 
 exports.getUsers = catchAsyncErrors(async (req, res) => {
@@ -204,7 +230,10 @@ exports.getUsers = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const users = await userService.getUsers(user._id, { page, limit })
@@ -220,8 +249,11 @@ exports.getUsers = catchAsyncErrors(async (req, res) => {
 exports.getUser = catchAsyncErrors(async (req, res) => {
     const { userId } = req.params
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const user = await userService.getFullUserById(userId)
@@ -237,12 +269,18 @@ exports.getUser = catchAsyncErrors(async (req, res) => {
 exports.updateUser = catchAsyncErrors(async (req, res) => {
     const { userId } = req.params
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await userService.getUserById(userId)) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(userId))) {
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await userService.updateUser(userId, req.body)
@@ -260,8 +298,11 @@ exports.updateUser = catchAsyncErrors(async (req, res) => {
 exports.deleteUser = catchAsyncErrors(async (req, res) => {
     const { userId } = req.params
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const user = await userService.getFullUserById(userId)

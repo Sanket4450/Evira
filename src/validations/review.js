@@ -7,63 +7,63 @@ const {
     stringReqValidation,
     integerNumberReqValidation,
     stringValidation,
-    booleanReqValidation
+    booleanReqValidation,
 } = require('./common')
 
 const getReviews = {
     query: joi.object().keys({
         ...pageAndLimit,
-        rating: integerNumberValidation.min(1).max(5)
+        rating: integerNumberValidation.min(1).max(5),
     }),
     params: joi.object().keys({
-        productId: idReqValidation
-    })
+        productId: idReqValidation,
+    }),
 }
 
 const postReview = {
     params: joi.object().keys({
-        productId: idReqValidation
+        productId: idReqValidation,
     }),
     body: joi.object().keys({
         message: stringReqValidation,
-        star: integerNumberReqValidation.min(1).max(5)
-    })
+        star: integerNumberReqValidation.min(1).max(5),
+    }),
 }
 
 const getReviewsBySearch = {
     query: joi.object().keys({
         ...pageAndLimit,
         keyword: stringReqValidation.label('Search Keyword'),
-        rating: integerNumberValidation.min(1).max(5)
+        rating: integerNumberValidation.min(1).max(5),
     }),
     params: joi.object().keys({
-        productId: idReqValidation
-    })
+        productId: idReqValidation,
+    }),
 }
 
 const updateReview = {
     params: joi.object().keys({
-        reviewId: idReqValidation
+        reviewId: idReqValidation,
     }),
     body: joi.object().keys({
         message: stringValidation,
-        star: integerNumberValidation.min(1).max(5)
-    })
+        star: integerNumberValidation.min(1).max(5),
+    }),
 }
 
 const deleteReview = {
     params: joi.object().keys({
-        reviewId: idReqValidation
-    })
+        reviewId: idReqValidation,
+    }),
 }
 
 const toggleLike = {
     params: joi.object().keys({
-        reviewId: idReqValidation
+        reviewId: idReqValidation,
     }),
     body: joi.object().keys({
-        isLiked: booleanReqValidation
-    })
+        isLiked: booleanReqValidation,
+    }),
 }
 
 module.exports = {
@@ -72,5 +72,5 @@ module.exports = {
     postReview,
     updateReview,
     deleteReview,
-    toggleLike
+    toggleLike,
 }

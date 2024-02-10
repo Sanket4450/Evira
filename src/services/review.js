@@ -3,48 +3,46 @@ const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 
 exports.getReviews = (productId, { rating, page, limit }) => {
-    Logger.info(`Inside getReviews => product = ${productId}, rating = ${rating}, page = ${page}, limit = ${limit}`)
+    Logger.info(
+        `Inside getReviews => product = ${productId}, rating = ${rating}, page = ${page}, limit = ${limit}`
+    )
 
     page ||= 1
     limit ||= 15
 
     const pipeline = []
 
-    pipeline.push(
-        {
-            $match: {
-                product: new mongoose.Types.ObjectId(productId)
-            }
-        }
-    )
+    pipeline.push({
+        $match: {
+            product: new mongoose.Types.ObjectId(productId),
+        },
+    })
 
     if (rating) {
-        pipeline.push(
-            {
-                $match: {
-                    star: { $eq: rating }
-                }
-            }
-        )
+        pipeline.push({
+            $match: {
+                star: { $eq: rating },
+            },
+        })
     }
 
     pipeline.push(
         {
-            $addFields: { likes: { $size: '$likedBy' } }
+            $addFields: { likes: { $size: '$likedBy' } },
         },
         {
             $sort: {
-                likes: -1
-            }
+                likes: -1,
+            },
         }
     )
 
     pipeline.push(
         {
-            $skip: ((page - 1) * limit)
+            $skip: (page - 1) * limit,
         },
         {
-            $limit: limit
+            $limit: limit,
         }
     )
 
@@ -54,13 +52,13 @@ exports.getReviews = (productId, { rating, page, limit }) => {
                 from: 'users',
                 localField: 'user',
                 foreignField: '_id',
-                as: 'users'
-            }
+                as: 'users',
+            },
         },
         {
             $unwind: {
-                path: '$users'
-            }
+                path: '$users',
+            },
         },
         {
             $group: {
@@ -70,8 +68,8 @@ exports.getReviews = (productId, { rating, page, limit }) => {
                 message: { $first: '$message' },
                 star: { $first: '$star' },
                 likes: { $first: '$likes' },
-                createdAt: { $first: '$createdAt' }
-            }
+                createdAt: { $first: '$createdAt' },
+            },
         },
         {
             $project: {
@@ -82,8 +80,8 @@ exports.getReviews = (productId, { rating, page, limit }) => {
                 likes: 1,
                 createdAt: 1,
                 _id: 0,
-                id: '$_id'
-            }
+                id: '$_id',
+            },
         }
     )
 
@@ -91,7 +89,9 @@ exports.getReviews = (productId, { rating, page, limit }) => {
 }
 
 exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
-    Logger.info(`Inside getReviewsBySearch => product = ${productId}, keyword = ${keyword}, rating = ${rating}, page = ${page}, limit = ${limit}`)
+    Logger.info(
+        `Inside getReviewsBySearch => product = ${productId}, keyword = ${keyword}, rating = ${rating}, page = ${page}, limit = ${limit}`
+    )
 
     page ||= 1
     limit ||= 15
@@ -102,50 +102,48 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
         {
             $match: {
                 product: new mongoose.Types.ObjectId(productId),
-            }
+            },
         },
         {
             $lookup: {
                 from: 'users',
                 localField: 'user',
                 foreignField: '_id',
-                as: 'users'
-            }
+                as: 'users',
+            },
         },
         {
             $match: {
-                'users.fullName': { $regex: keyword, $options: 'i' }
-            }
+                'users.fullName': { $regex: keyword, $options: 'i' },
+            },
         }
     )
 
     if (rating) {
-        pipeline.push(
-            {
-                $match: {
-                    star: { $eq: rating }
-                }
-            }
-        )
+        pipeline.push({
+            $match: {
+                star: { $eq: rating },
+            },
+        })
     }
 
     pipeline.push(
         {
-            $addFields: { likes: { $size: '$likedBy' } }
+            $addFields: { likes: { $size: '$likedBy' } },
         },
         {
             $sort: {
-                likes: -1
-            }
+                likes: -1,
+            },
         }
     )
 
     pipeline.push(
         {
-            $skip: ((page - 1) * limit)
+            $skip: (page - 1) * limit,
         },
         {
-            $limit: limit
+            $limit: limit,
         }
     )
 
@@ -155,13 +153,13 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
                 from: 'users',
                 localField: 'user',
                 foreignField: '_id',
-                as: 'users'
-            }
+                as: 'users',
+            },
         },
         {
             $unwind: {
-                path: '$users'
-            }
+                path: '$users',
+            },
         },
         {
             $group: {
@@ -171,8 +169,8 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
                 message: { $first: '$message' },
                 star: { $first: '$star' },
                 likes: { $first: '$likes' },
-                createdAt: { $first: '$createdAt' }
-            }
+                createdAt: { $first: '$createdAt' },
+            },
         },
         {
             $project: {
@@ -183,8 +181,8 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
                 likes: 1,
                 createdAt: 1,
                 _id: 0,
-                id: '$_id'
-            }
+                id: '$_id',
+            },
         }
     )
 
@@ -195,7 +193,7 @@ exports.postReview = (reviewBody) => {
     Logger.info(`Inside postReview => product = ${reviewBody.product}`)
 
     const data = {
-        ...reviewBody
+        ...reviewBody,
     }
 
     return dbRepo.create(constant.COLLECTIONS.REVIEW, { data })
@@ -205,11 +203,11 @@ exports.getReviewById = (id) => {
     Logger.info(`Inside getReviewById => review = ${id}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(id)
+        _id: new mongoose.Types.ObjectId(id),
     }
 
     const data = {
-        likedBy: 0
+        likedBy: 0,
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
@@ -218,13 +216,13 @@ exports.getReviewById = (id) => {
 exports.checkReviewWithUserId = (reviewId, userId) => {
     const query = {
         _id: new mongoose.Types.ObjectId(reviewId),
-        user: new mongoose.Types.ObjectId(userId)
+        user: new mongoose.Types.ObjectId(userId),
     }
 
     const data = {
-        _id: 1
+        _id: 1,
     }
-    
+
     return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
 }
 
@@ -232,13 +230,13 @@ exports.updateReview = (reviewId, reviewBody) => {
     Logger.info(`Inside updateReview => review = ${reviewId}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(reviewId)
+        _id: new mongoose.Types.ObjectId(reviewId),
     }
 
     const data = {
         $set: {
-            ...reviewBody
-        }
+            ...reviewBody,
+        },
     }
 
     return dbRepo.updateOne(constant.COLLECTIONS.REVIEW, { query, data })
@@ -248,7 +246,7 @@ exports.deleteReview = (reviewId) => {
     Logger.info(`Inside deleteReview => review = ${reviewId}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(reviewId)
+        _id: new mongoose.Types.ObjectId(reviewId),
     }
 
     return dbRepo.deleteOne(constant.COLLECTIONS.REVIEW, { query })
@@ -257,33 +255,36 @@ exports.deleteReview = (reviewId) => {
 exports.checkReviewLikedWithUserId = (reviewId, userId) => {
     const query = {
         _id: new mongoose.Types.ObjectId(reviewId),
-        likedBy: { $eq: new mongoose.Types.ObjectId(userId) }
+        likedBy: { $eq: new mongoose.Types.ObjectId(userId) },
     }
 
     const data = {
-        _id: 1
+        _id: 1,
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
 }
 
 exports.likeUnlikeReview = (reviewId, userId, like) => {
-    Logger.info(`Inside likeUnlikeReview => review = ${reviewId}, like = ${like}`)
+    Logger.info(
+        `Inside likeUnlikeReview => review = ${reviewId}, like = ${like}`
+    )
 
     const query = {
-        _id: new mongoose.Types.ObjectId(reviewId)
+        _id: new mongoose.Types.ObjectId(reviewId),
     }
 
     const data = like
         ? {
-            $push: {
-                likedBy: new mongoose.Types.ObjectId(userId)
-            }
-        } : {
-            $pull: {
-                likedBy: { $eq: new mongoose.Types.ObjectId(userId) }
-            }
-        }
+              $push: {
+                  likedBy: new mongoose.Types.ObjectId(userId),
+              },
+          }
+        : {
+              $pull: {
+                  likedBy: { $eq: new mongoose.Types.ObjectId(userId) },
+              },
+          }
 
     return dbRepo.updateOne(constant.COLLECTIONS.REVIEW, { query, data })
 }

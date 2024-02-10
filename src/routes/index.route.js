@@ -51,5 +51,5 @@ adminRouter.use('/orders', adminOrderRoutes)
 
 module.exports = {
     userRoutes: userRouter,
-    adminRoutes: adminRouter
+    adminRoutes: adminRouter,
 }

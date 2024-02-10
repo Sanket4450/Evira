@@ -112,27 +112,6 @@ paths:
           description: Success response with reset Token
           content:
             application/json: {}
-  /auth/forgot-password/mobile:
-    post:
-      tags:
-        - Auth
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                mobile: number
-                format: mobile
-              required:
-                - mobile
-              example:
-                mobile: 9876543210
-      responses:
-        '200':
-          description: Success response with reset Token
-          content:
-            application/json: {}
   /auth/verify-reset-otp:
     post:
       tags:

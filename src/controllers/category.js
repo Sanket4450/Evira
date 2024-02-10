@@ -3,10 +3,7 @@ const catchAsyncErrros = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
-const {
-    categoryService,
-    userService
-} = require('../services/index.service')
+const { categoryService, userService } = require('../services/index.service')
 
 exports.getCategories = catchAsyncErrros(async (req, res) => {
     const categories = await categoryService.getAllCategories()
@@ -22,8 +19,11 @@ exports.getCategories = catchAsyncErrros(async (req, res) => {
 exports.getAdminCategories = catchAsyncErrros(async (req, res) => {
     const { page, limit } = req.query
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const categories = await categoryService.getAdminCategories({ page, limit })
@@ -39,12 +39,18 @@ exports.getAdminCategories = catchAsyncErrros(async (req, res) => {
 exports.postCategory = catchAsyncErrros(async (req, res) => {
     const body = req.body
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     if (await categoryService.getFullCategoryByName(body.name)) {
-        throw new ApiError(constant.MESSAGES.CATEGORY_NAME_TAKEN, httpStatus.CONFLICT)
+        throw new ApiError(
+            constant.MESSAGES.CATEGORY_NAME_TAKEN,
+            httpStatus.CONFLICT
+        )
     }
 
     const category = await categoryService.postCategory(body)
@@ -61,16 +67,25 @@ exports.updateCategory = catchAsyncErrros(async (req, res) => {
     const { categoryId } = req.params
     const body = req.body
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (!await categoryService.getCategoryById(categoryId)) {
-        throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await categoryService.getCategoryById(categoryId))) {
+        throw new ApiError(
+            constant.MESSAGES.CATEGORY_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
-    if (body.name && await categoryService.getFullCategoryByName(body.name)) {
-        throw new ApiError(constant.MESSAGES.CATEGORY_NAME_TAKEN, httpStatus.CONFLICT)
+    if (body.name && (await categoryService.getFullCategoryByName(body.name))) {
+        throw new ApiError(
+            constant.MESSAGES.CATEGORY_NAME_TAKEN,
+            httpStatus.CONFLICT
+        )
     }
 
     await categoryService.updateCategory(categoryId, body)
@@ -88,14 +103,20 @@ exports.updateCategory = catchAsyncErrros(async (req, res) => {
 exports.deleteCategory = catchAsyncErrros(async (req, res) => {
     const { categoryId } = req.params
 
-    if (!await userService.getUserById(req.user.sub)) {
-        throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     const category = await categoryService.getFullCategoryById(categoryId)
 
     if (!category) {
-        throw new ApiError(constant.MESSAGES.CATEGORY_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.CATEGORY_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await categoryService.deleteCategory(categoryId)

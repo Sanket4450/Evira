@@ -7,12 +7,12 @@ exports.getOrderById = (orderId, userId) => {
 
     const query = {
         _id: new mongoose.Types.ObjectId(orderId),
-        user: new mongoose.Types.ObjectId(userId)
+        user: new mongoose.Types.ObjectId(userId),
     }
 
     const data = {
         user: 0,
-        'status._id': 0
+        'status._id': 0,
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query, data })
@@ -23,7 +23,7 @@ exports.createOrder = (userId, orderBody) => {
 
     const data = {
         user: new mongoose.Types.ObjectId(userId),
-        ...orderBody
+        ...orderBody,
     }
 
     return dbRepo.create(constant.COLLECTIONS.ORDER, { data })
@@ -33,13 +33,13 @@ exports.updateOrder = (orderId, updateBody) => {
     Logger.info(`Inside updateOrder => order = ${orderId}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(orderId)
+        _id: new mongoose.Types.ObjectId(orderId),
     }
 
     const data = {
         $set: {
-            ...updateBody
-        }
+            ...updateBody,
+        },
     }
 
     return dbRepo.updateOne(constant.COLLECTIONS.ORDER, { query, data })
@@ -49,23 +49,25 @@ exports.updateOrderStatus = (orderId, pushBody) => {
     Logger.info(`Inside updateOrderStatus => order = ${orderId}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(orderId)
+        _id: new mongoose.Types.ObjectId(orderId),
     }
 
     const data = {
         $push: {
             status: {
                 $each: [pushBody],
-                $position: 0
-            }
-        }
+                $position: 0,
+            },
+        },
     }
 
     return dbRepo.updateOne(constant.COLLECTIONS.ORDER, { query, data })
 }
 
 exports.getOrders = (type, userId, { page, limit }) => {
-    Logger.info(`Inside getOrders => type = ${type}, page = ${page}, limit = ${limit}`)
+    Logger.info(
+        `Inside getOrders => type = ${type}, page = ${page}, limit = ${limit}`
+    )
 
     page ||= 1
     limit ||= 10
@@ -74,41 +76,41 @@ exports.getOrders = (type, userId, { page, limit }) => {
         {
             $match: {
                 user: new mongoose.Types.ObjectId(userId),
-                type: { $regex: type, $options: 'i' }
-            }
+                type: { $regex: type, $options: 'i' },
+            },
         },
         {
             $sort: {
-                createdAt: -1
-            }
+                createdAt: -1,
+            },
         },
         {
-            $skip: ((page - 1) * limit)
+            $skip: (page - 1) * limit,
         },
         {
-            $limit: limit
+            $limit: limit,
         },
         {
             $lookup: {
                 from: 'products',
                 localField: 'item.product',
                 foreignField: '_id',
-                as: 'product'
-            }
+                as: 'product',
+            },
         },
         {
-            $unwind: '$product'
+            $unwind: '$product',
         },
         {
             $lookup: {
                 from: 'variants',
                 localField: 'item.variant',
                 foreignField: '_id',
-                as: 'variant'
-            }
+                as: 'variant',
+            },
         },
         {
-            $unwind: '$variant'
+            $unwind: '$variant',
         },
         {
             $group: {
@@ -120,8 +122,8 @@ exports.getOrders = (type, userId, { page, limit }) => {
                 color: { $first: '$variant.color' },
                 size: { $first: '$variant.size' },
                 quantity: { $first: '$item.quantity' },
-                amount: { $first: '$amount' }
-            }
+                amount: { $first: '$amount' },
+            },
         },
         {
             $project: {
@@ -134,9 +136,9 @@ exports.getOrders = (type, userId, { page, limit }) => {
                 quantity: 1,
                 amount: 1,
                 _id: 0,
-                id: '$_id'
-            }
-        }
+                id: '$_id',
+            },
+        },
     ]
 
     return dbRepo.aggregate(constant.COLLECTIONS.ORDER, pipeline)
@@ -152,7 +154,7 @@ exports.getTrackOrder = (orderId, userId) => {
 
     const data = {
         status: 1,
-        _id: 0
+        _id: 0,
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query, data })
@@ -162,14 +164,16 @@ exports.getAdminOrderById = (id) => {
     Logger.info(`Inside getAdminOrderById => order = ${id}`)
 
     const query = {
-        _id: new mongoose.Types.ObjectId(id)
+        _id: new mongoose.Types.ObjectId(id),
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query })
 }
 
 exports.getAdminOrders = (type, { page, limit }) => {
-    Logger.info(`Inside getAdminOrders => type = ${type}, page = ${page}, limit = ${limit}`)
+    Logger.info(
+        `Inside getAdminOrders => type = ${type}, page = ${page}, limit = ${limit}`
+    )
 
     page ||= 1
     limit ||= 10
@@ -177,36 +181,36 @@ exports.getAdminOrders = (type, { page, limit }) => {
     const pipeline = [
         {
             $sort: {
-                createdAt: -1
-            }
+                createdAt: -1,
+            },
         },
         {
-            $skip: ((page - 1) * limit)
+            $skip: (page - 1) * limit,
         },
         {
-            $limit: limit
+            $limit: limit,
         },
         {
             $lookup: {
                 from: 'products',
                 localField: 'item.product',
                 foreignField: '_id',
-                as: 'product'
-            }
+                as: 'product',
+            },
         },
         {
-            $unwind: '$product'
+            $unwind: '$product',
         },
         {
             $lookup: {
                 from: 'variants',
                 localField: 'item.variant',
                 foreignField: '_id',
-                as: 'variant'
-            }
+                as: 'variant',
+            },
         },
         {
-            $unwind: '$variant'
+            $unwind: '$variant',
         },
         {
             $group: {
@@ -218,8 +222,8 @@ exports.getAdminOrders = (type, { page, limit }) => {
                 color: { $first: '$variant.color' },
                 size: { $first: '$variant.size' },
                 quantity: { $first: '$item.quantity' },
-                amount: { $first: '$amount' }
-            }
+                amount: { $first: '$amount' },
+            },
         },
         {
             $project: {
@@ -232,19 +236,17 @@ exports.getAdminOrders = (type, { page, limit }) => {
                 quantity: 1,
                 amount: 1,
                 _id: 0,
-                id: '$_id'
-            }
-        }
+                id: '$_id',
+            },
+        },
     ]
 
     if (type) {
-        pipeline.unshift(
-            {
-                $match: {
-                    type: { $regex: type, $options: 'i' }
-                }
-            }
-        )
+        pipeline.unshift({
+            $match: {
+                type: { $regex: type, $options: 'i' },
+            },
+        })
     }
 
     return dbRepo.aggregate(constant.COLLECTIONS.ORDER, pipeline)

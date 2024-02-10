@@ -1,8 +1,8 @@
 const sendResponse = (res, status, data = [], message) => {
     return res.status(status).json({
-        type: "success",
-        message: message || "OK",
-        results: data
+        type: 'success',
+        message: message || 'OK',
+        results: data,
     })
 }
 

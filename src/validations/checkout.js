@@ -3,13 +3,13 @@ const joi = require('joi')
 const {
     idReqValidation,
     numberReqValidation,
-    idValidation
+    idValidation,
 } = require('./common')
 
 const applyPromoCode = {
     params: joi.object().keys({
-        promoId: idReqValidation
-    })
+        promoId: idReqValidation,
+    }),
 }
 
 const postCheckout = {
@@ -17,11 +17,11 @@ const postCheckout = {
         address: idReqValidation.label('Address'),
         shipping: idReqValidation.label('Shipping-type'),
         promo: idValidation.label('Promo-code'),
-        amount: numberReqValidation.precision(2).label('Total Amount')
-    })
+        amount: numberReqValidation.precision(2).label('Total Amount'),
+    }),
 }
 
 module.exports = {
     applyPromoCode,
-    postCheckout
+    postCheckout,
 }

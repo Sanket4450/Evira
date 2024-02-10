@@ -1,6 +1,7 @@
 module.exports.authService = require('./auth')
 module.exports.userService = require('./user')
 module.exports.tokenService = require('./token')
+module.exports.emailService = require('./email')
 module.exports.productService = require('./product')
 module.exports.offerService = require('./offer')
 module.exports.categoryService = require('./category')

@@ -9,13 +9,13 @@ const {
     integerNumberValidation,
     numberValidation,
     idReqValidation,
-    pageAndLimit
+    pageAndLimit,
 } = require('./common')
 
 const getAdminPromoCodes = {
     query: joi.object().keys({
-        ...pageAndLimit
-    })
+        ...pageAndLimit,
+    }),
 }
 
 const postPromoCode = {
@@ -25,13 +25,13 @@ const postPromoCode = {
         discountPercentage: numberReqValidation.max(90).precision(2),
         maxUses: integerNumberReqValidation,
         validFrom: dateValidation,
-        validUntil: dateValidation.required()
-    })
+        validUntil: dateValidation.required(),
+    }),
 }
 
 const updatePromoCode = {
     params: joi.object().keys({
-        promoId: idReqValidation
+        promoId: idReqValidation,
     }),
     body: joi.object().keys({
         title: stringValidation,
@@ -40,19 +40,19 @@ const updatePromoCode = {
         maxUses: integerNumberValidation,
         remainingUses: integerNumberValidation,
         validFrom: dateValidation,
-        validUntil: dateValidation
-    })
+        validUntil: dateValidation,
+    }),
 }
 
 const deletePromoCode = {
     params: joi.object().keys({
-        promoId: idReqValidation
-    })
+        promoId: idReqValidation,
+    }),
 }
 
 module.exports = {
     getAdminPromoCodes,
     postPromoCode,
     updatePromoCode,
-    deletePromoCode
+    deletePromoCode,
 }

@@ -27,5 +27,5 @@ module.exports = {
     Address,
     Promotion,
     PaymentMethod,
-    ShippingType
+    ShippingType,
 }

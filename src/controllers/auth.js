@@ -6,7 +6,7 @@ const constant = require('../constants')
 const {
     authService,
     userService,
-    tokenService
+    tokenService,
 } = require('../services/index.service')
 
 exports.register = catchAsyncErrors(async (req, res) => {
@@ -15,14 +15,18 @@ exports.register = catchAsyncErrors(async (req, res) => {
     await authService.checkUserWithEmail(body.email)
 
     if (body.role === 'admin' && body.secret !== process.env.ADMIN_SECRET) {
-        throw new ApiError(constant.MESSAGES.INVALID_SECRET, httpStatus.FORBIDDEN)
+        throw new ApiError(
+            constant.MESSAGES.INVALID_SECRET,
+            httpStatus.FORBIDDEN
+        )
     }
 
     const user = await userService.createUser(body)
 
-    const tokens = (body.role && body.role === 'admin')
-        ? await tokenService.generateAuthTokens(user._id, 'admin')
-        : await tokenService.generateAuthTokens(user._id)
+    const tokens =
+        body.role && body.role === 'admin'
+            ? await tokenService.generateAuthTokens(user._id, 'admin')
+            : await tokenService.generateAuthTokens(user._id)
 
     return sendResponse(
         res,
@@ -35,7 +39,8 @@ exports.register = catchAsyncErrors(async (req, res) => {
 exports.login = catchAsyncErrors(async (req, res) => {
     const { email, password } = req.body
 
-    const { _id, isProfileCompleted } = await authService.loginWithEmailAndPassword(email, password)
+    const { _id, isProfileCompleted } =
+        await authService.loginWithEmailAndPassword(email, password)
 
     const tokens = await tokenService.generateAuthTokens(_id)
 
@@ -62,30 +67,12 @@ exports.forgotPasswordWithEmail = catchAsyncErrors(async (req, res) => {
     )
 })
 
-exports.forgotPasswordWithMobile = catchAsyncErrors(async (req, res) => {
-    const resetToken = await authService.forgotPasswordWithMobile(req.body.mobile)
-
-    // send an otp on the mobile (ex. 1234)
-
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        { resetToken },
-        'Forgot password successfull'
-    )
-})
-
 exports.verifyResetOtp = catchAsyncErrors(async (req, res) => {
     const { token, otp } = req.body
 
     await authService.verifyResetOtp({ token, otp })
 
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        {},
-        'OTP verified successfully'
-    )
+    return sendResponse(res, httpStatus.OK, {}, 'OTP verified successfully')
 })
 
 exports.resetPassword = catchAsyncErrors(async (req, res) => {
@@ -93,12 +80,7 @@ exports.resetPassword = catchAsyncErrors(async (req, res) => {
 
     await authService.resetPassword({ token, password })
 
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        {},
-        'Password updated successfully'
-    )
+    return sendResponse(res, httpStatus.OK, {}, 'Password updated successfully')
 })
 
 exports.refreshTokens = catchAsyncErrors(async (req, res) => {
@@ -106,9 +88,10 @@ exports.refreshTokens = catchAsyncErrors(async (req, res) => {
 
     const user = await authService.refreshTokens(token)
 
-    const tokens = (user.role === 'admin')
-        ? await tokenService.generateAuthTokens(user._id, 'admin')
-        : await tokenService.generateAuthTokens(user._id)
+    const tokens =
+        user.role === 'admin'
+            ? await tokenService.generateAuthTokens(user._id, 'admin')
+            : await tokenService.generateAuthTokens(user._id)
 
     return sendResponse(
         res,
@@ -122,7 +105,10 @@ exports.logout = catchAsyncErrors(async (req, res) => {
     const user = await userService.getFullUserById(req.user.sub)
 
     if (!user) {
-        throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
     }
 
     await userService.updateUser(user._id, { token: null })

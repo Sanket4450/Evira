@@ -1,14 +1,14 @@
 class DbRepo {
-    constructor() { }
+    constructor() {}
 
     findOne(collectionName, queryObject) {
         return new Promise((resolve, reject) => {
             domain[collectionName]
                 .findOne(queryObject.query, queryObject.data)
-                .then(results => {
+                .then((results) => {
                     resolve(results)
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error)
                 })
         })
@@ -18,10 +18,10 @@ class DbRepo {
         return new Promise((resolve, reject) => {
             domain[collectionName]
                 .create(queryObject.data)
-                .then(results => {
+                .then((results) => {
                     resolve(results)
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error)
                 })
         })
@@ -30,11 +30,15 @@ class DbRepo {
     updateOne(collectionName, queryObject) {
         return new Promise((resolve, reject) => {
             domain[collectionName]
-                .updateOne(queryObject.query, queryObject.data, queryObject.options)
-                .then(results => {
+                .updateOne(
+                    queryObject.query,
+                    queryObject.data,
+                    queryObject.options
+                )
+                .then((results) => {
                     resolve(results)
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error)
                 })
         })
@@ -44,10 +48,10 @@ class DbRepo {
         return new Promise((resolve, reject) => {
             domain[collectionName]
                 .deleteOne(queryObject.query)
-                .then(results => {
+                .then((results) => {
                     resolve(results)
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error)
                 })
         })
@@ -58,10 +62,10 @@ class DbRepo {
             domain[collectionName]
                 .find(queryObject.query, queryObject.data)
                 .sort(sortQuery)
-                .then(results => {
+                .then((results) => {
                     resolve(results)
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error)
                 })
         })
@@ -74,10 +78,10 @@ class DbRepo {
                 .sort(sortQuery)
                 .skip((page - 1) * limit)
                 .limit(limit)
-                .then(results => {
+                .then((results) => {
                     resolve(results)
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error)
                 })
         })
@@ -87,12 +91,12 @@ class DbRepo {
         return new Promise((resolve, reject) => [
             domain[collectionName]
                 .aggregate(queryArray)
-                .then(results => {
+                .then((results) => {
                     resolve(results)
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error)
-                })
+                }),
         ])
     }
 }

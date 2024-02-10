@@ -16,16 +16,21 @@ const arrayValidation = joi.array()
 
 const pageAndLimit = {
     page: integerNumberValidation.min(1),
-    limit: integerNumberValidation.min(1)
+    limit: integerNumberValidation.min(1),
 }
 
 const secretValidation = stringValidation
     .pattern(new RegExp('^[A-Za-z0-9_@/?%]*$'))
-    .messages({ 'string.pattern.base': 'Invalid secret. Secret does not match with the pattern' })
+    .messages({
+        'string.pattern.base':
+            'Invalid secret. Secret does not match with the pattern',
+    })
 
 const idValidation = stringValidation
     .pattern(new RegExp('^[0-9a-fA-F]{24}$'))
-    .messages({ 'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId' })
+    .messages({
+        'string.pattern.base': 'Invalid ID. Please provide a valid ObjectId',
+    })
 
 const idReqValidation = idValidation.required()
 
@@ -46,5 +51,5 @@ module.exports = {
     pageAndLimit,
     secretValidation,
     idValidation,
-    idReqValidation
+    idReqValidation,
 }

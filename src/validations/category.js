@@ -4,43 +4,43 @@ const {
     idReqValidation,
     stringReqValidation,
     stringValidation,
-    pageAndLimit
+    pageAndLimit,
 } = require('./common')
 
 const getAdminCategories = {
     query: joi.object().keys({
-        ...pageAndLimit
-    })
+        ...pageAndLimit,
+    }),
 }
 
 const postCategory = {
     body: joi.object().keys({
         name: stringReqValidation.max(20),
         icon: stringValidation,
-        description: stringValidation.max(200)
-    })
+        description: stringValidation.max(200),
+    }),
 }
 
 const updateCategory = {
     params: {
-        categoryId: idReqValidation
+        categoryId: idReqValidation,
     },
     body: joi.object().keys({
         name: stringValidation.max(20),
         icon: stringValidation,
-        description: stringValidation.max(200)
-    })
+        description: stringValidation.max(200),
+    }),
 }
 
 const deleteCategory = {
     params: {
-        categoryId: idReqValidation
-    }
+        categoryId: idReqValidation,
+    },
 }
 
 module.exports = {
     getAdminCategories,
     postCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
 }
