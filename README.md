@@ -42,19 +42,19 @@ Go to the project directory
 
 Install dependencies
 
-### npm
+#### npm
 
 ```bash
   npm install
 ```
 
-### yarn
+#### yarn
 
 ```bash
   yarn
 ```
 
-### pnpm
+#### pnpm
 
 ```bash
   pnpm install
@@ -62,19 +62,19 @@ Install dependencies
 
 Run development server
 
-### npm
+#### npm
 
 ```bash
   npm run dev
 ```
 
-### yarn
+#### yarn
 
 ```bash
   yarn run dev
 ```
 
-### pnpm
+#### pnpm
 
 ```bash
   pnpm run dev
@@ -82,19 +82,19 @@ Run development server
 
 Start production server
 
-### npm
+#### npm
 
 ```bash
   npm start
 ```
 
-### yarn
+#### yarn
 
 ```bash
   yarn start
 ```
 
-### pnpm
+#### pnpm
 
 ```bash
   pnpm start
