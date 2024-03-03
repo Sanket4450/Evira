@@ -3,4 +3,3 @@ logs
 node_modules
 .env.local
 .env.production
-package-lock.json
