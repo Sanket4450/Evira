@@ -24,7 +24,7 @@ exports.register = catchAsyncErrors(async (req, res) => {
     const user = await userService.createUser(body)
 
     const tokens =
-        body.role && body.role === 'admin'
+        body.role === 'admin'
             ? await tokenService.generateAuthTokens(user._id, 'admin')
             : await tokenService.generateAuthTokens(user._id)
 
@@ -39,10 +39,10 @@ exports.register = catchAsyncErrors(async (req, res) => {
 exports.login = catchAsyncErrors(async (req, res) => {
     const { email, password } = req.body
 
-    const { _id, isProfileCompleted } =
+    const { _id, role, isProfileCompleted } =
         await authService.loginWithEmailAndPassword(email, password)
 
-    const tokens = await tokenService.generateAuthTokens(_id)
+    const tokens = await tokenService.generateAuthTokens(_id, role)
 
     Logger.info('User login successfully => ' + email)
 

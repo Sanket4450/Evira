@@ -69,7 +69,7 @@ exports.getAdminCategories = ({ page, limit }) => {
     page ||= 1
     limit ||= 8
 
-    return dbRepo.findPage(constant.COLLECTIONS.CATEGORY, {}, {}, page, limit)
+    return dbRepo.findWithCount(constant.COLLECTIONS.CATEGORY, {}, {}, page, limit)
 }
 
 exports.postCategory = (categoryBody) => {

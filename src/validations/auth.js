@@ -22,7 +22,7 @@ const register = {
 const login = {
     body: joi.object().keys({
         email: emailValidation,
-        password: passwordValidation,
+        password: stringReqValidation,
     }),
 }
 

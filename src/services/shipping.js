@@ -23,6 +23,12 @@ exports.getShippingTypes = () => {
     return dbRepo.find(constant.COLLECTIONS.SHIPPINGTYPE, {})
 }
 
+exports.getAdminShippingTypes = () => {
+    Logger.info('Inside getShippingTypes')
+
+    return dbRepo.find(constant.COLLECTIONS.SHIPPINGTYPE, {})
+}
+
 exports.createShippingType = (shippingBody) => {
     Logger.info('Inside createShippingType')
 

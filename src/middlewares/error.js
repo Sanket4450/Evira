@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 
-exports.errorConverter = (err, req, res, next) => {
+exports.errorConverter = (err, _, __, next) => {
     if (!(err instanceof ApiError)) {
         const statusCode =
             err.statusCode || err instanceof mongoose.Error
@@ -14,7 +14,7 @@ exports.errorConverter = (err, req, res, next) => {
     next(err)
 }
 
-exports.errorHandler = (err, req, res, next) => {
+exports.errorHandler = (err, _, res, __) => {
     const { message, statusCode } = err
 
     const response = {

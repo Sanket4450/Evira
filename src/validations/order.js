@@ -38,7 +38,7 @@ const getAdminOrders = {
         ...pageAndLimit,
         type: stringValidation
             .lowercase()
-            .valid('ongoing', 'completed')
+            .valid('all', 'ongoing', 'completed')
             .label('Order Status'),
     }),
 }
@@ -65,7 +65,7 @@ const updateOrder = {
                 'Shipped',
                 'Out for Delivery',
                 'Delivered',
-                'Canceled'
+                'Canceled',
             ),
             description: stringValidation,
             date: dateValidation,

@@ -93,22 +93,6 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
             },
         },
         {
-            $unwind: {
-                path: '$reviews',
-                preserveNullAndEmptyArrays: true,
-            },
-        },
-        {
-            $group: {
-                _id: '$_id',
-                name: { $first: '$name' },
-                image: { $first: '$image' },
-                price: { $first: '$price' },
-                sold: { $first: '$sold' },
-                stars: { $avg: '$reviews.star' },
-            },
-        },
-        {
             $project: {
                 name: 1,
                 image: 1,
@@ -134,6 +118,145 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
     ]
 
     return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
+}
+
+exports.getAdminProducts = async ({
+    matchCriteria,
+    page,
+    limit,
+    category,
+    keyword,
+    min_price,
+    max_price,
+    rating,
+}) => {
+    Logger.info(
+        `Inside getProducts => keyword = ${keyword}, page = ${page}, limit = ${limit}, category = ${category}, min_price = ${min_price}, max_price = ${max_price}`
+    )
+
+    matchCriteria ||= {}
+    page ||= 1
+    limit ||= 10
+
+    const pipeline = []
+
+    if (keyword) {
+        pipeline.push({
+            $match: {
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { description: { $regex: keyword, $options: 'i' } },
+                ],
+            },
+        })
+    }
+    if (category) {
+        pipeline.push({
+            $match: {
+                category: new mongoose.Types.ObjectId(category),
+            },
+        })
+    }
+
+    if (min_price) {
+        pipeline.push({
+            $match: {
+                price: { $gte: min_price },
+            },
+        })
+    }
+
+    if (max_price) {
+        pipeline.push({
+            $match: {
+                price: { $lte: max_price },
+            },
+        })
+    }
+
+    pipeline.push({
+        $sort: {
+            sold: -1,
+        },
+    })
+
+    pipeline.push(
+        {
+            $lookup: {
+                from: 'offers',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'offers',
+            },
+        },
+        {
+            $lookup: {
+                from: 'reviews',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'reviews',
+            },
+        },
+        {
+            $project: {
+                name: 1,
+                image: 1,
+                price: 1,
+                sold: 1,
+                offers: '$offers',
+                stars: {
+                    $round: [
+                        {
+                            $ifNull: [
+                                {
+                                    $avg: '$reviews.star',
+                                },
+                                0,
+                            ],
+                        },
+                        1,
+                    ],
+                },
+                _id: 0,
+                id: '$_id',
+            },
+        }
+    )
+
+    if (rating) {
+        pipeline.push({
+            $match: {
+                stars: { $gte: rating },
+            },
+        })
+    }
+
+    pipeline.push({
+        $count: 'count',
+    })
+
+    const [countObject] = await dbRepo.aggregate(
+        constant.COLLECTIONS.PRODUCT,
+        pipeline
+    )
+
+    pipeline.pop()
+
+    pipeline.push(
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
+        }
+    )
+
+    const products = await dbRepo.aggregate(
+        constant.COLLECTIONS.PRODUCT,
+        pipeline
+    )
+
+    return { countObject, products }
 }
 
 exports.getProductsByCategory = (
@@ -376,6 +499,17 @@ exports.getFullProductById = (productId) => {
         },
         {
             $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'categories',
+            },
+        },
+        {
+            $unwind: '$categories',
+        },
+        {
+            $lookup: {
                 from: 'reviews',
                 localField: '_id',
                 foreignField: 'product',
@@ -405,26 +539,32 @@ exports.getFullProductById = (productId) => {
                 reviewCount: {
                     $size: '$reviews',
                 },
+                categories: '$categories',
                 defaultVariant: {
+                    name: '$defaultVariant.name',
                     size: '$defaultVariant.size',
                     color: '$defaultVariant.color',
                     price: '$defaultVariant.price',
                     id: '$defaultVariant._id',
+                    quantity: '$defaultVariant.quantity',
                 },
                 variants: {
                     $map: {
                         input: '$variants',
                         as: 'variant',
                         in: {
+                            name: '$$variant.name',
                             size: '$$variant.size',
                             color: '$$variant.color',
                             price: '$$variant.price',
                             id: '$$variant._id',
+                            quantity: '$$variant.quantity',
                         },
                     },
                 },
                 _id: 0,
                 id: '$_id',
+                quantity: '$quantity',
             },
         },
     ]

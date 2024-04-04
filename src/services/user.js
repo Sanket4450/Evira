@@ -26,6 +26,7 @@ exports.getUserByEmail = async (email) => {
     const data = {
         nickName: 1,
         password: 1,
+        role: 1,
         isProfileCompleted: 1,
     }
 
@@ -81,6 +82,7 @@ exports.createUser = async (userBody) => {
         Logger.info('Inside createUser')
 
         userBody.password = await bcrypt.hash(userBody.password, 10)
+        userBody.role = userBody.role === 'admin' ? 'admin' : 'user'
 
         return dbRepo.create(constant.COLLECTIONS.USER, { data: userBody })
     } catch (error) {
@@ -362,7 +364,7 @@ exports.getUsers = (adminId, { page, limit }) => {
         _id: { $ne: new mongoose.Types.ObjectId(adminId) },
     }
 
-    return dbRepo.findPage(
+    return dbRepo.findWithCount(
         constant.COLLECTIONS.USER,
         { query },
         {},

@@ -17,9 +17,9 @@ const getOffers = {
     }),
 }
 
-const getAdminOffer = {
+const getProductOffers = {
     params: joi.object().keys({
-        offerId: idReqValidation,
+        productId: idReqValidation,
     }),
 }
 
@@ -54,7 +54,7 @@ const deleteOffer = {
 
 module.exports = {
     getOffers,
-    getAdminOffer,
+    getProductOffers,
     postOffer,
     updateOffer,
     deleteOffer,

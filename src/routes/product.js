@@ -79,6 +79,14 @@ router3.get(
     productController.getCartProductsBySearch
 )
 
+adminRouter.get(
+    '/',
+    authChecker,
+    authorizeRole('admin'),
+    validate(productValidation.getAdminProducts),
+    productController.getAdminProducts
+)
+
 adminRouter.post(
     '/',
     authChecker,

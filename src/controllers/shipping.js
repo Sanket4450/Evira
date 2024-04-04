@@ -13,7 +13,7 @@ exports.getAdminShippingTypes = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    const shippingTypes = await shippingService.getShippingTypes()
+    const shippingTypes = await shippingService.getAdminShippingTypes()
 
     return sendResponse(
         res,

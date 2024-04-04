@@ -160,7 +160,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
     const { orderId } = req.params
     const { address, type, status } = req.body
 
-    let order = await orderService.getAdminOrderById(orderId)
+    let order = await orderService.getAdminOrderInfoById(orderId)
 
     if (!order) {
         throw new ApiError(

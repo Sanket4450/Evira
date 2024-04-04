@@ -123,6 +123,31 @@ exports.getFullProductById = catchAsyncErrors(async (req, res) => {
     )
 })
 
+exports.getAdminProducts = catchAsyncErrors(async (req, res) => {
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
+    }
+
+    const { countObject, products } = await productService.getAdminProducts(
+        req.query
+    )
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        {
+            products: {
+                count: countObject?.count || 0,
+                results: products,
+            },
+        },
+        'Admin Products retrieved successfully'
+    )
+})
+
 exports.toggleLike = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
     const { isLiked } = req.body
@@ -329,10 +354,17 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
         })
     }
 
+    const productCartAmount =
+        await cartService.getCartActionProductAmount(productId, user._id)
+    const totalCartAmount = await cartService.getTotalAmount(user._id)
+
+    const productAmount = productCartAmount[0] ? productCartAmount[0].amount : 0
+    const totalAmount = totalCartAmount[0] ? totalCartAmount[0].amount : 0
+
     return sendResponse(
         res,
         httpStatus.OK,
-        { action },
+        { action, productAmount, totalAmount },
         `${
             action === 'add'
                 ? 'Product added to cart successfully'

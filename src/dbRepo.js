@@ -87,8 +87,39 @@ class DbRepo {
         })
     }
 
+    findWithCount(collectionName, queryObject, sortQuery = {}, page, limit) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const count = await domain[collectionName].countDocuments(
+                    queryObject.query
+                )
+                const results = await domain[collectionName]
+                    .find(queryObject.query, queryObject.data)
+                    .sort(sortQuery)
+                    .skip((page - 1) * limit)
+                    .limit(limit)
+                resolve({ count, results })
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+    count(collectionName, queryObject) {
+        return new Promise((resolve, reject) => {
+            domain[collectionName]
+                .countDocuments(queryObject.query)
+                .then((results) => {
+                    resolve(results)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    }
+
     aggregate(collectionName, queryArray) {
-        return new Promise((resolve, reject) => [
+        return new Promise((resolve, reject) => {
             domain[collectionName]
                 .aggregate(queryArray)
                 .then((results) => {
@@ -96,8 +127,8 @@ class DbRepo {
                 })
                 .catch((error) => {
                     reject(error)
-                }),
-        ])
+                })
+        })
     }
 }
 

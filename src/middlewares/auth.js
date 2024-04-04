@@ -3,7 +3,7 @@ const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
 const { tokenService } = require('../services/index.service')
 
-const authChecker = async (req, res, next) => {
+const authChecker = async (req, _, next) => {
     try {
         const token =
             req.headers && req.headers.authorization
@@ -21,7 +21,7 @@ const authChecker = async (req, res, next) => {
     }
 }
 
-const authorizeRole = (role) => async (req, res, next) => {
+const authorizeRole = (role) => async (req, _, next) => {
     try {
         if (role !== req.user.role) {
             return next(

@@ -42,6 +42,16 @@ const verifyToken = (token, secret) => {
     })
 }
 
+const decodeToken = (token, secret) => {
+    if (!token) {
+        throw new ApiError(
+            constant.MESSAGES.TOKEN_IS_REQUIRED,
+            httpStatus.FORBIDDEN
+        )
+    }
+    return jwt.decode(token)
+}
+
 const generateAuthTokens = async (userId, role = 'user') => {
     Logger.info(`Inside generateAuthTokens => role = ${role}`)
 
@@ -71,4 +81,5 @@ module.exports = {
     generateToken,
     verifyToken,
     generateAuthTokens,
+    decodeToken,
 }

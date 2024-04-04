@@ -80,7 +80,7 @@ exports.getAdminPromoCodes = ({ page, limit }) => {
         createdAt: -1,
     }
 
-    return dbRepo.findPage(
+    return dbRepo.findWithCount(
         constant.COLLECTIONS.PROMOTION,
         { data },
         sortQuery,

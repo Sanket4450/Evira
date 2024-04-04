@@ -11,6 +11,7 @@ const {
     numberValidation,
     idValidation,
     booleanReqValidation,
+    dateValidation,
 } = require('./common')
 
 const getProducts = {
@@ -43,6 +44,17 @@ const getProductsBySearch = {
         sortBy: stringReqValidation
             .lowercase()
             .valid('popular', 'recent', 'price_desc', 'price_asc'),
+        rating: integerNumberValidation.valid(1, 2, 3, 4, 5),
+        ...pageAndLimit,
+    }),
+}
+
+const getAdminProducts = {
+    query: joi.object().keys({
+        keyword: stringValidation.label('Search Keyword'),
+        category: idValidation,
+        min_price: numberValidation.precision(2),
+        max_price: numberValidation.precision(2),
         rating: integerNumberValidation.valid(1, 2, 3, 4, 5),
         ...pageAndLimit,
     }),
@@ -129,6 +141,7 @@ const postProduct = {
             price: numberValidation.precision(2),
             quantity: integerNumberValidation,
         }),
+        variants: joi.array(),
     }),
 }
 
@@ -143,7 +156,7 @@ const updateProduct = {
         category: idValidation,
         price: numberValidation.precision(2),
         quantity: integerNumberValidation,
-        defaultVariant: idValidation,
+        defaultVariant: dateValidation,
     }),
 }
 
@@ -158,6 +171,7 @@ module.exports = {
     getProductsByCategory,
     getFullProductById,
     getProductsBySearch,
+    getAdminProducts,
     toggleLike,
     toggleCart,
     searchWithOnlyKeyword,

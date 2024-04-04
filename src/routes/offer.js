@@ -8,11 +8,11 @@ const offerValidation = require('../validations/offer')
 router.get('/', validate(offerValidation.getOffers), offerController.getOffers)
 
 adminRouter.get(
-    '/:offerId',
+    '/:productId',
     authChecker,
     authorizeRole('admin'),
-    validate(offerValidation.getAdminOffer),
-    offerController.getAdminOffer
+    validate(offerValidation.getProductOffers),
+    offerController.getProductOffers
 )
 
 adminRouter.post(

@@ -23,6 +23,7 @@ const adminShippingRoutes = require('./shipping')
 const adminPromotionRoutes = require('./promotion')
 const orderRoutes = require('./order').router
 const adminOrderRoutes = require('./order').adminRouter
+const adminDashboardRoutes = require('./dashboard')
 
 userRouter.use('/', rootRoutes)
 userRouter.use('/auth', authRoutes)
@@ -48,6 +49,7 @@ adminRouter.use('/reviews', adminReviewRoutes)
 adminRouter.use('/shipping', adminShippingRoutes)
 adminRouter.use('/promo', adminPromotionRoutes)
 adminRouter.use('/orders', adminOrderRoutes)
+adminRouter.use('/dashboard', adminDashboardRoutes)
 
 module.exports = {
     userRoutes: userRouter,

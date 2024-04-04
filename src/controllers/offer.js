@@ -22,8 +22,8 @@ exports.getOffers = catchAsyncErrors(async (req, res) => {
     )
 })
 
-exports.getAdminOffer = catchAsyncErrors(async (req, res) => {
-    const { offerId } = req.params
+exports.getProductOffers = catchAsyncErrors(async (req, res) => {
+    const { productId } = req.params
 
     if (!(await userService.getUserById(req.user.sub))) {
         throw new ApiError(
@@ -32,20 +32,13 @@ exports.getAdminOffer = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    const offer = await offerService.getOfferById(offerId)
-
-    if (!offer) {
-        throw new ApiError(
-            constant.MESSAGES.OFFER_NOT_FOUND,
-            httpStatus.NOT_FOUND
-        )
-    }
+    const offers = await offerService.getOffersByProduct(productId)
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { offer },
-        'Special offer retrieved successfully'
+        { offers },
+        'Special offers retrieved successfully'
     )
 })
 

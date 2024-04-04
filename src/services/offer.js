@@ -11,6 +11,14 @@ exports.getOfferById = (id) => {
     return dbRepo.findOne(constant.COLLECTIONS.OFFER, { query })
 }
 
+exports.getOffersByProduct = (productId) => {
+    const query = {
+        product: new mongoose.Types.ObjectId(productId),
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.OFFER, { query })
+}
+
 exports.getOfferByProduct = (productId) => {
     const query = {
         product: new mongoose.Types.ObjectId(productId),
