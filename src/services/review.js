@@ -1,6 +1,22 @@
 const mongoose = require('mongoose')
+const httpStatus = require('http-status')
+const ApiError = require('../utils/ApiError')
 const dbRepo = require('../dbRepo')
 const constant = require('../constants')
+const orderService = require('./order')
+
+const getReviewByProductAndUser = (productId, userId) => {
+    const query = {
+        product: new mongoose.Types.ObjectId(productId),
+        user: new mongoose.Types.ObjectId(userId),
+    }
+
+    const data = {
+        _id: 1,
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
+}
 
 exports.getReviews = (productId, { rating, page, limit }) => {
     Logger.info(
@@ -189,32 +205,24 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
     return dbRepo.aggregate(constant.COLLECTIONS.REVIEW, pipeline)
 }
 
-const checkReviewWithUserId = (reviewId, userId) => {
-    const query = {
-        _id: { $eq: new mongoose.Types.ObjectId(reviewId) },
-        user: new mongoose.Types.ObjectId(userId),
-    }
-
-    const data = {
-        _id: 1,
-    }
-
-    return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
-}
-
-exports.validateEditableReviews = async (userId, reviews = []) => {
-    for (let review of reviews) {
-        if (await checkReviewWithUserId(review.id, userId)) {
-            review['isEditable'] = true
-        } else {
-            review['isEditable'] = false
-        }
-    }
-    return reviews
-}
-
-exports.postReview = (reviewBody) => {
+exports.postReview = async (reviewBody) => {
     Logger.info(`Inside postReview => product = ${reviewBody.product}`)
+
+    const { product, user } = reviewBody
+
+    if (!await orderService.checkUserCompletedOrder(product, user)) {
+        throw new ApiError(
+          constant.MESSAGES.CANNOT_POST_REVIEW,
+          httpStatus.FORBIDDEN
+        )
+    }
+
+    if (await getReviewByProductAndUser(product, user)) {
+        throw new ApiError(
+          constant.MESSAGES.REVIEW_ALREADY_POSTED,
+          httpStatus.FORBIDDEN
+        )
+    }
 
     const data = {
         ...reviewBody,
@@ -248,6 +256,17 @@ exports.checkReviewWithUserId = (reviewId, userId) => {
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
+}
+
+exports.validateEditableReviews = async (userId, reviews = []) => {
+    for (let review of reviews) {
+        if (await exports.checkReviewWithUserId(review.id, userId)) {
+            review['isEditable'] = true
+        } else {
+            review['isEditable'] = false
+        }
+    }
+    return reviews
 }
 
 exports.updateReview = (reviewId, reviewBody) => {

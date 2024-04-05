@@ -29,6 +29,20 @@ exports.createOrder = (userId, orderBody) => {
     return dbRepo.create(constant.COLLECTIONS.ORDER, { data })
 }
 
+exports.checkUserCompletedOrder = (productId, userId) => {
+    const query = {
+        user: new mongoose.Types.ObjectId(userId),
+        'item.product': new mongoose.Types.ObjectId(productId),
+        type: { $regex: 'completed', $options: 'i' }
+    }
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query, data })
+}
+
 exports.updateOrder = (orderId, updateBody) => {
     Logger.info(`Inside updateOrder => order = ${orderId}`)
 

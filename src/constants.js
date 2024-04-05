@@ -29,6 +29,8 @@ module.exports = {
         OFFER_NOT_FOUND: 'Offer not found for this offerId',
         OFFER_ALREADY_EXISTS: 'An offer already exists with this product',
         REVIEW_NOT_FOUND: 'Review not found for this reviewId',
+        CANNOT_POST_REVIEW: 'Cannot post review to incompleted order',
+        REVIEW_ALREADY_POSTED: 'Review already posted by you on this product',
         USER_NOT_ALLOWED: 'User is not allowed to modify this resource',
         TOGGLE_FIELD_MISSING: 'Please enter the toggle field',
         ENTER_VALID_ACTION: 'Please enter a valid cart action',
