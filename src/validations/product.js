@@ -130,6 +130,7 @@ const postProduct = {
     body: joi.object().keys({
         name: stringReqValidation.max(80),
         image: stringValidation,
+        imageFile: stringValidation,
         description: stringValidation,
         category: idReqValidation,
         price: numberReqValidation.precision(2),
@@ -152,6 +153,7 @@ const updateProduct = {
     body: joi.object().keys({
         name: stringValidation.max(80),
         image: stringValidation,
+        imageFile: stringValidation,
         description: stringValidation,
         category: idValidation,
         price: numberValidation.precision(2),
