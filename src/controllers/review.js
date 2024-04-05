@@ -91,7 +91,7 @@ exports.getReviewsBySearch = catchAsyncErrors(async (req, res) => {
 
   let reviews = await reviewService.getReviewsBySearch(productId, req.query)
   
-  reviews = await reviewService.validateEditableReviews(user._id, reviews)
+  // reviews = await reviewService.validateEditableReviews(user._id, reviews)
 
   return sendResponse(
     res,

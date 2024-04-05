@@ -210,6 +210,7 @@ exports.validateEditableReviews = async (userId, reviews = []) => {
             review['isEditable'] = false
         }
     }
+    return reviews
 }
 
 exports.postReview = (reviewBody) => {
