@@ -903,6 +903,8 @@ paths:
     get:
       tags:
         - Reviews
+      security:
+        - userAuth: []
       parameters:
         - name: productId
           in: path
@@ -977,6 +979,8 @@ paths:
     get:
       tags:
         - Reviews
+      security:
+        - userAuth: []
       parameters:
         - name: productId
           in: path
@@ -2095,6 +2099,7 @@ paths:
           schema:
             type: string
             enum: [ongoing, completed]
+          required: true
           description: type or status of orders
         - name: page
           in: query

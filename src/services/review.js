@@ -189,6 +189,29 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
     return dbRepo.aggregate(constant.COLLECTIONS.REVIEW, pipeline)
 }
 
+const checkReviewWithUserId = (reviewId, userId) => {
+    const query = {
+        _id: { $eq: new mongoose.Types.ObjectId(reviewId) },
+        user: new mongoose.Types.ObjectId(userId),
+    }
+
+    const data = {
+        _id: 1,
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
+}
+
+exports.validateEditableReviews = async (userId, reviews = []) => {
+    for (let review of reviews) {
+        if (await checkReviewWithUserId(review.id, userId)) {
+            review['isEditable'] = true
+        } else {
+            review['isEditable'] = false
+        }
+    }
+}
+
 exports.postReview = (reviewBody) => {
     Logger.info(`Inside postReview => product = ${reviewBody.product}`)
 

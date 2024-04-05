@@ -8,6 +8,7 @@ const { authChecker, authorizeRole } = require('../middlewares/auth')
 
 router1.get(
     '/reviews/:productId',
+    authChecker,
     validate(reviewValidation.getReviews),
     reviewController.getReviews
 )
@@ -21,6 +22,7 @@ router1.post(
 
 router1.get(
     '/reviews/search/:productId',
+    authChecker,
     validate(reviewValidation.getReviewsBySearch),
     reviewController.getReviewsBySearch
 )
