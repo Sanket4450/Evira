@@ -22,10 +22,4 @@ router.post(
     checkoutController.postCheckout
 )
 
-router.get(
-    '/payment-methods',
-    authChecker,
-    checkoutController.getPaymentMethods
-)
-
 module.exports = router

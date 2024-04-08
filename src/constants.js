@@ -47,7 +47,7 @@ module.exports = {
         INCORRECT_PIN: 'Incorrect PIN. Please enter correct PIN',
         ORDER_NOT_FOUND: 'Order not found for this user or orderId',
         ADD_PRODUCTS: 'Please add products into cart first to checkout',
-        AMOUNT_NOT_MATCH: 'Amount not match! please check the total amount',
+        AMOUNT_NOT_MATCHED: 'Amount not match! please check the total amount',
         PAYMENT_METHOD_NOT_FOUND:
             'Payment-method not found for this user or paymentId',
         PAYMENT_METHOD_EXPIRED:
@@ -69,7 +69,6 @@ module.exports = {
         ORDER: 'Order',
         ADDRESS: 'Address',
         PROMOTION: 'Promotion',
-        PAYMENTMETHOD: 'PaymentMethod',
         SHIPPINGTYPE: 'ShippingType',
     },
 }

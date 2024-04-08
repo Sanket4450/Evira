@@ -23,10 +23,6 @@ const productSchema = new mongoose.Schema(
             ref: 'Category',
             required: true,
         },
-        defaultVariant: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Variant',
-        },
         sold: {
             type: Number,
             default: 0,

@@ -70,14 +70,12 @@ const toggleLike = {
 }
 
 const toggleCart = {
-    params: joi.object().keys({
-        productId: idReqValidation,
-    }),
     body: joi.object().keys({
+        productId: idReqValidation,
+        variantId: idReqValidation,
         action: stringReqValidation
             .lowercase()
             .valid('add', 'remove', 'increase', 'decrease'),
-        variant: idValidation,
         quantity: integerNumberValidation.min(0),
     }),
 }
@@ -99,7 +97,6 @@ const postVariant = {
         productId: idReqValidation,
     }),
     body: joi.object().keys({
-        name: stringValidation.max(30),
         size: [stringValidation, integerNumberValidation],
         color: stringValidation,
         price: numberReqValidation.precision(2),
@@ -112,7 +109,6 @@ const updateVariant = {
         variantId: idReqValidation,
     }),
     body: joi.object().keys({
-        name: stringValidation.max(30),
         size: [stringValidation, integerNumberValidation],
         color: stringValidation,
         price: numberValidation.precision(2),
@@ -133,16 +129,6 @@ const postProduct = {
         imageFile: stringValidation,
         description: stringValidation,
         category: idReqValidation,
-        price: numberReqValidation.precision(2),
-        quantity: integerNumberReqValidation,
-        defaultVariant: joi.object().keys({
-            name: stringValidation.max(30),
-            size: [stringValidation, integerNumberValidation],
-            color: stringValidation,
-            price: numberValidation.precision(2),
-            quantity: integerNumberValidation,
-        }),
-        variants: joi.array(),
     }),
 }
 
@@ -156,9 +142,7 @@ const updateProduct = {
         imageFile: stringValidation,
         description: stringValidation,
         category: idValidation,
-        price: numberValidation.precision(2),
-        quantity: integerNumberValidation,
-        defaultVariant: dateValidation,
+        sold: integerNumberValidation
     }),
 }
 

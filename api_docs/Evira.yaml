@@ -1174,17 +1174,6 @@ paths:
           description: empty object
           content:
             application/json: {}
-  /checkout/payment-methods:
-    get:
-      tags:
-        - Checkout
-      security:
-        - userAuth: []
-      responses:
-        '200':
-          description: payment-methods array
-          content:
-            application/json: {}
   /orders/{type}:
     get:
       tags:
@@ -2139,6 +2128,14 @@ paths:
         - Admin Orders
       security:
         - adminAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the order
       requestBody:
         content:
           application/json:
@@ -2163,7 +2160,7 @@ paths:
                       type: string
                       format: date
               example:
-                type: Ongoing
+                type: ongoing
                 status:
                   title: Shipped
                   description: Order Shipped successfully

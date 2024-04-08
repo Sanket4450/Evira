@@ -205,6 +205,8 @@ exports.getCartProducts = (userId) => {
 }
 
 exports.getCartProductsBySearch = (userId, keyword) => {
+    keyword = keyword.trim()
+
     Logger.info(`Inside getCartProductsBySearch => keyword = ${keyword}`)
 
     const pipeline = [

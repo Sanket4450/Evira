@@ -10,10 +10,9 @@ const {
     userService,
     cartService,
     orderService,
-    paymentService,
 } = require('../services/index.service')
 
-exports.getShippingTypes = catchAsyncErrors(async (req, res) => {
+exports.getShippingTypes = catchAsyncErrors(async (_, res) => {
     const shippingTypes = await shippingService.getShippingTypes()
 
     return sendResponse(
@@ -24,7 +23,7 @@ exports.getShippingTypes = catchAsyncErrors(async (req, res) => {
     )
 })
 
-exports.getPromoCodes = catchAsyncErrors(async (req, res) => {
+exports.getPromoCodes = catchAsyncErrors(async (_, res) => {
     const promoCodes = await promotionService.getPromoCodes(Date.now())
 
     return sendResponse(
@@ -111,7 +110,7 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
             address,
             shippingType: shipping,
             amount: item.amount,
-            type: 'Ongoing',
+            type: 'ongoing',
             status: {
                 title: 'Ordered',
                 description: 'Order placed successfully',
@@ -124,24 +123,4 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
     await cartService.emptyCart(user._id)
 
     return sendResponse(res, httpStatus.OK, {}, 'Checkout successfull')
-})
-
-exports.getPaymentMethods = catchAsyncErrors(async (req, res) => {
-    const user = await userService.getUserById(req.user.sub)
-
-    if (!user) {
-        throw new ApiError(
-            constant.MESSAGES.USER_NOT_FOUND,
-            httpStatus.NOT_FOUND
-        )
-    }
-
-    const paymentMethods = await paymentService.getPaymentMethods(user._id)
-
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        { paymentMethods },
-        'Payment-methods retrieved successfully'
-    )
 })

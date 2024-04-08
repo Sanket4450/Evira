@@ -24,9 +24,7 @@ exports.getOrders = catchAsyncErrors(async (req, res) => {
         res,
         httpStatus.OK,
         { orders },
-        `${
-            type === 'ongoing' ? 'Ongoing' : 'Completed'
-        } Orders retrieved successfully`
+        `${type} Orders retrieved successfully`
     )
 })
 

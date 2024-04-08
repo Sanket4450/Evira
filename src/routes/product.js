@@ -64,7 +64,7 @@ router2.get(
 )
 
 router3.put(
-    '/toggle-cart/:productId',
+    '/toggle-cart',
     authChecker,
     validate(productValidation.toggleCart),
     productController.toggleCart

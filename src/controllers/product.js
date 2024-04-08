@@ -271,8 +271,7 @@ exports.getWishlistProductsBySearch = catchAsyncErrors(async (req, res) => {
 })
 
 exports.toggleCart = catchAsyncErrors(async (req, res) => {
-    const { productId } = req.params
-    const { action, variant, quantity } = req.body
+    const { productId, variantId, action, quantity } = req.body
 
     const user = await userService.getUserById(req.user.sub)
 
@@ -292,8 +291,6 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    const variantId = variant || product.defaultVariant.id.toString()
-
     const productVariant = await productService.getVariant(variantId, productId)
 
     if (!productVariant) {
@@ -306,7 +303,7 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
     if (productVariant.quantity < quantity) {
         throw new ApiError(
             constant.MESSAGES.NOT_HAVE_ENOUGH_QUANTITY,
-            httpStatus.FORBIDDEN
+            httpStatus.CONFLICT
         )
     }
 
