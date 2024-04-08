@@ -392,10 +392,6 @@ exports.getProductsBySearch = ({
             })
         }
 
-        if (rating) {
-            pipeline.push({})
-        }
-
         if (sortBy === 'recent') {
             pipeline.push({
                 $sort: {
@@ -464,6 +460,14 @@ exports.getProductsBySearch = ({
                 },
             }
         )
+
+        if (rating) {
+          pipeline.push({
+            $match: {
+              stars: { $gte: rating },
+            },
+          })
+        }
 
         return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
     } catch (error) {
