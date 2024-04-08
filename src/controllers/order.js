@@ -3,7 +3,7 @@ const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
-const { userService, orderService } = require('../services/index.service')
+const { userService, orderService, reviewService } = require('../services/index.service')
 
 exports.getOrders = catchAsyncErrors(async (req, res) => {
     const { page, limit } = req.query
@@ -19,6 +19,16 @@ exports.getOrders = catchAsyncErrors(async (req, res) => {
     }
 
     const orders = await orderService.getOrders(type, user._id, { page, limit })
+    
+    if (type === 'completed') {
+        for (let order of orders) {
+            if (await reviewService.checkReviewPosted(order.product, user._id)) {
+                order['isReviewPosted'] = true
+            } else {
+                order['isReviewPosted'] = false
+            }
+        }
+    }
 
     return sendResponse(
         res,

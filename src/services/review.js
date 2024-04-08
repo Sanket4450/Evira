@@ -334,3 +334,16 @@ exports.likeUnlikeReview = (reviewId, userId, like) => {
 
     return dbRepo.updateOne(constant.COLLECTIONS.REVIEW, { query, data })
 }
+
+exports.checkReviewPosted = (productId, userId) => {
+    const query = {
+        product: new mongoose.Types.ObjectId(productId),
+        user: new mongoose.Types.ObjectId(userId),
+    }
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.REVIEW, { query, data })
+}
