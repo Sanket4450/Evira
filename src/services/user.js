@@ -18,6 +18,18 @@ exports.getUserById = async (userId) => {
     return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
 }
 
+exports.getUserPasswordById = async (userId) => {
+    const query = {
+        _id: new mongoose.Types.ObjectId(userId),
+    }
+
+    const data = {
+        password: 1,
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.USER, { query, data })
+}
+
 exports.getUserByEmail = async (email) => {
     const query = {
         email,

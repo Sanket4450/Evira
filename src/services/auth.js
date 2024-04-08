@@ -108,6 +108,21 @@ exports.resetPassword = async ({ token, password }) => {
     await userService.updatePassword(sub, password)
 }
 
+exports.resetOldPassword = async ({ userId, oldPassword, password }) => {
+    Logger.info('Inside resetOldPassword')
+
+    const user = await userService.getUserPasswordById(userId)
+
+    if (!(await bcrypt.compare(oldPassword, user.password))) {
+        throw new ApiError(
+            constant.MESSAGES.INCORRECT_PASSWROD,
+            httpStatus.FORBIDDEN
+        )
+    }
+
+    await userService.updatePassword(userId, password)
+}
+
 exports.refreshTokens = async (token) => {
     Logger.info(`Inside refreshTokens => token = ${token}`)
 

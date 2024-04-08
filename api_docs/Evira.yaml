@@ -165,6 +165,33 @@ paths:
           description: Success response
           content:
             application/json: {}
+  /auth/reset-old-password:
+    put:
+      tags:
+        - Auth
+      security:
+        - userAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                password:
+                  type: string
+              required:
+                - oldPassword
+                - password
+              example:
+                oldPassword: user1234
+                password: user5678
+      responses:
+        '200':
+          description: Success response
+          content:
+            application/json: {}
   /auth/refresh-tokens:
     post:
       tags:
@@ -829,7 +856,7 @@ paths:
           description: wishlist products array for search results
           content:
             application/json: {}
-  /products/cart/toggle-cart/{productId}:
+  /products/cart/toggle-cart:
     put:
       tags:
         - Products
@@ -841,6 +868,12 @@ paths:
             schema:
               type: object
               properties:
+                productId:
+                  type: string,
+                  format: objectId
+                variantId:
+                  type: string,
+                  format: objectId
                 action:
                   type: string
                   enum: [add, remove, increase, decrease]
@@ -850,17 +883,14 @@ paths:
                 quantity:
                   type: integer
               required:
+                - productId
+                - variantId
                 - action
               example:
+                productId: 6613c70e5190bb0bebc88616
+                variantId: 6613c70e5190bb0bebc88619
                 action: add
                 quantity: 1
-      parameters:
-        - name: productId
-          in: path
-          schema:
-            type: string
-            format: objectId
-          required: true
       responses:
         '200':
           description: action field with value

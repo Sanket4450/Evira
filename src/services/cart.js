@@ -388,7 +388,9 @@ exports.emptyCart = (userId) => {
     }
 
     const data = {
-        items: [],
+        $set: {
+            items: [],
+        }
     }
 
     return dbRepo.updateOne(constant.COLLECTIONS.CART, { query, data })

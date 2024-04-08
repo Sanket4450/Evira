@@ -46,6 +46,13 @@ const resetPassword = {
     }),
 }
 
+const resetOldPassword = {
+    body: joi.object().keys({
+        oldPassword: passwordValidation,
+        password: passwordValidation,
+    }),
+}
+
 const refreshTokens = {
     body: joi.object().keys({
         token: stringReqValidation,
@@ -58,5 +65,6 @@ module.exports = {
     forgotPasswordWithEmail,
     verifyResetOtp,
     resetPassword,
+    resetOldPassword,
     refreshTokens,
 }

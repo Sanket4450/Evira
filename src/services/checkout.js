@@ -33,18 +33,11 @@ exports.postCheckout = async ({ userId, address, shipping, promo }) => {
         if (items.length === 0) {
             throw new ApiError(
                 constant.MESSAGES.ADD_PRODUCTS,
-                httpStatus.FORBIDDEN
+                httpStatus.CONFLICT
             )
         }
 
         let [{ amount }] = await cartService.getTotalAmount(userId)
-
-        if (!amount) {
-            throw new ApiError(
-                constant.MESSAGES.ADD_PRODUCTS,
-                httpStatus.FORBIDDEN
-            )
-        }
 
         if (promo) {
             const promoCode = await promotionService.checkPromoCodeValidity(
@@ -58,6 +51,8 @@ exports.postCheckout = async ({ userId, address, shipping, promo }) => {
                     httpStatus.NOT_FOUND
                 )
             }
+
+            await promotionService.updatePromoCode(promo, { remainingUses: promoCode.remainingUses - 1 })
 
             for (let item of items) {
                 item.amount -=

@@ -59,6 +59,7 @@ exports.checkPromoCodeValidity = (promoId, date) => {
     }
 
     const data = {
+        remainingUses: 1,
         discountPercentage: 1,
     }
 
@@ -106,7 +107,9 @@ exports.updatePromoCode = (promoId, promoBody) => {
     }
 
     const data = {
-        ...promoBody,
+        $set: {
+            ...promoBody,
+        },
     }
 
     return dbRepo.updateOne(constant.COLLECTIONS.PROMOTION, { query, data })

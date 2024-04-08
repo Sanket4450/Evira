@@ -83,6 +83,14 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
         },
         {
             $lookup: {
+                from: 'variants',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
+        {
+            $lookup: {
                 from: 'reviews',
                 localField: '_id',
                 foreignField: 'product',
@@ -93,7 +101,7 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
             $project: {
                 name: 1,
                 image: 1,
-                price: 1,
+                price: { $arrayElemAt: ['$variants.price', 0] },
                 sold: 1,
                 stars: {
                     $round: [
@@ -181,6 +189,14 @@ exports.getAdminProducts = async ({
     pipeline.push(
         {
             $lookup: {
+                from: 'variants',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
+        {
+            $lookup: {
                 from: 'offers',
                 localField: '_id',
                 foreignField: 'product',
@@ -199,7 +215,7 @@ exports.getAdminProducts = async ({
             $project: {
                 name: 1,
                 image: 1,
-                price: 1,
+                price: { $arrayElemAt: ['$variants.price', 0] },
                 sold: 1,
                 offers: '$offers',
                 stars: {
@@ -286,6 +302,14 @@ exports.getProductsByCategory = (
         },
         {
             $lookup: {
+                from: 'variants',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
+        {
+            $lookup: {
                 from: 'reviews',
                 localField: '_id',
                 foreignField: 'product',
@@ -303,7 +327,7 @@ exports.getProductsByCategory = (
                 _id: '$_id',
                 name: { $first: '$name' },
                 image: { $first: '$image' },
-                price: { $first: '$price' },
+                price: { $first: { price: { $arrayElemAt: ['$variants.price', 0] } } },
                 sold: { $first: '$sold' },
                 stars: { $avg: '$reviews.star' },
             },

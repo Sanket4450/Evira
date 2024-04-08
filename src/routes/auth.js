@@ -30,6 +30,13 @@ router.put(
     authController.resetPassword
 )
 
+router.put(
+    '/reset-old-password',
+    authChecker,
+    validate(authValidation.resetOldPassword),
+    authController.resetOldPassword
+)
+
 router.post(
     '/refresh-tokens',
     validate(authValidation.refreshTokens),
