@@ -158,7 +158,7 @@ exports.getAdminOrder = catchAsyncErrors(async (req, res) => {
 
 exports.updateOrder = catchAsyncErrors(async (req, res) => {
     const { orderId } = req.params
-    const { address, type, status } = req.body
+    let { address, type, status } = req.body
 
     let order = await orderService.getAdminOrderInfoById(orderId)
 
