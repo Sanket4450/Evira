@@ -175,6 +175,14 @@ exports.getWishlistProductsByCategory = (
         },
         {
             $lookup: {
+                from: 'variants',
+                localField: 'products._id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
+        {
+            $lookup: {
                 from: 'reviews',
                 localField: 'products._id',
                 foreignField: 'product',
@@ -186,7 +194,7 @@ exports.getWishlistProductsByCategory = (
                 _id: '$products._id',
                 name: { $first: '$products.name' },
                 image: { $first: '$products.image' },
-                price: { $first: '$products.price' },
+                price: { $first: { $arrayElemAt: ['$variants.price', 0] } },
                 sold: { $first: '$products.sold' },
                 stars: {
                     $first: {
@@ -218,7 +226,6 @@ exports.getWishlistProductsByCategory = (
                 id: '$_id',
             },
         },
-        // { $sort: logic }
         {
             $skip: (page - 1) * limit,
         },
@@ -287,56 +294,6 @@ exports.getWishlistProductsBySearch = (
         }
     }
 
-    if (min_price) {
-        pipeline.push({
-            $match: {
-                'products.price': { $gte: min_price },
-            },
-        })
-    }
-
-    if (max_price) {
-        pipeline.push({
-            $match: {
-                'products.price': { $lte: max_price },
-            },
-        })
-    }
-
-    switch (sortBy) {
-        case 'recent':
-            pipeline.push({
-            $sort: {
-                'products.updatedAt': -1,
-            },
-            })
-            break
-
-        case 'price_desc':
-        pipeline.push({
-            $sort: {
-            'products.price': -1,
-            },
-        })
-            break
-
-        case 'price_asc':
-            pipeline.push({
-            $sort: {
-                'products.price': 1,
-            },
-            })
-            break
-
-        default:
-            pipeline.push({
-            $sort: {
-                'products.sold': -1,
-            },
-            })
-            break
-    }
-
     pipeline.push(
         {
             $skip: (page - 1) * limit,
@@ -347,6 +304,14 @@ exports.getWishlistProductsBySearch = (
     )
 
     pipeline.push(
+        {
+            $lookup: {
+                from: 'variants',
+                localField: 'products._id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
         {
             $lookup: {
                 from: 'reviews',
@@ -360,7 +325,7 @@ exports.getWishlistProductsBySearch = (
                 _id: '$products._id',
                 name: { $first: '$products.name' },
                 image: { $first: '$products.image' },
-                price: { $first: '$products.price' },
+                price: { $first: { $arrayElemAt: ['$variants.price', 0] } },
                 sold: { $first: '$products.sold' },
                 stars: {
                     $first: {
@@ -394,12 +359,62 @@ exports.getWishlistProductsBySearch = (
         }
     )
 
+    if (min_price) {
+        pipeline.push({
+            $match: {
+                price: { $gte: min_price },
+            },
+        })
+    }
+
+    if (max_price) {
+        pipeline.push({
+            $match: {
+                price: { $lte: max_price },
+            },
+        })
+    }
+
     if (rating) {
         pipeline.push({
             $match: {
                 stars: { $gte: rating },
             },
         })
+    }
+
+    switch (sortBy) {
+        case 'recent':
+            pipeline.push({
+                $sort: {
+                    'products.updatedAt': -1,
+                },
+            })
+            break
+
+        case 'price_desc':
+            pipeline.push({
+                $sort: {
+                    price: -1,
+                },
+            })
+            break
+
+        case 'price_asc':
+            pipeline.push({
+                $sort: {
+                    price: 1,
+                },
+            })
+            break
+
+        default:
+            pipeline.push({
+            $sort: {
+                sold: -1,
+            },
+            })
+            break
     }
 
     return dbRepo.aggregate(constant.COLLECTIONS.WISHLIST, pipeline)

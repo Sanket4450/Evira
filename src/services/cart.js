@@ -174,6 +174,7 @@ exports.getCartProducts = (userId) => {
             $group: {
                 _id: '$variant._id',
                 product: { $first: '$product._id' },
+                variant: { $first: '$variant._id' },
                 name: { $first: '$product.name' },
                 image: { $first: '$product.image' },
                 size: { $first: '$variant.size' },
@@ -189,6 +190,7 @@ exports.getCartProducts = (userId) => {
         {
             $project: {
                 product: 1,
+                variant: 1,
                 name: 1,
                 image: 1,
                 size: 1,
@@ -259,6 +261,7 @@ exports.getCartProductsBySearch = (userId, keyword) => {
             $group: {
                 _id: '$variant._id',
                 product: { $first: '$product._id' },
+                variant: { $first: '$variant._id' },
                 name: { $first: '$product.name' },
                 image: { $first: '$product.image' },
                 size: { $first: '$variant.size' },
@@ -274,6 +277,7 @@ exports.getCartProductsBySearch = (userId, keyword) => {
         {
             $project: {
                 product: 1,
+                variant: 1,
                 name: 1,
                 image: 1,
                 size: 1,

@@ -250,56 +250,6 @@ exports.getProductsBySearch = ({
             })
         }
 
-        if (min_price) {
-            pipeline.push({
-                $match: {
-                    price: { $gte: min_price },
-                },
-            })
-        }
-
-        if (max_price) {
-            pipeline.push({
-                $match: {
-                    price: { $lte: max_price },
-                },
-            })
-        }
-
-        switch (sortBy) {
-            case 'recent':
-                pipeline.push({
-                $sort: {
-                    modifiedAt: -1,
-                },
-                })
-                break
-
-            case 'price_desc':
-                pipeline.push({
-                    $sort: {
-                        price: -1,
-                    },
-                })
-                break
-
-            case 'price_asc':
-                pipeline.push({
-                    $sort: {
-                        price: 1,
-                    },
-                })
-                break
-
-            default:
-                pipeline.push({
-                $sort: {
-                    sold: -1,
-                },
-                })
-                break
-        }
-
         pipeline.push(
             {
                 $skip: (page - 1) * limit,
@@ -351,12 +301,62 @@ exports.getProductsBySearch = ({
             }
         )
 
+        if (min_price) {
+            pipeline.push({
+                $match: {
+                    price: { $gte: min_price },
+                },
+            })
+        }
+
+        if (max_price) {
+            pipeline.push({
+                $match: {
+                    price: { $lte: max_price },
+                },
+            })
+        }
+
         if (rating) {
           pipeline.push({
             $match: {
               stars: { $gte: rating },
             },
           })
+        }
+
+        switch (sortBy) {
+            case 'recent':
+                pipeline.push({
+                $sort: {
+                    modifiedAt: -1,
+                },
+                })
+                break
+
+            case 'price_desc':
+                pipeline.push({
+                    $sort: {
+                        price: -1,
+                    },
+                })
+                break
+
+            case 'price_asc':
+                pipeline.push({
+                    $sort: {
+                        price: 1,
+                    },
+                })
+                break
+
+            default:
+                pipeline.push({
+                    $sort: {
+                        sold: -1,
+                    },
+                })
+                break
         }
 
         return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
@@ -485,22 +485,6 @@ exports.getAdminProducts = async ({
         })
     }
 
-    if (min_price) {
-        pipeline.push({
-            $match: {
-                price: { $gte: min_price },
-            },
-        })
-    }
-
-    if (max_price) {
-        pipeline.push({
-            $match: {
-                price: { $lte: max_price },
-            },
-        })
-    }
-
     pipeline.push({
         $sort: {
             sold: -1,
@@ -557,6 +541,22 @@ exports.getAdminProducts = async ({
             },
         }
     )
+
+    if (min_price) {
+        pipeline.push({
+            $match: {
+                price: { $gte: min_price },
+            },
+        })
+    }
+
+    if (max_price) {
+        pipeline.push({
+            $match: {
+                price: { $lte: max_price },
+            },
+        })
+    }
 
     if (rating) {
         pipeline.push({
