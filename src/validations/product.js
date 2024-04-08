@@ -41,7 +41,7 @@ const getProductsBySearch = {
         category: idValidation,
         min_price: numberValidation.precision(2),
         max_price: numberValidation.precision(2),
-        sortBy: stringReqValidation
+        sortBy: stringValidation
             .lowercase()
             .valid('popular', 'recent', 'price_desc', 'price_asc'),
         rating: integerNumberValidation.valid(1, 2, 3, 4, 5),

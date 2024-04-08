@@ -254,14 +254,16 @@ exports.getWishlistProductsBySearch = (
         }
     )
 
-    pipeline.push({
-        $match: {
-            $or: [
-                { 'products.name': { $regex: keyword, $options: 'i' } },
-                { 'products.description': { $regex: keyword, $options: 'i' } },
-            ],
-        },
-    })
+    if (keyword && keyword.trim()) {
+        pipeline.push({
+            $match: {
+                $or: [
+                    { 'products.name': { $regex: keyword, $options: 'i' } },
+                    { 'products.description': { $regex: keyword, $options: 'i' } },
+                ],
+            },
+        })
+    }
 
     if (category) {
         if (new RegExp('^[0-9a-fA-F]{24}$').test(category)) {
@@ -294,34 +296,38 @@ exports.getWishlistProductsBySearch = (
         })
     }
 
-    if (rating) {
-        pipeline.push({})
-    }
-
-    if (sortBy === 'recent') {
-        pipeline.push({
+    switch (sortBy) {
+        case 'recent':
+            pipeline.push({
             $sort: {
                 'products.updatedAt': -1,
             },
-        })
-    } else if (sortBy === 'price_desc') {
+            })
+            break
+
+        case 'price_desc':
         pipeline.push({
             $sort: {
-                'products.price': -1,
+            'products.price': -1,
             },
         })
-    } else if (sortBy === 'price_asc') {
-        pipeline.push({
+            break
+
+        case 'price_asc':
+            pipeline.push({
             $sort: {
                 'products.price': 1,
             },
-        })
-    } else {
-        pipeline.push({
+            })
+            break
+
+        default:
+            pipeline.push({
             $sort: {
                 'products.sold': -1,
             },
-        })
+            })
+            break
     }
 
     pipeline.push(
@@ -380,6 +386,14 @@ exports.getWishlistProductsBySearch = (
             },
         }
     )
+
+    if (rating) {
+        pipeline.push({
+            $match: {
+                stars: { $gte: rating },
+            },
+        })
+    }
 
     return dbRepo.aggregate(constant.COLLECTIONS.WISHLIST, pipeline)
 }

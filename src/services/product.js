@@ -1,9 +1,6 @@
 const mongoose = require('mongoose')
-const httpStatus = require('http-status')
 const dbRepo = require('../dbRepo')
 const constant = require('../constants')
-const ApiError = require('../utils/ApiError')
-const categoryService = require('./category')
 const wishlistService = require('./wishlist')
 
 exports.getProductById = (id) => {
@@ -140,7 +137,7 @@ exports.getAdminProducts = async ({
 
     const pipeline = []
 
-    if (keyword) {
+    if (keyword && keyword.trim()) {
         pipeline.push({
             $match: {
                 $or: [
@@ -150,6 +147,7 @@ exports.getAdminProducts = async ({
             },
         })
     }
+
     if (category) {
         pipeline.push({
             $match: {
@@ -357,7 +355,7 @@ exports.getProductsBySearch = ({
 
         const pipeline = []
 
-        if (keyword) {
+        if (keyword && keyword.trim()) {
             pipeline.push({
                 $match: {
                     $or: [
@@ -392,30 +390,38 @@ exports.getProductsBySearch = ({
             })
         }
 
-        if (sortBy === 'recent') {
-            pipeline.push({
+        switch (sortBy) {
+            case 'recent':
+                pipeline.push({
                 $sort: {
                     modifiedAt: -1,
                 },
-            })
-        } else if (sortBy === 'price_desc') {
-            pipeline.push({
-                $sort: {
-                    price: -1,
-                },
-            })
-        } else if (sortBy === 'price_asc') {
-            pipeline.push({
-                $sort: {
-                    price: 1,
-                },
-            })
-        } else {
-            pipeline.push({
+                })
+                break
+
+            case 'price_desc':
+                pipeline.push({
+                    $sort: {
+                        price: -1,
+                    },
+                })
+                break
+
+            case 'price_asc':
+                pipeline.push({
+                    $sort: {
+                        price: 1,
+                    },
+                })
+                break
+
+            default:
+                pipeline.push({
                 $sort: {
                     sold: -1,
                 },
-            })
+                })
+                break
         }
 
         pipeline.push(
@@ -622,7 +628,7 @@ exports.deleteVariant = (variantId) => {
     const query = {
         _id: new mongoose.Types.ObjectId(variantId),
     }
-    return dbRepo.deleteOne(constant.COLLECTIONS.VARIANT, { query })
+    dbRepo.deleteOne(constant.COLLECTIONS.VARIANT, { query })
 }
 
 exports.createProduct = (userId, productBody) => {
@@ -655,5 +661,14 @@ exports.deleteProduct = (productId) => {
     const query = {
         _id: new mongoose.Types.ObjectId(productId),
     }
-    return dbRepo.deleteOne(constant.COLLECTIONS.PRODUCT, { query })
+    dbRepo.deleteOne(constant.COLLECTIONS.PRODUCT, { query })
+}
+
+exports.deleteProductVariants = (productId) => {
+    Logger.info(`Inside deleteProductVariants => product = ${productId}`)
+
+    const query = {
+        product: new mongoose.Types.ObjectId(productId),
+    }
+    dbRepo.deleteMany(constant.COLLECTIONS.VARIANT, { query })
 }

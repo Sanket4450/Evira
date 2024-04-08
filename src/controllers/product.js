@@ -648,6 +648,8 @@ exports.deleteProduct = catchAsyncErrors(async (req, res) => {
 
     await productService.deleteProduct(productId)
 
+    await productService.deleteProductVariants(productId)
+
     return sendResponse(
         res,
         httpStatus.OK,
