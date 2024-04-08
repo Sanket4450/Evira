@@ -776,6 +776,7 @@ paths:
           schema:
             type: string
             format: objectId
+          required: true
           description: objectId for the category
         - name: page
           in: query

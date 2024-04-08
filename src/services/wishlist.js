@@ -77,6 +77,14 @@ exports.getWishlistProducts = (userId, { page, limit }) => {
         },
         {
             $lookup: {
+                from: 'variants',
+                localField: 'products._id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
+        {
+            $lookup: {
                 from: 'reviews',
                 localField: 'products._id',
                 foreignField: 'product',
@@ -88,7 +96,7 @@ exports.getWishlistProducts = (userId, { page, limit }) => {
                 _id: '$products._id',
                 name: { $first: '$products.name' },
                 image: { $first: '$products.image' },
-                price: { $first: '$products.price' },
+                price: { $first: { $arrayElemAt: ['$variants.price', 0] } },
                 sold: { $first: '$products.sold' },
                 stars: {
                     $first: {
@@ -120,7 +128,6 @@ exports.getWishlistProducts = (userId, { page, limit }) => {
                 id: '$_id',
             },
         },
-        // { $sort: logic }
         {
             $skip: (page - 1) * limit,
         },

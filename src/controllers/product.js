@@ -113,7 +113,7 @@ exports.getFullProductById = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    ;[product] = await productService.validateLikedProducts(user._id, [product])
+    [product] = await productService.validateLikedProducts(user._id, [product])
 
     return sendResponse(
         res,

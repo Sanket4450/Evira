@@ -11,7 +11,6 @@ const {
     numberValidation,
     idValidation,
     booleanReqValidation,
-    dateValidation,
 } = require('./common')
 
 const getProducts = {

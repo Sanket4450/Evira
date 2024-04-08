@@ -125,6 +125,327 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
     return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
 }
 
+exports.getProductsByCategory = (
+    categoryId,
+    { matchCriteria, page, limit }
+) => {
+    Logger.info(
+        `Inside getProductsByCategory => category = ${categoryId}, page = ${page}, limit = ${limit}`
+    )
+
+    matchCriteria ||= {}
+    page ||= 1
+    limit ||= 10
+
+    const pipeline = [
+        {
+            $match: matchCriteria,
+        },
+        {
+            $match: {
+                category: new mongoose.Types.ObjectId(categoryId),
+            },
+        },
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
+        },
+        {
+            $lookup: {
+                from: 'variants',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
+        {
+            $lookup: {
+                from: 'reviews',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'reviews',
+            },
+        },
+        {
+            $unwind: {
+                path: '$reviews',
+                preserveNullAndEmptyArrays: true,
+            },
+        },
+        {
+            $group: {
+                _id: '$_id',
+                name: { $first: '$name' },
+                image: { $first: '$image' },
+                price: { $first: { $arrayElemAt: ['$variants.price', 0] } },
+                sold: { $first: '$sold' },
+                stars: { $avg: '$reviews.star' },
+            },
+        },
+        {
+            $project: {
+                name: 1,
+                image: 1,
+                price: 1,
+                sold: 1,
+                stars: {
+                    $round: [
+                        {
+                            $ifNull: [
+                                {
+                                    $avg: '$reviews.star',
+                                },
+                                0,
+                            ],
+                        },
+                        1,
+                    ],
+                },
+                _id: 0,
+                id: '$_id',
+            },
+        },
+    ]
+
+    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
+}
+
+exports.getProductsBySearch = ({
+    keyword,
+    category,
+    min_price,
+    max_price,
+    sortBy,
+    rating,
+    page,
+    limit,
+}) => {
+    try {
+        Logger.info(`Inside getProductsBySearch => keyword = ${keyword}, category = ${category}, min_price = ${min_price},
+    max_price = ${max_price}, sortBy = ${sortBy}, rating = ${rating}, page = ${page}, limit = ${limit}`)
+
+        page ||= 1
+        limit ||= 10
+
+        const pipeline = []
+
+        if (keyword && keyword.trim()) {
+            pipeline.push({
+                $match: {
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { description: { $regex: keyword, $options: 'i' } },
+                    ],
+                },
+            })
+        }
+
+        if (category) {
+            pipeline.push({
+                $match: {
+                    category: new mongoose.Types.ObjectId(category),
+                },
+            })
+        }
+
+        if (min_price) {
+            pipeline.push({
+                $match: {
+                    price: { $gte: min_price },
+                },
+            })
+        }
+
+        if (max_price) {
+            pipeline.push({
+                $match: {
+                    price: { $lte: max_price },
+                },
+            })
+        }
+
+        switch (sortBy) {
+            case 'recent':
+                pipeline.push({
+                $sort: {
+                    modifiedAt: -1,
+                },
+                })
+                break
+
+            case 'price_desc':
+                pipeline.push({
+                    $sort: {
+                        price: -1,
+                    },
+                })
+                break
+
+            case 'price_asc':
+                pipeline.push({
+                    $sort: {
+                        price: 1,
+                    },
+                })
+                break
+
+            default:
+                pipeline.push({
+                $sort: {
+                    sold: -1,
+                },
+                })
+                break
+        }
+
+        pipeline.push(
+            {
+                $skip: (page - 1) * limit,
+            },
+            {
+                $limit: limit,
+            }
+        )
+
+        pipeline.push(
+            {
+                $lookup: {
+                    from: 'variants',
+                    localField: '_id',
+                    foreignField: 'product',
+                    as: 'variants',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'reviews',
+                    localField: '_id',
+                    foreignField: 'product',
+                    as: 'reviews',
+                },
+            },
+            {
+                $project: {
+                    name: 1,
+                    image: 1,
+                    price: { $arrayElemAt: ['$variants.price', 0] },
+                    sold: 1,
+                    stars: {
+                        $round: [
+                            {
+                                $ifNull: [
+                                    {
+                                        $avg: '$reviews.star',
+                                    },
+                                    0,
+                                ],
+                            },
+                            1,
+                        ],
+                    },
+                    _id: 0,
+                    id: '$_id',
+                },
+            }
+        )
+
+        if (rating) {
+          pipeline.push({
+            $match: {
+              stars: { $gte: rating },
+            },
+          })
+        }
+
+        return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
+    } catch (error) {
+        console.log('error ----->', error)
+    }
+}
+
+exports.getFullProductById = (productId) => {
+    Logger.info(`Inside getFullProductById => product = ${productId}`)
+
+    const pipeline = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(productId),
+            },
+        },
+        {
+            $lookup: {
+                from: 'variants',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
+        {
+            $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'categories',
+            },
+        },
+        {
+            $unwind: '$categories',
+        },
+        {
+            $lookup: {
+                from: 'reviews',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'reviews',
+            },
+        },
+        {
+            $project: {
+                name: 1,
+                image: 1,
+                description: 1,
+                sold: 1,
+                stars: {
+                    $round: [
+                        {
+                            $ifNull: [
+                                {
+                                    $avg: '$reviews.star',
+                                },
+                                0,
+                            ],
+                        },
+                        1,
+                    ],
+                },
+                reviewCount: {
+                    $size: '$reviews',
+                },
+                category: '$categories.name',
+                variants: {
+                    $map: {
+                        input: '$variants',
+                        as: 'variant',
+                        in: {
+                            size: '$$variant.size',
+                            color: '$$variant.color',
+                            price: '$$variant.price',
+                            quantity: '$$variant.quantity',
+                            id: '$$variant._id',
+                        },
+                    },
+                },
+                _id: 0,
+                id: '$_id',
+            },
+        },
+    ]
+
+    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
+}
+
 exports.getAdminProducts = async ({
     matchCriteria,
     page,
@@ -271,341 +592,6 @@ exports.getAdminProducts = async ({
     )
 
     return { countObject, products }
-}
-
-exports.getProductsByCategory = (
-    categoryId,
-    { matchCriteria, page, limit }
-) => {
-    Logger.info(
-        `Inside getProductsByCategory => category = ${categoryId}, page = ${page}, limit = ${limit}`
-    )
-
-    matchCriteria ||= {}
-    page ||= 1
-    limit ||= 10
-
-    const pipeline = [
-        {
-            $match: matchCriteria,
-        },
-        {
-            $match: {
-                category: new mongoose.Types.ObjectId(categoryId),
-            },
-        },
-        {
-            $skip: (page - 1) * limit,
-        },
-        {
-            $limit: limit,
-        },
-        {
-            $lookup: {
-                from: 'variants',
-                localField: '_id',
-                foreignField: 'product',
-                as: 'variants',
-            },
-        },
-        {
-            $lookup: {
-                from: 'reviews',
-                localField: '_id',
-                foreignField: 'product',
-                as: 'reviews',
-            },
-        },
-        {
-            $unwind: {
-                path: '$reviews',
-                preserveNullAndEmptyArrays: true,
-            },
-        },
-        {
-            $group: {
-                _id: '$_id',
-                name: { $first: '$name' },
-                image: { $first: '$image' },
-                price: { $first: { price: { $arrayElemAt: ['$variants.price', 0] } } },
-                sold: { $first: '$sold' },
-                stars: { $avg: '$reviews.star' },
-            },
-        },
-        {
-            $project: {
-                name: 1,
-                image: 1,
-                price: 1,
-                sold: 1,
-                stars: {
-                    $round: [
-                        {
-                            $ifNull: [
-                                {
-                                    $avg: '$reviews.star',
-                                },
-                                0,
-                            ],
-                        },
-                        1,
-                    ],
-                },
-                _id: 0,
-                id: '$_id',
-            },
-        },
-    ]
-
-    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
-}
-
-exports.getProductsBySearch = ({
-    keyword,
-    category,
-    min_price,
-    max_price,
-    sortBy,
-    rating,
-    page,
-    limit,
-}) => {
-    try {
-        Logger.info(`Inside getProductsBySearch => keyword = ${keyword}, category = ${category}, min_price = ${min_price},
-    max_price = ${max_price}, sortBy = ${sortBy}, rating = ${rating}, page = ${page}, limit = ${limit}`)
-
-        page ||= 1
-        limit ||= 10
-
-        const pipeline = []
-
-        if (keyword && keyword.trim()) {
-            pipeline.push({
-                $match: {
-                    $or: [
-                        { name: { $regex: keyword, $options: 'i' } },
-                        { description: { $regex: keyword, $options: 'i' } },
-                    ],
-                },
-            })
-        }
-
-        if (category) {
-            pipeline.push({
-                $match: {
-                    category: new mongoose.Types.ObjectId(category),
-                },
-            })
-        }
-
-        if (min_price) {
-            pipeline.push({
-                $match: {
-                    price: { $gte: min_price },
-                },
-            })
-        }
-
-        if (max_price) {
-            pipeline.push({
-                $match: {
-                    price: { $lte: max_price },
-                },
-            })
-        }
-
-        switch (sortBy) {
-            case 'recent':
-                pipeline.push({
-                $sort: {
-                    modifiedAt: -1,
-                },
-                })
-                break
-
-            case 'price_desc':
-                pipeline.push({
-                    $sort: {
-                        price: -1,
-                    },
-                })
-                break
-
-            case 'price_asc':
-                pipeline.push({
-                    $sort: {
-                        price: 1,
-                    },
-                })
-                break
-
-            default:
-                pipeline.push({
-                $sort: {
-                    sold: -1,
-                },
-                })
-                break
-        }
-
-        pipeline.push(
-            {
-                $skip: (page - 1) * limit,
-            },
-            {
-                $limit: limit,
-            }
-        )
-
-        pipeline.push(
-            {
-                $lookup: {
-                    from: 'reviews',
-                    localField: '_id',
-                    foreignField: 'product',
-                    as: 'reviews',
-                },
-            },
-            {
-                $project: {
-                    name: 1,
-                    image: 1,
-                    price: 1,
-                    sold: 1,
-                    stars: {
-                        $round: [
-                            {
-                                $ifNull: [
-                                    {
-                                        $avg: '$reviews.star',
-                                    },
-                                    0,
-                                ],
-                            },
-                            1,
-                        ],
-                    },
-                    _id: 0,
-                    id: '$_id',
-                },
-            }
-        )
-
-        if (rating) {
-          pipeline.push({
-            $match: {
-              stars: { $gte: rating },
-            },
-          })
-        }
-
-        return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
-    } catch (error) {
-        console.log('error ----->', error)
-    }
-}
-
-exports.getFullProductById = (productId) => {
-    Logger.info(`Inside getFullProductById => product = ${productId}`)
-
-    const pipeline = [
-        {
-            $match: {
-                _id: new mongoose.Types.ObjectId(productId),
-            },
-        },
-        {
-            $lookup: {
-                from: 'variants',
-                localField: '_id',
-                foreignField: 'product',
-                as: 'variants',
-            },
-        },
-        {
-            $lookup: {
-                from: 'variants',
-                localField: 'defaultVariant',
-                foreignField: '_id',
-                as: 'defaultVariant',
-            },
-        },
-        {
-            $unwind: '$defaultVariant',
-        },
-        {
-            $lookup: {
-                from: 'categories',
-                localField: 'category',
-                foreignField: '_id',
-                as: 'categories',
-            },
-        },
-        {
-            $unwind: '$categories',
-        },
-        {
-            $lookup: {
-                from: 'reviews',
-                localField: '_id',
-                foreignField: 'product',
-                as: 'reviews',
-            },
-        },
-        {
-            $project: {
-                name: 1,
-                image: 1,
-                description: 1,
-                price: 1,
-                sold: 1,
-                stars: {
-                    $round: [
-                        {
-                            $ifNull: [
-                                {
-                                    $avg: '$reviews.star',
-                                },
-                                0,
-                            ],
-                        },
-                        1,
-                    ],
-                },
-                reviewCount: {
-                    $size: '$reviews',
-                },
-                categories: '$categories',
-                defaultVariant: {
-                    name: '$defaultVariant.name',
-                    size: '$defaultVariant.size',
-                    color: '$defaultVariant.color',
-                    price: '$defaultVariant.price',
-                    id: '$defaultVariant._id',
-                    quantity: '$defaultVariant.quantity',
-                },
-                variants: {
-                    $map: {
-                        input: '$variants',
-                        as: 'variant',
-                        in: {
-                            name: '$$variant.name',
-                            size: '$$variant.size',
-                            color: '$$variant.color',
-                            price: '$$variant.price',
-                            id: '$$variant._id',
-                            quantity: '$$variant.quantity',
-                        },
-                    },
-                },
-                _id: 0,
-                id: '$_id',
-                quantity: '$quantity',
-            },
-        },
-    ]
-
-    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
 }
 
 exports.getVariants = (productId) => {
