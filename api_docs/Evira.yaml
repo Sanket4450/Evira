@@ -989,7 +989,6 @@ paths:
           in: query
           schema:
             type: string
-          required: true
           description: keyword to be searched
           example: joNnY
         - name: rating

@@ -128,12 +128,15 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
                 as: 'users',
             },
         },
-        {
+    )
+
+    if (keyword) {
+        pipeline.push({
             $match: {
                 'users.fullName': { $regex: keyword, $options: 'i' },
             },
-        }
-    )
+        })
+    }
 
     if (rating) {
         pipeline.push({

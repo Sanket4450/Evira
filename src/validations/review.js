@@ -33,7 +33,7 @@ const postReview = {
 const getReviewsBySearch = {
     query: joi.object().keys({
         ...pageAndLimit,
-        keyword: stringReqValidation.label('Search Keyword'),
+        keyword: stringValidation.label('Search Keyword'),
         rating: integerNumberValidation.min(1).max(5),
     }),
     params: joi.object().keys({
