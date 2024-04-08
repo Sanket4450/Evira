@@ -37,7 +37,7 @@ const getFullProductById = {
 
 const getProductsBySearch = {
     query: joi.object().keys({
-        keyword: stringReqValidation.label('Search Keyword'),
+        keyword: stringValidation.label('Search Keyword'),
         category: idValidation,
         min_price: numberValidation.precision(2),
         max_price: numberValidation.precision(2),

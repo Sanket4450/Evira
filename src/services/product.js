@@ -357,14 +357,16 @@ exports.getProductsBySearch = ({
 
         const pipeline = []
 
-        pipeline.push({
-            $match: {
-                $or: [
-                    { name: { $regex: keyword, $options: 'i' } },
-                    { description: { $regex: keyword, $options: 'i' } },
-                ],
-            },
-        })
+        if (keyword) {
+            pipeline.push({
+                $match: {
+                    $or: [
+                        { name: { $regex: keyword, $options: 'i' } },
+                        { description: { $regex: keyword, $options: 'i' } },
+                    ],
+                },
+            })
+        }
 
         if (category) {
             pipeline.push({
