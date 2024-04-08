@@ -8,9 +8,6 @@ const variantSchema = new mongoose.Schema(
             ref: 'Product',
             required: true,
         },
-        name: {
-            type: String,
-        },
         size: {
             type: String,
             default: 'default',

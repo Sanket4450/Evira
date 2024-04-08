@@ -179,7 +179,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         await orderService.updateOrder(orderId, { address })
     }
 
-    type ||= 'Ongoing'
+    type ||= 'ongoing'
     await orderService.updateOrder(orderId, { type })
 
     if (status) {
@@ -190,14 +190,14 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
             )
         }
 
-        const body = {
+        const statusBody = {
             title: status.title,
             description:
                 status.description || `Order ${status.title} successfully`,
             date: status.date || Date.now(),
         }
 
-        await orderService.updateOrderStatus(orderId, body)
+        await orderService.updateOrderStatus(orderId, statusBody)
     }
 
     order = await orderService.getAdminOrderById(orderId)

@@ -3,11 +3,6 @@ const fieldsRemoval = require('./plugins/fieldsRemoval')
 
 const productSchema = new mongoose.Schema(
     {
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true,
-        },
         name: {
             type: String,
             required: true,
@@ -28,14 +23,6 @@ const productSchema = new mongoose.Schema(
             ref: 'Category',
             required: true,
         },
-        price: {
-            type: Number,
-            required: true,
-        },
-        quantity: {
-            type: Number,
-            required: true,
-        },
         defaultVariant: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Variant',
@@ -44,18 +31,6 @@ const productSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-        savedBy: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-            },
-        ],
-        orderedBy: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
-            },
-        ],
     },
     {
         timestamps: true,
