@@ -35,19 +35,37 @@ exports.getCategories = ({ page, limit }) => {
     page ||= 1
     limit ||= 8
 
-    const query = {}
+    const pipeline = [
+        {
+            $lookup: {
+                from: 'products',
+                localField: '_id',
+                foreignField: 'category',
+                as: 'categoryProducts',
+            },
+        },
+        {
+            $match: {
+                categoryProducts: { $exists: true, $not: { $size: 0 } }
+            }
+        },
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
+        },
+        {
+            $project: {
+                name: 1,
+                icon: 1,
+                _id: 0,
+                id: '$_id',
+            }
+        }
+    ]
 
-    const data = {
-        name: 1,
-        icon: 1,
-    }
-    return dbRepo.findPage(
-        constant.COLLECTIONS.CATEGORY,
-        { query, data },
-        {},
-        page,
-        limit
-    )
+    return dbRepo.aggregate(constant.COLLECTIONS.CATEGORY, pipeline)
 }
 
 exports.getAllCategories = () => {
