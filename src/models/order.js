@@ -45,8 +45,8 @@ const orderSchema = new mongoose.Schema(
         },
         type: {
             type: String,
-            enum: ['Ongoing', 'Completed'],
-            default: 'Ongoing',
+            enum: ['ongoing', 'completed'],
+            default: 'ongoing',
         },
         status: [
             {

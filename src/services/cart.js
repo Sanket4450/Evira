@@ -87,7 +87,7 @@ exports.cartAction = ({ action, productId, variantId, userId, quantity }) => {
     return dbRepo.updateOne(constant.COLLECTIONS.CART, { query, data, options })
 }
 
-exports.getCartActionProductAmount = async (productId, userId) => {
+exports.getProductVariantAmount = async (productId, variantId, userId) => {
     Logger.info(
         `Inside getCartActionProduct => product = ${productId}, user = ${userId}`
     )
@@ -104,6 +104,7 @@ exports.getCartActionProductAmount = async (productId, userId) => {
         {
             $match: {
                 'items.product': new mongoose.Types.ObjectId(productId),
+                'items.variant': new mongoose.Types.ObjectId(variantId),
             },
         },
         {

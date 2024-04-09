@@ -351,17 +351,17 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
         })
     }
 
-    const productCartAmount =
-        await cartService.getCartActionProductAmount(productId, user._id)
+    const productVariantCartAmount =
+        await cartService.getProductVariantAmount(productId, variantId, user._id)
     const totalCartAmount = await cartService.getTotalAmount(user._id)
 
-    const productAmount = productCartAmount[0] ? productCartAmount[0].amount : 0
+    const productVariantAmount = productVariantCartAmount[0] ? productVariantCartAmount[0].amount : 0
     const totalAmount = totalCartAmount[0] ? totalCartAmount[0].amount : 0
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { action, productAmount, totalAmount },
+        { action, productVariantAmount, totalAmount },
         `${
             action === 'add'
                 ? 'Product added to cart successfully'

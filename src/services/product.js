@@ -432,7 +432,6 @@ exports.getFullProductById = (productId) => {
                             size: '$$variant.size',
                             color: '$$variant.color',
                             price: '$$variant.price',
-                            quantity: '$$variant.quantity',
                             id: '$$variant._id',
                         },
                     },

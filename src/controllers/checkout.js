@@ -95,7 +95,7 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
 
     if (Math.round(amount) !== Math.round(finalAmount)) {
         throw new ApiError(
-            constant.MESSAGES.AMOUNT_NOT_MATCH,
+            constant.MESSAGES.AMOUNT_NOT_MATCHED,
             httpStatus.CONFLICT
         )
     }
