@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const dbRepo = require('../dbRepo')
 const constant = require('../constants')
+const productService = require('./product')
 
 exports.getCategoryById = (id) => {
     const query = {
@@ -34,9 +35,8 @@ exports.getCategories = ({ page, limit }) => {
     page ||= 1
     limit ||= 8
 
-    const query = {
-        // query for categories
-    }
+    const query = {}
+
     const data = {
         name: 1,
         icon: 1,
@@ -53,14 +53,32 @@ exports.getCategories = ({ page, limit }) => {
 exports.getAllCategories = () => {
     Logger.info('Inside getAllCategories')
 
-    const query = {
-        // query for categories
-    }
-    const data = {
-        name: 1,
-        icon: 1,
-    }
-    return dbRepo.find(constant.COLLECTIONS.CATEGORY, { query, data })
+    const pipeline = [
+        {
+            $lookup: {
+                from: 'products',
+                localField: '_id',
+                foreignField: 'category',
+                as: 'categoryProducts',
+            },
+        },
+        {
+            $match: {
+                categoryProducts: { $exists: true, $not: { $size: 0 } }
+            }
+        },
+        {
+            $project: {
+                name: 1,
+                icon: 1,
+                description: 1,
+                _id: 0,
+                id: '$_id',
+            }
+        }
+    ]
+
+    return dbRepo.aggregate(constant.COLLECTIONS.CATEGORY, pipeline)
 }
 
 exports.getAdminCategories = ({ page, limit }) => {

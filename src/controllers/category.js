@@ -5,8 +5,8 @@ const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
 const { categoryService, userService } = require('../services/index.service')
 
-exports.getCategories = catchAsyncErrros(async (req, res) => {
-    const categories = await categoryService.getAllCategories()
+exports.getCategories = catchAsyncErrros(async (_, res) => {
+    let categories = await categoryService.getAllCategories()
 
     return sendResponse(
         res,
