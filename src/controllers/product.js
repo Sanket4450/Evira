@@ -92,6 +92,32 @@ exports.getProductsBySearch = catchAsyncErrors(async (req, res) => {
     )
 })
 
+exports.getAdminProducts = catchAsyncErrors(async (req, res) => {
+    if (!(await userService.getUserById(req.user.sub))) {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
+    }
+
+    const { countObject, products } = await productService.getAdminProducts(
+        req.query
+    )
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        {
+            products: {
+                count: countObject?.count || 0,
+                results: products,
+            },
+        },
+        'Admin Products retrieved successfully'
+    )
+})
+
+
 exports.getFullProductById = catchAsyncErrors(async (req, res) => {
     const { productId } = req.params
 
@@ -123,28 +149,30 @@ exports.getFullProductById = catchAsyncErrors(async (req, res) => {
     )
 })
 
-exports.getAdminProducts = catchAsyncErrors(async (req, res) => {
-    if (!(await userService.getUserById(req.user.sub))) {
+exports.getAdminFullProductById = catchAsyncErrors(async (req, res) => {
+    const { productId } = req.params
+
+    if (!await userService.getUserById(req.user.sub)) {
         throw new ApiError(
             constant.MESSAGES.ADMIN_NOT_FOUND,
             httpStatus.NOT_FOUND
         )
     }
 
-    const { countObject, products } = await productService.getAdminProducts(
-        req.query
-    )
+    let [product] = await productService.getAdminFullProductById(productId)
+
+    if (!product) {
+        throw new ApiError(
+            constant.MESSAGES.PRODUCT_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
+    }
 
     return sendResponse(
         res,
         httpStatus.OK,
-        {
-            products: {
-                count: countObject?.count || 0,
-                results: products,
-            },
-        },
-        'Admin Products retrieved successfully'
+        { product },
+        'Product retrieved successfully'
     )
 })
 

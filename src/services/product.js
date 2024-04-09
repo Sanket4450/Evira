@@ -365,86 +365,6 @@ exports.getProductsBySearch = ({
     }
 }
 
-exports.getFullProductById = (productId) => {
-    Logger.info(`Inside getFullProductById => product = ${productId}`)
-
-    const pipeline = [
-        {
-            $match: {
-                _id: new mongoose.Types.ObjectId(productId),
-            },
-        },
-        {
-            $lookup: {
-                from: 'variants',
-                localField: '_id',
-                foreignField: 'product',
-                as: 'variants',
-            },
-        },
-        {
-            $lookup: {
-                from: 'categories',
-                localField: 'category',
-                foreignField: '_id',
-                as: 'categories',
-            },
-        },
-        {
-            $unwind: '$categories',
-        },
-        {
-            $lookup: {
-                from: 'reviews',
-                localField: '_id',
-                foreignField: 'product',
-                as: 'reviews',
-            },
-        },
-        {
-            $project: {
-                name: 1,
-                image: 1,
-                description: 1,
-                sold: 1,
-                stars: {
-                    $round: [
-                        {
-                            $ifNull: [
-                                {
-                                    $avg: '$reviews.star',
-                                },
-                                0,
-                            ],
-                        },
-                        1,
-                    ],
-                },
-                reviewCount: {
-                    $size: '$reviews',
-                },
-                category: '$categories.name',
-                variants: {
-                    $map: {
-                        input: '$variants',
-                        as: 'variant',
-                        in: {
-                            size: '$$variant.size',
-                            color: '$$variant.color',
-                            price: '$$variant.price',
-                            id: '$$variant._id',
-                        },
-                    },
-                },
-                _id: 0,
-                id: '$_id',
-            },
-        },
-    ]
-
-    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
-}
-
 exports.getAdminProducts = async ({
     matchCriteria,
     page,
@@ -591,6 +511,155 @@ exports.getAdminProducts = async ({
     )
 
     return { countObject, products }
+}
+
+exports.getFullProductById = (productId) => {
+    Logger.info(`Inside getFullProductById => product = ${productId}`)
+
+    const pipeline = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(productId),
+            },
+        },
+        {
+            $lookup: {
+                from: 'variants',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
+        {
+            $lookup: {
+                from: 'reviews',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'reviews',
+            },
+        },
+        {
+            $project: {
+                name: 1,
+                image: 1,
+                description: 1,
+                sold: 1,
+                stars: {
+                    $round: [
+                        {
+                            $ifNull: [
+                                {
+                                    $avg: '$reviews.star',
+                                },
+                                0,
+                            ],
+                        },
+                        1,
+                    ],
+                },
+                reviewCount: {
+                    $size: '$reviews',
+                },
+                variants: {
+                    $map: {
+                        input: '$variants',
+                        as: 'variant',
+                        in: {
+                            size: '$$variant.size',
+                            color: '$$variant.color',
+                            price: '$$variant.price',
+                            id: '$$variant._id',
+                        },
+                    },
+                },
+                _id: 0,
+                id: '$_id',
+            },
+        },
+    ]
+
+    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
+}
+
+exports.getAdminFullProductById = (productId) => {
+    Logger.info(`Inside getFullProductById => product = ${productId}`)
+
+    const pipeline = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(productId),
+            },
+        },
+        {
+            $lookup: {
+                from: 'variants',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'variants',
+            },
+        },
+        {
+            $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'categories',
+            },
+        },
+        {
+            $unwind: '$categories',
+        },
+        {
+            $lookup: {
+                from: 'reviews',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'reviews',
+            },
+        },
+        {
+            $project: {
+                name: 1,
+                image: 1,
+                description: 1,
+                sold: 1,
+                stars: {
+                    $round: [
+                        {
+                            $ifNull: [
+                                {
+                                    $avg: '$reviews.star',
+                                },
+                                0,
+                            ],
+                        },
+                        1,
+                    ],
+                },
+                reviewCount: {
+                    $size: '$reviews',
+                },
+                category: '$categories.name',
+                variants: {
+                    $map: {
+                        input: '$variants',
+                        as: 'variant',
+                        in: {
+                            size: '$$variant.size',
+                            color: '$$variant.color',
+                            price: '$$variant.price',
+                            quantity: '$$variant.quantity',
+                            id: '$$variant._id',
+                        },
+                    },
+                },
+                _id: 0,
+                id: '$_id',
+            },
+        },
+    ]
+
+    return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
 }
 
 exports.getVariants = (productId) => {

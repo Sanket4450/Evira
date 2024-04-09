@@ -181,40 +181,44 @@ exports.updateUser = async (userId, userBody) => {
             _id: new mongoose.Types.ObjectId(userId),
         }
 
-        if (userBody.email || userBody.mobile) {
-            const emailOrMobileTaken = await User.findOne({
-                $or: [
+        if (userBody.email) {
+            const emailTakenUser = await User.findOne({
+                $and: [
+                    { email: userBody.email },
                     {
-                        $and: [
-                            { email: userBody.email },
-                            {
-                                _id: {
-                                    $ne: new mongoose.Types.ObjectId(userId),
-                                },
-                            },
-                        ],
-                    },
-                    {
-                        $and: [
-                            { mobile: userBody.mobile },
-                            {
-                                _id: {
-                                    $ne: new mongoose.Types.ObjectId(userId),
-                                },
-                            },
-                        ],
+                        _id: {
+                            $ne: new mongoose.Types.ObjectId(userId),
+                        },
                     },
                 ],
             })
 
-            if (emailOrMobileTaken) {
+            if (emailTakenUser) {
                 throw new ApiError(
-                    constant.MESSAGES.USER_ALREADY_EXISTS,
+                    constant.MESSAGES.USER_EXISTS_WITH_EMAIL,
                     httpStatus.CONFLICT
                 )
             }
+        }
 
-            // send a verification link to email & mobile
+        if (userBody.mobile) {
+            const mobileTakenUser = await User.findOne({
+                $and: [
+                    { mobile: userBody.mobile },
+                    {
+                        _id: {
+                            $ne: new mongoose.Types.ObjectId(userId),
+                        },
+                    },
+                ],
+            })
+
+            if (mobileTakenUser) {
+                throw new ApiError(
+                    constant.MESSAGES.USER_EXISTS_WITH_MOBILE,
+                    httpStatus.CONFLICT
+                )
+            }
         }
 
         const data = {
@@ -227,15 +231,9 @@ exports.updateUser = async (userId, userBody) => {
     } catch (error) {
         Logger.error(`updateUser error => ${error}`)
 
-        if (error.message === constant.MESSAGES.USER_ALREADY_EXISTS) {
-            throw new ApiError(
-                constant.MESSAGES.USER_ALREADY_EXISTS,
-                httpStatus.CONFLICT
-            )
-        }
         throw new ApiError(
-            constant.MESSAGES.SOMETHING_WENT_WRONG,
-            httpStatus.INTERNAL_SERVER_ERROR
+            error.message || constant.MESSAGES.SOMETHING_WENT_WRONG,
+            error.statusCode || httpStatus.INTERNAL_SERVER_ERROR
         )
     }
 }

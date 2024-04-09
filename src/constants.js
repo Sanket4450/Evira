@@ -1,6 +1,7 @@
 module.exports = {
     MESSAGES: {
-        USER_ALREADY_EXISTS: 'User already exists with this email or mobile',
+        USER_EXISTS_WITH_EMAIL: 'User already exists with this email',
+        USER_EXISTS_WITH_MOBILE: 'User already exists with this mobile',
         USER_NOT_EXIST: 'User does not exist with this email or mobile',
         INCORRECT_PASSWROD: 'Incorrect password',
         USER_NOT_FOUND: 'User not found',

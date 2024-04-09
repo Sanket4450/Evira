@@ -268,6 +268,7 @@ exports.getUser = catchAsyncErrors(async (req, res) => {
 
 exports.updateUser = catchAsyncErrors(async (req, res) => {
     const { userId } = req.params
+    console.log('userId', userId)
 
     if (!(await userService.getUserById(req.user.sub))) {
         throw new ApiError(

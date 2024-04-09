@@ -13,7 +13,7 @@ exports.checkUserWithEmail = async (email) => {
 
     if (user) {
         throw new ApiError(
-            constant.MESSAGES.USER_ALREADY_EXISTS,
+            constant.MESSAGES.USER_EXISTS_WITH_EMAIL,
             httpStatus.CONFLICT
         )
     }

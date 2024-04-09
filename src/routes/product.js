@@ -87,6 +87,14 @@ adminRouter.get(
     productController.getAdminProducts
 )
 
+adminRouter.get(
+    '/:productId',
+    authChecker,
+    authorizeRole('admin'),
+    validate(productValidation.getFullProductById),
+    productController.getAdminFullProductById
+)
+
 adminRouter.post(
     '/',
     authChecker,
