@@ -57,9 +57,8 @@ exports.getOffers = ({ page, limit }) => {
     page ||= 1
     limit ||= 10
 
-    const query = {
-        // query for offers
-    }
+    const query = {}
+
     const data = {
         image: 1,
     }
@@ -75,9 +74,8 @@ exports.getOffers = ({ page, limit }) => {
 exports.getAllOffers = () => {
     Logger.info('Inside getAllOffers')
 
-    const query = {
-        // query for offers
-    }
+    const query = {}
+
     const data = {
         image: 1,
     }
