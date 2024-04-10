@@ -28,6 +28,8 @@ tags:
   - name: Reviews
   - name: Checkout
   - name: Orders
+  - name: FAQs
+  - name: Messages
   - name: Admin Users
   - name: Admin Categories
   - name: Admin Products
@@ -37,6 +39,8 @@ tags:
   - name: Admin Shipping
   - name: Admin Promotions
   - name: Admin Orders
+  - name: Admin FAQs
+  - name: Admin Messages
 paths:
   /auth/register:
     post:
@@ -1276,6 +1280,62 @@ paths:
           description: canceled order object
           content:
             application/json: {}
+  /faqs:
+    get:
+      tags:
+        - FAQs
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for faqs
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of faqs per page
+      responses:
+        '200':
+          description: faqs array
+          content:
+            application/json: {}
+  /messages:
+    post:
+      tags:
+        - Messages
+      security:
+        - userAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                title:
+                  type: string
+                description:
+                  type: string
+              required:
+                - email
+                - title
+                - description
+              example:
+                email: user1@gmail.com
+                title: Promo code is not working
+                description: When I click on the apply promo code button, it shows promo code expired
+      responses:
+        '200':
+          description: created message object
+          content:
+            application/json: {}
   /admin/users:
     get:
       tags:
@@ -2199,5 +2259,58 @@ paths:
       responses:
         '200':
           description: updated order object
+          content:
+            application/json: {}
+  /admin/faqs:
+    post:
+      tags:
+        - Admin FAQs
+      security:
+        - adminAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+              required:
+                - title
+                - description
+              example:
+                title: What is Evira?
+                description: Evira is an e-commerce platform, here you find products with lots of categories & with different variants
+      responses:
+        '200':
+          description: created message object
+          content:
+            application/json: {}
+  /admin/messages:
+    get:
+      tags:
+        - Admin Messages
+      security:
+        - adminAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for messages
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of messages per page
+      responses:
+        '200':
+          description: messages array
           content:
             application/json: {}

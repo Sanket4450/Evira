@@ -19,6 +19,6 @@ const postFAQ = {
 }
 
 module.exports = {
-    applyPromoCode,
-    postCheckout,
+    getFAQs,
+    postFAQ,
 }

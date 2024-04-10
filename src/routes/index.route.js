@@ -24,6 +24,10 @@ const adminPromotionRoutes = require('./promotion')
 const orderRoutes = require('./order').router
 const adminOrderRoutes = require('./order').adminRouter
 const adminDashboardRoutes = require('./dashboard')
+const faqRoutes = require('./faq').router
+const adminFaqRoutes = require('./faq').adminRouter
+const messageRoutes = require('./message').router
+const adminMessageRoutes = require('./message').adminRouter
 
 userRouter.use('/', rootRoutes)
 userRouter.use('/auth', authRoutes)
@@ -38,6 +42,8 @@ userRouter.use('/products', productReviewRoutes)
 userRouter.use('/reviews', reviewRoutes)
 userRouter.use('/checkout', checkoutRoutes)
 userRouter.use('/orders', orderRoutes)
+userRouter.use('/faqs', faqRoutes)
+userRouter.use('/messages', messageRoutes)
 
 adminRouter.use('/users', adminUserRoutes)
 adminRouter.use('/products', adminProductRoutes)
@@ -50,8 +56,7 @@ adminRouter.use('/shipping', adminShippingRoutes)
 adminRouter.use('/promo', adminPromotionRoutes)
 adminRouter.use('/orders', adminOrderRoutes)
 adminRouter.use('/dashboard', adminDashboardRoutes)
+adminRouter.use('/faqs', adminFaqRoutes)
+adminRouter.use('/messages', adminMessageRoutes)
 
-module.exports = {
-    userRoutes: userRouter,
-    adminRoutes: adminRouter,
-}
+module.exports = { userRouter, adminRouter }

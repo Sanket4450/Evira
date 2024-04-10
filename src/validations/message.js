@@ -1,27 +1,26 @@
 const joi = require('joi')
 
 const {
-    idReqValidation,
-    numberReqValidation,
-    idValidation,
+    emailValidation,
+    pageAndLimit,
+    stringReqValidation
 } = require('./common')
 
-const applyPromoCode = {
-    params: joi.object().keys({
-        promoId: idReqValidation,
+const postMessage = {
+    body: joi.object().keys({
+        email: emailValidation,
+        title: stringReqValidation.max(80),
+        description: stringReqValidation.max(500),
     }),
 }
 
-const postCheckout = {
-    body: joi.object().keys({
-        address: idReqValidation.label('Address'),
-        shipping: idReqValidation.label('Shipping-type'),
-        promo: idValidation.label('Promo-code'),
-        amount: numberReqValidation.precision(2).label('Total Amount'),
+const getMessages = {
+    query: joi.object().keys({
+        ...pageAndLimit,
     }),
 }
 
 module.exports = {
-    applyPromoCode,
-    postCheckout,
+    postMessage,
+    getMessages
 }

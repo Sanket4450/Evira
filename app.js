@@ -12,7 +12,7 @@ const Logger = require('./src/middlewares/logger')
 const domain = require('./src/models/index.model')
 const pathToSwaggerUi = require('swagger-ui-dist').absolutePath()
 const swaggerRoutes = require('./src/utils/swagger')
-const { userRoutes, adminRoutes } = require('./src/routes/index.route')
+const { userRouter, adminRouter } = require('./src/routes/index.route')
 const ApiError = require('./src/utils/ApiError')
 const { errorConverter, errorHandler } = require('./src/middlewares/error')
 
@@ -61,8 +61,8 @@ app.get('/', (req, res) => {
     res.send('App is running...')
 })
 
-app.use('/api/v1', userRoutes)
-app.use('/api/v1/admin', adminRoutes)
+app.use('/api/v1', userRouter)
+app.use('/api/v1/admin', adminRouter)
 
 app.use((req, res, next) => {
     next(new ApiError('Route not Found', httpStatus.NOT_FOUND))

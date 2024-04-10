@@ -1,42 +1,18 @@
 const router = require('express').Router()
 const adminRouter = require('express').Router()
 const { authChecker, authorizeRole } = require('../middlewares/auth')
-const offerController = require('../controllers/faq')
+const faqController = require('../controllers/faq')
 const validate = require('../middlewares/validate')
-const offerValidation = require('../validations/offer')
+const faqValidation = require('../validations/faq')
 
-router.get('/', validate(offerValidation.getOffers), offerController.getOffers)
-
-adminRouter.get(
-    '/:productId',
-    authChecker,
-    authorizeRole('admin'),
-    validate(offerValidation.getProductOffers),
-    offerController.getProductOffers
-)
+router.get('/', validate(faqValidation.getFAQs), faqController.getFAQs)
 
 adminRouter.post(
     '/',
     authChecker,
     authorizeRole('admin'),
-    validate(offerValidation.postOffer),
-    offerController.postOffer
-)
-
-adminRouter.put(
-    '/:offerId',
-    authChecker,
-    authorizeRole('admin'),
-    validate(offerValidation.updateOffer),
-    offerController.updateOffer
-)
-
-adminRouter.delete(
-    '/:offerId',
-    authChecker,
-    authorizeRole('admin'),
-    validate(offerValidation.deleteOffer),
-    offerController.deleteOffer
+    validate(faqValidation.postFAQ),
+    faqController.postFAQ
 )
 
 module.exports = { router, adminRouter }
