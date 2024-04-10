@@ -128,6 +128,12 @@ const postProduct = {
         imageFile: stringValidation,
         description: stringValidation,
         category: idReqValidation,
+        defaultVariant: {
+            size: [stringValidation, integerNumberValidation],
+            color: stringValidation,
+            price: numberReqValidation.precision(2),
+            quantity: integerNumberReqValidation,
+        }
     }),
 }
 

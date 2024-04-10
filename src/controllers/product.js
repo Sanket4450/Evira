@@ -595,19 +595,15 @@ exports.postProduct = catchAsyncErrors(async (req, res) => {
         delete body.defaultVariant
 
         const product = await productService.createProduct(user._id, body)
-        const variant = await productService.createVariant(
+        const defaultVariant = await productService.createVariant(
             product._id,
             variantBody
         )
 
-        await productService.updateProduct(product._id, {
-            defaultVariant: variant._id,
-        })
-
         return sendResponse(
             res,
             httpStatus.OK,
-            { product },
+            { product, defaultVariant },
             'Product posted successfully'
         )
     }
