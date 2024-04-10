@@ -71,5 +71,7 @@ module.exports = {
         ADDRESS: 'Address',
         PROMOTION: 'Promotion',
         SHIPPINGTYPE: 'ShippingType',
+        FAQ: 'FAQ',
+        MESSAGE: 'Message'
     },
 }

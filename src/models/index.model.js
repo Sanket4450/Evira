@@ -11,6 +11,8 @@ const Order = require('./order')
 const Address = require('./address')
 const Promotion = require('./promotion')
 const ShippingType = require('./shipping.type')
+const FAQ = require('./faq')
+const Message = require('./message')
 
 module.exports = {
     User,
@@ -26,4 +28,6 @@ module.exports = {
     Address,
     Promotion,
     ShippingType,
+    FAQ,
+    Message
 }
