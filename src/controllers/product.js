@@ -328,7 +328,7 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    if (productVariant.quantity < quantity) {
+    if ((action === 'add' || action === 'increase') && productVariant.quantity < quantity) {
         throw new ApiError(
             constant.MESSAGES.NOT_HAVE_ENOUGH_QUANTITY,
             httpStatus.CONFLICT
@@ -377,6 +377,26 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
             userId: user._id,
             quantity,
         })
+    }
+
+    if (action === 'add' || action === 'increase') {
+        await productService.modifyVariantQuantity(
+            productId,
+            variantId,
+            quantity - quantity * 2
+        )
+    } else if (action === 'remove' || action === 'decrease' && quantity >= cartProductVariant.items[0].quantity) {
+        await productService.modifyVariantQuantity(
+            productId,
+            variantId,
+            cartProductVariant.items[0].quantity
+        )
+    } else {
+        await productService.modifyVariantQuantity(
+            productId,
+            variantId,
+            quantity
+        )
     }
 
     const productVariantCartAmount =

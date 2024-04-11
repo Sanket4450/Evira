@@ -754,3 +754,22 @@ exports.deleteProductVariants = (productId) => {
     }
     dbRepo.deleteMany(constant.COLLECTIONS.VARIANT, { query })
 }
+
+exports.modifyVariantQuantity = (productId, variantId, modifyCount) => {
+    Logger.info(
+      `Inside modifyVariantQuantity => product = ${productId} variant = ${variantId} count = ${modifyCount}`
+    )
+
+    const query = {
+        _id: new mongoose.Types.ObjectId(variantId),
+        product: new mongoose.Types.ObjectId(productId),
+    }
+
+    const data = {
+        $inc: {
+            quantity: modifyCount
+        }
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.VARIANT, { query, data })
+}
