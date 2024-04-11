@@ -25,10 +25,10 @@ exports.getNotifications = catchAsyncErrors(async (req, res) => {
         limit,
     })
 
-    const notificationIds = notifications.map((value) => value._id.toString())
+    const allNotifications = await notificationService.getAllNotifications(user._id)
 
-    notificationIds.forEach(async (notificationId) => {
-        await notificationService.updateNotification(notificationId)
+    allNotifications.forEach(async (notification) => {
+        await notificationService.updateNotification(notification._id.toString())
     })
 
     return sendResponse(

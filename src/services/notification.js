@@ -36,6 +36,35 @@ exports.getNotifications = (userId, { page, limit }) => {
     )
 }
 
+exports.getUnreadNotifications = (userId) => {
+    Logger.info(`Inside getUnreadNotifications => user = ${userId}`)
+
+    const query = {
+        user: new mongoose.Types.ObjectId(userId),
+        isRead: false
+    }
+
+    const data = {
+        _id: 1,
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.NOTIFICATION, { query, data })
+}
+
+exports.getAllNotifications = (userId) => {
+    Logger.info(`Inside getAllNotifications => user = ${userId}`)
+
+    const query = {
+        user: new mongoose.Types.ObjectId(userId),
+    }
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.NOTIFICATION, { query, data })
+}
+
 exports.createNotification = (userId, notificationBody) => {
     Logger.info('Inside createNotification')
 

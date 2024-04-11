@@ -6,10 +6,12 @@ const {
     categoryService,
     offerService,
     userService,
+    notificationService,
 } = require('../services/index.service')
 
 exports.getHomeData = catchAsyncErrors(async (req, res) => {
     const user = await userService.getUserById(req.user.sub)
+    console.log(req.user.sub)
 
     if (!user) {
         throw new ApiError(
@@ -24,10 +26,14 @@ exports.getHomeData = catchAsyncErrors(async (req, res) => {
 
     products = await productService.validateLikedProducts(user._id, products)
 
+    const unreadNotifications = await notificationService.getUnreadNotifications(user._id)
+
+    const newNotifications = unreadNotifications.length !== 0
+
     return sendResponse(
         res,
         httpStatus.OK,
-        { specialOffers, categories, products },
+        { specialOffers, categories, products, newNotifications },
         'Home data got successfully'
     )
 })
