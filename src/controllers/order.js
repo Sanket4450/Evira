@@ -19,13 +19,13 @@ exports.getOrders = catchAsyncErrors(async (req, res) => {
     }
 
     const orders = await orderService.getOrders(type, user._id, { page, limit })
-    
-    if (type === 'completed') {
-        for (let order of orders) {
-            const orderStatus = await orderService.getOrderStatus(order.id)
 
-            order['status'] = orderStatus.status[0]?.title
+    for (let order of orders) {
+        const orderStatus = await orderService.getOrderStatus(order.id)
 
+        order['status'] = orderStatus.status[0]?.title
+
+        if (type === 'completed') {
             if (orderStatus.status[0]?.title === 'Canceled' || await reviewService.checkReviewPosted(order.product, user._id)) {
                 order['isReviewPosted'] = true
             } else {
@@ -170,7 +170,7 @@ exports.getAdminOrder = catchAsyncErrors(async (req, res) => {
 
 exports.updateOrder = catchAsyncErrors(async (req, res) => {
     const { orderId } = req.params
-    let { address, type, status } = req.body
+    let { address, status } = req.body
 
     let order = await orderService.getAdminOrderInfoById(orderId)
 
@@ -191,7 +191,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         await orderService.updateOrder(orderId, { address })
     }
 
-    type ||= 'ongoing'
+    const type = status.title === 'Delivered' || status.title === 'Canceled' ? 'completed' : 'ongoing'
     await orderService.updateOrder(orderId, { type })
 
     if (status) {
