@@ -108,17 +108,6 @@ exports.getOrders = (type, userId, { page, limit }) => {
             },
         },
         {
-            $sort: {
-                createdAt: -1,
-            },
-        },
-        {
-            $skip: (page - 1) * limit,
-        },
-        {
-            $limit: limit,
-        },
-        {
             $lookup: {
                 from: 'products',
                 localField: 'item.product',
@@ -152,6 +141,17 @@ exports.getOrders = (type, userId, { page, limit }) => {
                 quantity: { $first: '$item.quantity' },
                 amount: { $first: '$amount' },
             },
+        },
+        {
+            $sort: {
+                _id: 1
+            }
+        },
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
         },
         {
             $project: {
@@ -219,8 +219,6 @@ exports.getAdminOrderById = (id) => {
                 preserveNullAndEmptyArrays: true // Preserve unmatched documents
             }
         },
-
-
         {
             $lookup: {
                 from: 'shippingtypes',
@@ -328,17 +326,6 @@ exports.getAdminOrders = async (type, { page, limit }) => {
 
     const pipeline = [
         {
-            $sort: {
-                createdAt: -1,
-            },
-        },
-        {
-            $skip: (page - 1) * limit,
-        },
-        {
-            $limit: limit,
-        },
-        {
             $lookup: {
                 from: 'products',
                 localField: 'item.product',
@@ -389,6 +376,17 @@ exports.getAdminOrders = async (type, { page, limit }) => {
             },
         },
         {
+            $sort: {
+                _id: 1,
+            },
+        },
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
+        },
+        {
             $project: {
                 product: 1,
                 variant: 1,
@@ -409,11 +407,6 @@ exports.getAdminOrders = async (type, { page, limit }) => {
     ]
 
     const countPipeline = [
-        {
-            $sort: {
-                createdAt: -1,
-            },
-        },
         {
             $lookup: {
                 from: 'products',
@@ -448,7 +441,8 @@ exports.getAdminOrders = async (type, { page, limit }) => {
                 quantity: { $first: '$item.quantity' },
                 amount: { $first: '$amount' },
             },
-        }, {
+        },
+        {
             $count: "totalRecords"
         }
     ]
@@ -479,11 +473,6 @@ exports.getAdminDashboardRevenue = async (type) => {
     )
 
     const pipeline = [
-        {
-            $sort: {
-                createdAt: -1,
-            },
-        },
         {
             $group: {
                 _id: '$_id',

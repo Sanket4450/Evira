@@ -117,6 +117,17 @@ exports.getWishlistProducts = (userId, { page, limit }) => {
             },
         },
         {
+            $sort: {
+                _id: 1
+            }
+        },
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
+        },
+        {
             $project: {
                 name: 1,
                 image: 1,
@@ -127,17 +138,6 @@ exports.getWishlistProducts = (userId, { page, limit }) => {
                 _id: 0,
                 id: '$_id',
             },
-        },
-        {
-            $sort: {
-                createdAt: -1,
-            },
-        },
-        {
-            $skip: (page - 1) * limit,
-        },
-        {
-            $limit: limit,
         },
     ]
 
@@ -220,6 +220,17 @@ exports.getWishlistProductsByCategory = (
             },
         },
         {
+            $sort: {
+                _id: 1
+            }
+        },
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
+        },
+        {
             $project: {
                 name: 1,
                 image: 1,
@@ -230,17 +241,6 @@ exports.getWishlistProductsByCategory = (
                 _id: 0,
                 id: '$_id',
             },
-        },
-        {
-            $sort: {
-                createdAt: -1,
-            },
-        },
-        {
-            $skip: (page - 1) * limit,
-        },
-        {
-            $limit: limit,
         },
     ]
 

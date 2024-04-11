@@ -189,6 +189,11 @@ exports.getCartProducts = (userId) => {
             },
         },
         {
+            $sort: {
+                _id: 1
+            }
+        },
+        {
             $project: {
                 product: 1,
                 variant: 1,
@@ -274,6 +279,11 @@ exports.getCartProductsBySearch = (userId, keyword) => {
                     },
                 },
             },
+        },
+        {
+            $sort: {
+                _id: 1
+            }
         },
         {
             $project: {
@@ -370,6 +380,11 @@ exports.getCheckoutProducts = (userId) => {
                     },
                 },
             },
+        },
+        {
+            $sort: {
+                _id: 1
+            }
         },
         {
             $project: {

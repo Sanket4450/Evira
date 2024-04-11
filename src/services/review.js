@@ -46,20 +46,6 @@ exports.getReviews = (productId, { rating, page, limit }) => {
         {
             $addFields: { likes: { $size: '$likedBy' } },
         },
-        {
-            $sort: {
-                likes: -1,
-            },
-        }
-    )
-
-    pipeline.push(
-        {
-            $skip: (page - 1) * limit,
-        },
-        {
-            $limit: limit,
-        }
     )
 
     pipeline.push(
@@ -86,6 +72,17 @@ exports.getReviews = (productId, { rating, page, limit }) => {
                 likes: { $first: '$likes' },
                 createdAt: { $first: '$createdAt' },
             },
+        },
+        {
+            $sort: {
+                likes: -1,
+            },
+        },
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
         },
         {
             $project: {
@@ -150,20 +147,6 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
         {
             $addFields: { likes: { $size: '$likedBy' } },
         },
-        {
-            $sort: {
-                likes: -1,
-            },
-        }
-    )
-
-    pipeline.push(
-        {
-            $skip: (page - 1) * limit,
-        },
-        {
-            $limit: limit,
-        }
     )
 
     pipeline.push(
@@ -190,6 +173,17 @@ exports.getReviewsBySearch = (productId, { keyword, rating, page, limit }) => {
                 likes: { $first: '$likes' },
                 createdAt: { $first: '$createdAt' },
             },
+        },
+        {
+            $sort: {
+                likes: -1,
+            },
+        },
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
         },
         {
             $project: {

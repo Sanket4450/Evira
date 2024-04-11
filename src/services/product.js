@@ -78,7 +78,7 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
         },
         {
             $sort: {
-                createdAt: -1,
+                createdAt: 1,
             },
         },
         {
@@ -153,17 +153,6 @@ exports.getProductsByCategory = (
             },
         },
         {
-            $sort: {
-                createdAt: -1,
-            },
-        },
-        {
-            $skip: (page - 1) * limit,
-        },
-        {
-            $limit: limit,
-        },
-        {
             $lookup: {
                 from: 'variants',
                 localField: '_id',
@@ -186,6 +175,11 @@ exports.getProductsByCategory = (
             },
         },
         {
+            $sort: {
+                createdAt: -1,
+            },
+        },
+        {
             $group: {
                 _id: '$_id',
                 name: { $first: '$name' },
@@ -194,6 +188,17 @@ exports.getProductsByCategory = (
                 sold: { $first: '$sold' },
                 stars: { $avg: '$reviews.star' },
             },
+        },
+        {
+            $sort: {
+                _id: 1,
+            },
+        },
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
         },
         {
             $project: {
