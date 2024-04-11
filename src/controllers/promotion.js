@@ -3,7 +3,7 @@ const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
-const { promotionService, userService } = require('../services/index.service')
+const { promotionService, userService, notificationService } = require('../services/index.service')
 
 exports.getAdminPromoCodes = catchAsyncErrors(async (req, res) => {
     const { page, limit } = req.query
@@ -49,6 +49,18 @@ exports.postPromoCode = catchAsyncErrors(async (req, res) => {
     }
 
     const promoCode = await promotionService.createPromoCode(body)
+
+    const users = await userService.getAllUsers()
+
+    users.forEach(async (user) => {
+        const notificationBody = {
+          title: `${promoCode.discountPercentage} Special Discount!`,
+          message: 'Special promo code is now available',
+          icon: constant.NOTIFICATIONS.PROMOCODE,
+        }
+
+        await notificationService.createNotification(user._id, notificationBody)
+    })
 
     return sendResponse(
         res,

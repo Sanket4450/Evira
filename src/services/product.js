@@ -10,6 +10,7 @@ exports.getProductById = (id) => {
 
     const data = {
         _id: 1,
+        name: 1,
     }
 
     return dbRepo.findOne(constant.COLLECTIONS.PRODUCT, { query, data })

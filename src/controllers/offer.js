@@ -7,6 +7,7 @@ const {
     offerService,
     userService,
     productService,
+    notificationService,
 } = require('../services/index.service')
 
 exports.getOffers = catchAsyncErrors(async (req, res) => {
@@ -52,7 +53,9 @@ exports.postOffer = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    if (!(await productService.getProductById(body.product))) {
+    const product = await productService.getProductById(body.product)
+
+    if (!product) {
         throw new ApiError(
             constant.MESSAGES.PRODUCT_NOT_FOUND,
             httpStatus.NOT_FOUND
@@ -60,6 +63,18 @@ exports.postOffer = catchAsyncErrors(async (req, res) => {
     }
 
     const offer = await offerService.createOffer(body)
+
+    const users = await userService.getAllUsers()
+
+    users.forEach(async (user) => {
+      const notificationBody = {
+        title: `${offer.discountPercentage} Special Discount!`,
+        message: `New offer is now available on ${product.name}`,
+        icon: constant.NOTIFICATIONS.DISCOUNT,
+      }
+
+      await notificationService.createNotification(user._id, notificationBody)
+    })
 
     return sendResponse(
         res,

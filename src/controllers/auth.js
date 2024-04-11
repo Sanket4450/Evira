@@ -7,6 +7,7 @@ const {
     authService,
     userService,
     tokenService,
+    notificationService
 } = require('../services/index.service')
 
 exports.register = catchAsyncErrors(async (req, res) => {
@@ -92,6 +93,15 @@ exports.resetOldPassword = catchAsyncErrors(async (req, res) => {
             httpStatus.NOT_FOUND
         )
     }
+
+    const notificationBody = {
+      title: 'Password Reset!',
+      message: 'Password reset successfully',
+      icon: constant.NOTIFICATIONS.USER,
+    }
+
+    await notificationService.createNotification(user._id, notificationBody)
+
 
     await authService.resetOldPassword({ userId: user._id, oldPassword, password })
 

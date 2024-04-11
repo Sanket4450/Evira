@@ -26,9 +26,9 @@ exports.postProfile = catchAsyncErrors(async (req, res) => {
     })
 
     const notificationBody = {
-        title: 'Account Setup Successfull!',
-        message: 'Your account has been created!',
-        icon: 'icon1.svg',
+        title: 'Account Setup!',
+        message: 'Your account has been created successfully',
+        icon: constant.NOTIFICATIONS.USER,
     }
 
     await notificationService.createNotification(user._id, notificationBody)
@@ -74,6 +74,14 @@ exports.updateProfile = catchAsyncErrors(async (req, res) => {
     }
 
     await userService.updateUser(user._id, body)
+
+    const notificationBody = {
+        title: 'Profile Updated!',
+        message: 'Your profile has been updated successfully',
+        icon: constant.NOTIFICATIONS.USER,
+    }
+
+    await notificationService.createNotification(user._id, notificationBody)
 
     user = await userService.getFullUserExcludingId(user._id)
 
@@ -156,6 +164,14 @@ exports.postAddress = catchAsyncErrors(async (req, res) => {
 
     const address = await userService.createAddress(user._id, body)
 
+    const notificationBody = {
+      title: 'Address Created!',
+      message: 'New address created successfully',
+      icon: constant.NOTIFICATIONS.LOCATION,
+    }
+
+    await notificationService.createNotification(user._id, notificationBody)
+
     return sendResponse(
         res,
         httpStatus.OK,
@@ -187,6 +203,14 @@ exports.updateAddress = catchAsyncErrors(async (req, res) => {
     }
 
     await userService.updateAddress(addressId, user._id, body)
+
+    const notificationBody = {
+      title: 'Address Updated!',
+      message: 'Address updated successfully',
+      icon: constant.NOTIFICATIONS.LOCATION,
+    }
+
+    await notificationService.createNotification(user._id, notificationBody)
 
     address = await userService.getAddressById(addressId, user._id)
 

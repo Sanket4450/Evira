@@ -382,3 +382,17 @@ exports.getUsers = (adminId, { page, limit }) => {
         limit
     )
 }
+
+exports.getAllUsers = () => {
+    Logger.info('Inside getAllUsers')
+
+    const query = {
+        role: 'user',
+    }
+
+    const data = {
+        _id: 1
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.USER, { query, data })
+}

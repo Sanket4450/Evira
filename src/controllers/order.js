@@ -3,7 +3,7 @@ const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
-const { userService, orderService, reviewService } = require('../services/index.service')
+const { userService, orderService, reviewService, notificationService } = require('../services/index.service')
 
 exports.getOrders = catchAsyncErrors(async (req, res) => {
     const { page, limit } = req.query
@@ -111,6 +111,14 @@ exports.cancelOrder = catchAsyncErrors(async (req, res) => {
     await orderService.updateOrder(orderId, updateBody)
     await orderService.updateOrderStatus(orderId, pushBody)
 
+    const notificationBody = {
+      title: 'Order Cancel!',
+      message: 'Your order has been canceled',
+      icon: constant.NOTIFICATIONS.DELIVERY,
+    }
+
+    await notificationService.createNotification(user._id, notificationBody)
+
     order = await orderService.getOrderById(orderId, user._id)
 
     return sendResponse(
@@ -210,6 +218,15 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         }
 
         await orderService.updateOrderStatus(orderId, statusBody)
+
+        const notificationBody = {
+          title: 'Order Traking!',
+          message: `Your order is ${status.title}`,
+          icon: constant.NOTIFICATIONS.DELIVERY,
+        }
+
+        await notificationService.createNotification(order.user, notificationBody)
+
     }
 
     order = await orderService.getAdminOrderById(orderId)
