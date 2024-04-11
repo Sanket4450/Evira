@@ -48,7 +48,11 @@ exports.getUnreadNotifications = (userId) => {
         _id: 1,
     }
 
-    return dbRepo.find(constant.COLLECTIONS.NOTIFICATION, { query, data })
+    const sortQuery = {
+        createdAt: -1
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.NOTIFICATION, { query, data }, sortQuery)
 }
 
 exports.getAllNotifications = (userId) => {
@@ -62,7 +66,11 @@ exports.getAllNotifications = (userId) => {
         _id: 1
     }
 
-    return dbRepo.find(constant.COLLECTIONS.NOTIFICATION, { query, data })
+    const sortQuery = {
+        createdAt: -1
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.NOTIFICATION, { query, data }, sortQuery)
 }
 
 exports.createNotification = (userId, notificationBody) => {

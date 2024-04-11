@@ -41,7 +41,11 @@ exports.getPromoCodes = (date) => {
         description: 1,
     }
 
-    return dbRepo.find(constant.COLLECTIONS.PROMOTION, { query, data })
+    const sortQuery = {
+        createdAt: -1
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.PROMOTION, { query, data }, sortQuery)
 }
 
 exports.checkPromoCodeValidity = (promoId, date) => {
@@ -77,14 +81,10 @@ exports.getAdminPromoCodes = ({ page, limit }) => {
         description: 1,
     }
 
-    const sortQuery = {
-        createdAt: -1,
-    }
-
     return dbRepo.findWithCount(
         constant.COLLECTIONS.PROMOTION,
         { data },
-        sortQuery,
+        { createdAt: -1 },
         page,
         limit
     )

@@ -53,7 +53,7 @@ exports.getOffers = ({ page, limit }) => {
     return dbRepo.findPage(
         constant.COLLECTIONS.OFFER,
         { query, data },
-        {},
+        { createdAt: -1 },
         page,
         limit
     )

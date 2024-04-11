@@ -49,6 +49,11 @@ exports.getCategories = ({ page, limit }) => {
             }
         },
         {
+            $sort: {
+                createdAt: -1,
+            },
+        },
+        {
             $skip: (page - 1) * limit,
         },
         {
@@ -104,7 +109,7 @@ exports.getAdminCategories = ({ page, limit }) => {
     page ||= 1
     limit ||= 8
 
-    return dbRepo.findWithCount(constant.COLLECTIONS.CATEGORY, {}, {}, page, limit)
+    return dbRepo.findWithCount(constant.COLLECTIONS.CATEGORY, {}, { createdAt: -1 }, page, limit)
 }
 
 exports.postCategory = (categoryBody) => {

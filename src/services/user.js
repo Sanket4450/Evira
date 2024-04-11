@@ -300,7 +300,11 @@ exports.getAddresses = (userId) => {
         user: 0,
     }
 
-    return dbRepo.find(constant.COLLECTIONS.ADDRESS, { query, data })
+    const sortQuery = {
+        createdAt: -1
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.ADDRESS, { query, data }, sortQuery)
 }
 
 exports.createAddress = async (userId, addressBody) => {
@@ -377,7 +381,7 @@ exports.getUsers = (adminId, { page, limit }) => {
     return dbRepo.findWithCount(
         constant.COLLECTIONS.USER,
         { query },
-        {},
+        { createdAt: -1 },
         page,
         limit
     )
@@ -394,5 +398,9 @@ exports.getAllUsers = () => {
         _id: 1
     }
 
-    return dbRepo.find(constant.COLLECTIONS.USER, { query, data })
+    const sortQuery = {
+        createdAt: -1
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.USER, { query, data }, sortQuery)
 }

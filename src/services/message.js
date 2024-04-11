@@ -17,14 +17,10 @@ exports.getMessages = ({ page, limit }) => {
   page ||= 1
   limit ||= 10
 
-  const sortQuery = {
-    createdAt: -1,
-  }
-
   return dbRepo.findPage(
     constant.COLLECTIONS.MESSAGE,
     { query: {}, data: {} },
-    sortQuery,
+    { createdAt: -1 },
     page,
     limit
   )

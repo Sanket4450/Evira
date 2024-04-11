@@ -20,13 +20,21 @@ exports.getShippingTypeByTitle = (title) => {
 exports.getShippingTypes = () => {
     Logger.info('Inside getShippingTypes')
 
-    return dbRepo.find(constant.COLLECTIONS.SHIPPINGTYPE, {})
+    const sortQuery = {
+        createdAt: -1
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.SHIPPINGTYPE, {}, sortQuery)
 }
 
 exports.getAdminShippingTypes = () => {
     Logger.info('Inside getShippingTypes')
 
-    return dbRepo.find(constant.COLLECTIONS.SHIPPINGTYPE, {})
+    const sortQuery = {
+        createdAt: -1
+    }
+
+    return dbRepo.find(constant.COLLECTIONS.SHIPPINGTYPE, {}, sortQuery)
 }
 
 exports.createShippingType = (shippingBody) => {

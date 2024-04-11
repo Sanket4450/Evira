@@ -129,6 +129,11 @@ exports.getWishlistProducts = (userId, { page, limit }) => {
             },
         },
         {
+            $sort: {
+                createdAt: -1,
+            },
+        },
+        {
             $skip: (page - 1) * limit,
         },
         {
@@ -227,6 +232,11 @@ exports.getWishlistProductsByCategory = (
             },
         },
         {
+            $sort: {
+                createdAt: -1,
+            },
+        },
+        {
             $skip: (page - 1) * limit,
         },
         {
@@ -293,15 +303,6 @@ exports.getWishlistProductsBySearch = (
             )
         }
     }
-
-    pipeline.push(
-        {
-            $skip: (page - 1) * limit,
-        },
-        {
-            $limit: limit,
-        }
-    )
 
     pipeline.push(
         {
@@ -416,6 +417,15 @@ exports.getWishlistProductsBySearch = (
             })
             break
     }
+
+    pipeline.push(
+        {
+            $skip: (page - 1) * limit,
+        },
+        {
+            $limit: limit,
+        }
+    )
 
     return dbRepo.aggregate(constant.COLLECTIONS.WISHLIST, pipeline)
 }

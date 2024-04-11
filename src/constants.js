@@ -56,6 +56,7 @@ module.exports = {
     INSUFFICIENT_BALANCE: 'Not have sufficient balance',
     ORDER_ALREADY_CANCELED: 'Order already canceled',
     STATUS_ALREADY_UPDATED: 'Order-status already updated',
+    ERROR_UPLOADING_FILE: 'Error uploading file',
   },
   COLLECTIONS: {
     USER: 'User',

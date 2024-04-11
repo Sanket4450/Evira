@@ -77,6 +77,11 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
             $match: matchCriteria,
         },
         {
+            $sort: {
+                createdAt: -1,
+            },
+        },
+        {
             $skip: (page - 1) * limit,
         },
         {
@@ -145,6 +150,11 @@ exports.getProductsByCategory = (
         {
             $match: {
                 category: new mongoose.Types.ObjectId(categoryId),
+            },
+        },
+        {
+            $sort: {
+                createdAt: -1,
             },
         },
         {
@@ -253,15 +263,6 @@ exports.getProductsBySearch = ({
 
         pipeline.push(
             {
-                $skip: (page - 1) * limit,
-            },
-            {
-                $limit: limit,
-            }
-        )
-
-        pipeline.push(
-            {
                 $lookup: {
                     from: 'variants',
                     localField: '_id',
@@ -359,6 +360,15 @@ exports.getProductsBySearch = ({
                 })
                 break
         }
+
+        pipeline.push(
+            {
+                $skip: (page - 1) * limit,
+            },
+            {
+                $limit: limit,
+            }
+        )
 
         return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
     } catch (error) {
