@@ -22,7 +22,11 @@ exports.getOrders = catchAsyncErrors(async (req, res) => {
     
     if (type === 'completed') {
         for (let order of orders) {
-            if (await reviewService.checkReviewPosted(order.product, user._id)) {
+            const orderStatus = await orderService.getOrderStatus(order.id)
+
+            order['status'] = orderStatus.status[0]?.title
+
+            if (orderStatus.status[0]?.title === 'Canceled' || await reviewService.checkReviewPosted(order.product, user._id)) {
                 order['isReviewPosted'] = true
             } else {
                 order['isReviewPosted'] = false
@@ -96,7 +100,7 @@ exports.cancelOrder = catchAsyncErrors(async (req, res) => {
     }
 
     const updateBody = {
-        type: 'Completed',
+        type: 'completed',
     }
     const pushBody = {
         title: 'Canceled',

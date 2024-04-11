@@ -19,18 +19,6 @@ exports.getOffersByProduct = (productId) => {
     return dbRepo.find(constant.COLLECTIONS.OFFER, { query })
 }
 
-exports.getOfferByProduct = (productId) => {
-    const query = {
-        product: new mongoose.Types.ObjectId(productId),
-    }
-
-    const data = {
-        _id: 1,
-    }
-
-    return dbRepo.findOne(constant.COLLECTIONS.OFFER, { query, data })
-}
-
 exports.checkOfferValidity = (productId, date = Date.now()) => {
     Logger.info(
         `Inside checkOfferValidity => product = ${productId}, date = ${date}`

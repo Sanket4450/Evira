@@ -17,7 +17,11 @@ const notificationSchema = new mongoose.Schema(
         },
         icon: {
             type: String,
-            required: true,
+            default: null,
+        },
+        iconFile: {
+            type: String,
+            default: null,
         },
         isRead: {
             type: Boolean,

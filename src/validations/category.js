@@ -17,6 +17,7 @@ const postCategory = {
     body: joi.object().keys({
         name: stringReqValidation.max(20),
         icon: stringValidation,
+        iconFile: stringValidation,
         description: stringValidation.max(200),
     }),
 }
@@ -28,6 +29,7 @@ const updateCategory = {
     body: joi.object().keys({
         name: stringValidation.max(20),
         icon: stringValidation,
+        iconFile: stringValidation,
         description: stringValidation.max(200),
     }),
 }

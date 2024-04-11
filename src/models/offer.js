@@ -10,7 +10,11 @@ const offerSchema = new mongoose.Schema(
         },
         image: {
             type: String,
-            required: true,
+            default: null,
+        },
+        imageFile: {
+            type: String,
+            default: null,
         },
         discountPercentage: {
             type: Number,

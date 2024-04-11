@@ -9,7 +9,11 @@ const categorySchema = new mongoose.Schema(
         },
         icon: {
             type: String,
-            default: 'myIcon.svg',
+            default: null,
+        },
+        iconFile: {
+            type: String,
+            default: null,
         },
         description: {
             type: String,

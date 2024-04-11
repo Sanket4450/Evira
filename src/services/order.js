@@ -59,6 +59,20 @@ exports.updateOrder = (orderId, updateBody) => {
     return dbRepo.updateOne(constant.COLLECTIONS.ORDER, { query, data })
 }
 
+exports.getOrderStatus = (orderId) => {
+    Logger.info(`Inside getOrderStatus => order = ${orderId}`)
+
+    const query = {
+        _id: new mongoose.Types.ObjectId(orderId),
+    }
+
+    const data = {
+        status: 1,
+    }
+
+    return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query, data })
+}
+
 exports.updateOrderStatus = (orderId, pushBody) => {
     Logger.info(`Inside updateOrderStatus => order = ${orderId}`)
 
@@ -617,7 +631,7 @@ exports.getAdminDashboardRevenue = async (type) => {
         // Match orders based on type
         {
             $match: {
-                type: { $in: ["completed", "Ongoing"] } // Adjust types as needed
+                type: { $in: ["completed", "ongoing"] } // Adjust types as needed
             }
         },
         // Match orders based on date range (current week)
@@ -691,7 +705,7 @@ exports.getAdminDashboardRevenue = async (type) => {
         // Match orders based on type
         {
             $match: {
-                type: { $in: ["completed", "Ongoing"] } // Adjust types as needed
+                type: { $in: ["completed", "ongoing"] } // Adjust types as needed
             }
         },
         // Match orders based on date range (current year)
@@ -770,7 +784,7 @@ exports.getAdminDashboardRevenue = async (type) => {
         // Match orders based on type and date range (current month)
         {
             $match: {
-                type: { $in: ["completed", "Ongoing"] }, // Adjust types as needed
+                type: { $in: ["completed", "ongoing"] }, // Adjust types as needed
                 createdAt: {
                     $gte: startOfMonth, // Start of the current month
                     $lte: endOfMonth // End of the current month

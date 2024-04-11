@@ -26,9 +26,10 @@ const getProductOffers = {
 const postOffer = {
     body: joi.object().keys({
         product: idReqValidation,
-        image: stringReqValidation,
+        image: stringValidation,
+        imageFile: stringValidation,
         discountPercentage: numberReqValidation.max(90).precision(2),
-        startDate: dateValidation,
+        startDate: dateValidation.required(),
         endDate: dateValidation.required(),
     }),
 }
@@ -38,8 +39,8 @@ const updateOffer = {
         offerId: idReqValidation,
     }),
     body: joi.object().keys({
-        product: idValidation,
         image: stringValidation,
+        imageFile: stringValidation,
         discountPercentage: numberValidation.max(90).precision(2),
         startDate: dateValidation,
         endDate: dateValidation,

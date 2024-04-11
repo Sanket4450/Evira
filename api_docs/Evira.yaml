@@ -1816,23 +1816,23 @@ paths:
           description: review object
           content:
             application/json: {}
-  /admin/offers/{offerId}:
+  /admin/offers/{productId}:
     get:
       tags:
         - Admin Offers
       security:
         - adminAuth: []
       parameters:
-        - name: offerId
+        - name: productId
           in: path
           schema:
             type: string
             format: objectId
           required: true
-          description: objectId for the offer
+          description: objectId of the product for getting its reviews
       responses:
         '200':
-          description: offer object
+          description: offers array
           content:
             application/json: {}
     put:

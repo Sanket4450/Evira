@@ -59,13 +59,6 @@ exports.postOffer = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    if (await offerService.getOfferByProduct(body.product)) {
-        throw new ApiError(
-            constant.MESSAGES.OFFER_ALREADY_EXISTS,
-            httpStatus.CONFLICT
-        )
-    }
-
     const offer = await offerService.createOffer(body)
 
     return sendResponse(
@@ -92,22 +85,6 @@ exports.updateOffer = catchAsyncErrors(async (req, res) => {
             constant.MESSAGES.OFFER_NOT_FOUND,
             httpStatus.NOT_FOUND
         )
-    }
-
-    if (body.product) {
-        if (!(await productService.getProductById(body.product))) {
-            throw new ApiError(
-                constant.MESSAGES.PRODUCT_NOT_FOUND,
-                httpStatus.NOT_FOUND
-            )
-        }
-
-        if (await offerService.getOfferByProduct(body.product)) {
-            throw new ApiError(
-                constant.MESSAGES.OFFER_ALREADY_EXISTS,
-                httpStatus.CONFLICT
-            )
-        }
     }
 
     await offerService.updateOffer(offerId, body)

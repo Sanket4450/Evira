@@ -639,7 +639,10 @@ exports.getAdminFullProductById = (productId) => {
                 reviewCount: {
                     $size: '$reviews',
                 },
-                category: '$categories.name',
+                category: {
+                    id: '$categories._id',
+                    name: '$categories.name',
+                },
                 variants: {
                     $map: {
                         input: '$variants',
