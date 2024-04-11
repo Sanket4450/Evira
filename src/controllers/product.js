@@ -341,6 +341,8 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
         user._id
     )
 
+    const variant = cartProductVariant ? cartProductVariant.items.find((obj) => obj.variant.toString() === variantId) : null
+
     if (
         !cartProductVariant &&
         (action === 'increase' || action === 'decrease')
@@ -360,7 +362,7 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
     } else if (
         cartProductVariant &&
         action === 'decrease' &&
-        quantity >= cartProductVariant.items[0].quantity
+        quantity >= variant?.quantity
     ) {
         await cartService.cartAction({
             action: 'remove',
@@ -385,11 +387,11 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
             variantId,
             quantity - quantity * 2
         )
-    } else if (action === 'remove' || action === 'decrease' && quantity >= cartProductVariant.items[0].quantity) {
+    } else if (action === 'remove' || action === 'decrease' && quantity >= variant?.quantity) {
         await productService.modifyVariantQuantity(
             productId,
             variantId,
-            cartProductVariant.items[0].quantity
+            variant?.quantity
         )
     } else {
         await productService.modifyVariantQuantity(
