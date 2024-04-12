@@ -5,7 +5,6 @@ const {
     stringReqValidation,
     numberReqValidation,
     dateValidation,
-    idValidation,
     stringValidation,
     numberValidation,
     pageAndLimit,
@@ -26,7 +25,7 @@ const getProductOffers = {
 const postOffer = {
     body: joi.object().keys({
         product: idReqValidation,
-        image: stringValidation,
+        image: stringReqValidation,
         discountPercentage: numberReqValidation.max(90).precision(2),
         startDate: dateValidation.required(),
         endDate: dateValidation.required(),

@@ -124,7 +124,7 @@ const deleteVariant = {
 const postProduct = {
     body: joi.object().keys({
         name: stringReqValidation.max(80),
-        image: stringValidation,
+        image: stringReqValidation,
         description: stringValidation,
         category: idReqValidation,
         defaultVariant: {

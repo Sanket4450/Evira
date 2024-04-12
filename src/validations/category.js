@@ -16,7 +16,7 @@ const getAdminCategories = {
 const postCategory = {
     body: joi.object().keys({
         name: stringReqValidation.max(20),
-        icon: stringValidation,
+        icon: stringReqValidation,
         description: stringValidation.max(200),
     }),
 }

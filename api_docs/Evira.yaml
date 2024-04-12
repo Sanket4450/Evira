@@ -1553,6 +1553,7 @@ paths:
                   type: string
               required:
                 - name
+                - icon
               example:
                 name: Clothes
                 icon: icon8.svg
@@ -1654,6 +1655,7 @@ paths:
                       type: integer
               required:
                 - name
+                - image
                 - category
                 - price
                 - quantity
