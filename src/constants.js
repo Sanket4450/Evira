@@ -82,21 +82,21 @@ module.exports = {
     CATEGORY: 'Category_icons',
     PRODUCT: 'Product_images',
     OFFER: 'Offer_images',
-    NOTIFICATION: 'Notification_images',
+    NOTIFICATION: 'Notification_icons',
     USER: 'User_profile_images',
   },
   NOTIFICATIONS: {
-    USER: 'https://evira-images.s3.amazonaws.com/Notification_images/user.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712920011&Signature=C2bf0mgZrHS%2BPbgqaHL39wFHQSM%3D',
+    USER: 'https://evira-images.s3.amazonaws.com/Notification_icons/user.png',
     DISCOUNT:
-      'https://evira-images.s3.amazonaws.com/Notification_images/delivery.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919922&Signature=psQ8QGVwoHDAqTJPZJ2zaYDfp6w%3D',
+      'https://evira-images.s3.amazonaws.com/Notification_icons/discount.png',
     LOCATION:
-      'https://evira-images.s3.amazonaws.com/Notification_images/discount.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919948&Signature=yeSXYPuJcY8kZzoxCd5DeW6u%2BII%3D',
+      'https://evira-images.s3.amazonaws.com/Notification_icons/location.png',
     WALLET:
-      'https://evira-images.s3.amazonaws.com/Notification_images/wallet.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712920039&Signature=Z3jit%2BDKesNe%2BMu0GQeGvaJqUNo%3D',
-    CARD: 'https://evira-images.s3.amazonaws.com/Notification_images/card.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919862&Signature=NLiDZtCUZMJzqbtiwONQMJPUl3s%3D',
+      'https://evira-images.s3.amazonaws.com/Notification_icons/wallet.png',
+    CARD: 'https://evira-images.s3.amazonaws.com/Notification_icons/card.png',
     DELIVERY:
-      'https://evira-images.s3.amazonaws.com/Notification_images/delivery.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919894&Signature=R%2BIHiimCoDj1sMHwEmoifuhq5Wg%3D',
+      'https://evira-images.s3.amazonaws.com/Notification_icons/delivery.png',
     PROMOCODE:
-      'https://evira-images.s3.amazonaws.com/Notification_images/promocode.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919975&Signature=k%2BQQN4g6Um19QPP8NuET2quOVrs%3D',
+      'https://evira-images.s3.amazonaws.com/Notification_icons/promocode.png',
   },
 }

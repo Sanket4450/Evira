@@ -21,25 +21,8 @@ exports.uploadFile = async (folderName, fileName, file) => {
             httpStatus.INTERNAL_SERVER_ERROR
           )
         )
-      } else {
-        const urlParams = {
-          Bucket: process.env.BUCKET_NAME,
-          Key: data.Key,
-        }
-
-        s3.getSignedUrl('getObject', urlParams, (err, url) => {
-          if (err) {
-            reject(
-              new ApiError(
-                constant.MESSAGES.SOMETHING_WENT_WRONG,
-                httpStatus.INTERNAL_SERVER_ERROR
-              )
-            )
-          } else {
-            resolve(url)
-          }
-        })
       }
+      resolve(data.Location)
     }),
   ])
 }
