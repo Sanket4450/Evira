@@ -11,7 +11,7 @@ const schemaOptions = {
     },
 }
 
-const validate = (schema) => (req, res, next) => {
+const validate = (schema) => (req, _, next) => {
     const validSchema = pick(schema, ['query', 'params', 'body'])
     const object = pick(req, Object.keys(validSchema))
     const { value, error } = joi

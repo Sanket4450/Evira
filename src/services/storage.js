@@ -5,35 +5,41 @@ const constant = require('../constants')
 
 const s3 = new AWS.S3()
 
-const uploadFile = async (folderName, fileName, file) => {
+exports.uploadFile = async (folderName, fileName, file) => {
   const params = {
     Bucket: process.env.BUCKET_NAME,
     Key: `${folderName}/${fileName}`,
     Body: file,
   }
 
-  s3.upload(params, (err, data) => {
-    if (err) {
-      throw new ApiError(
-        constant.MESSAGES.SOMETHING_WENT_WRONG,
-        httpStatus.INTERNAL_SERVER_ERROR
-      )
-    } else {
-      const urlParams = {
-        Bucket: process.env.BUCKET_NAME,
-        Key: `${folderName}/${fileName}`,
-      }
-
-      s3.getSignedUrl('getObject', urlParams, (err, url) => {
-        if (err) {
-          throw new ApiError(
+  return new Promise((resolve, reject) => [
+    s3.upload(params, (err, data) => {
+      if (err) {
+        reject(
+          new ApiError(
             constant.MESSAGES.SOMETHING_WENT_WRONG,
             httpStatus.INTERNAL_SERVER_ERROR
           )
-        } else {
-          console.log('Presigned URL:', url)
+        )
+      } else {
+        const urlParams = {
+          Bucket: process.env.BUCKET_NAME,
+          Key: data.Key,
         }
-      })
-    }
-  })
+
+        s3.getSignedUrl('getObject', urlParams, (err, url) => {
+          if (err) {
+            reject(
+              new ApiError(
+                constant.MESSAGES.SOMETHING_WENT_WRONG,
+                httpStatus.INTERNAL_SERVER_ERROR
+              )
+            )
+          } else {
+            resolve(url)
+          }
+        })
+      }
+    }),
+  ])
 }

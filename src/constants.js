@@ -57,6 +57,7 @@ module.exports = {
     ORDER_ALREADY_CANCELED: 'Order already canceled',
     STATUS_ALREADY_UPDATED: 'Order-status already updated',
     ERROR_UPLOADING_FILE: 'Error uploading file',
+    INVALID_TYPE: 'Invalid type',
   },
   COLLECTIONS: {
     USER: 'User',
@@ -74,6 +75,13 @@ module.exports = {
     SHIPPINGTYPE: 'ShippingType',
     FAQ: 'FAQ',
     MESSAGE: 'Message',
+  },
+  FOLDERS: {
+    CATEGORY: 'Category_icons',
+    PRODUCT: 'Product_images',
+    OFFER: 'Offer_images',
+    NOTIFICATION: 'Notification_images',
+    USER: 'User_profile_images',
   },
   NOTIFICATIONS: {
     USER: 'https://firebasestorage.googleapis.com/v0/b/evira-b42be.appspot.com/o/notifications%2FAuto%20Layout%20Horizontal%20(4).png?alt=media&token=51c51383-109c-40a1-91e0-d622b064ab78',

@@ -1,6 +1,7 @@
 const userRouter = require('express').Router()
 const adminRouter = require('express').Router()
-const rootRoutes = require('./root')
+const rootRoutes = require('./root').router
+const adminRootRoutes = require('./root').adminRouter
 const authRoutes = require('./auth')
 const userRoutes = require('./user').router
 const adminUserRoutes = require('./user').adminRouter
@@ -45,6 +46,7 @@ userRouter.use('/orders', orderRoutes)
 userRouter.use('/faqs', faqRoutes)
 userRouter.use('/messages', messageRoutes)
 
+adminRouter.use('/', adminRootRoutes)
 adminRouter.use('/users', adminUserRoutes)
 adminRouter.use('/products', adminProductRoutes)
 adminRouter.use('/categories', adminCategoryRoutes)

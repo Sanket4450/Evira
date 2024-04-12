@@ -377,7 +377,7 @@ exports.getProductsBySearch = ({
 
         return dbRepo.aggregate(constant.COLLECTIONS.PRODUCT, pipeline)
     } catch (error) {
-        console.log('error ----->', error)
+        Logger.info(error)
     }
 }
 

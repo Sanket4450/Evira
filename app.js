@@ -57,14 +57,14 @@ app.use(express.static(pathToSwaggerUi))
 
 app.use('/api/docs', swaggerRoutes)
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
     res.send('App is running...')
 })
 
 app.use('/api/v1', userRouter)
 app.use('/api/v1/admin', adminRouter)
 
-app.use((req, res, next) => {
+app.use((_, __, next) => {
     next(new ApiError('Route not Found', httpStatus.NOT_FOUND))
 })
 
