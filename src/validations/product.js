@@ -125,7 +125,6 @@ const postProduct = {
     body: joi.object().keys({
         name: stringReqValidation.max(80),
         image: stringValidation,
-        imageFile: stringValidation,
         description: stringValidation,
         category: idReqValidation,
         defaultVariant: {
@@ -144,7 +143,6 @@ const updateProduct = {
     body: joi.object().keys({
         name: stringValidation.max(80),
         image: stringValidation,
-        imageFile: stringValidation,
         description: stringValidation,
         category: idValidation,
         sold: integerNumberValidation

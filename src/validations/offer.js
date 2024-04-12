@@ -27,7 +27,6 @@ const postOffer = {
     body: joi.object().keys({
         product: idReqValidation,
         image: stringValidation,
-        imageFile: stringValidation,
         discountPercentage: numberReqValidation.max(90).precision(2),
         startDate: dateValidation.required(),
         endDate: dateValidation.required(),
@@ -40,7 +39,6 @@ const updateOffer = {
     }),
     body: joi.object().keys({
         image: stringValidation,
-        imageFile: stringValidation,
         discountPercentage: numberValidation.max(90).precision(2),
         startDate: dateValidation,
         endDate: dateValidation,

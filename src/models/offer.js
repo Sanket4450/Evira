@@ -12,10 +12,6 @@ const offerSchema = new mongoose.Schema(
             type: String,
             default: null,
         },
-        imageFile: {
-            type: String,
-            default: null,
-        },
         discountPercentage: {
             type: Number,
             required: true,

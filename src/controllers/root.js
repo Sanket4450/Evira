@@ -1,3 +1,4 @@
+const path = require('path')
 const fs = require('fs')
 const httpStatus = require('http-status')
 const catchAsyncErrors = require('../utils/catchAsyncErrors')
@@ -44,6 +45,18 @@ exports.getHomeData = catchAsyncErrors(async (req, res) => {
 exports.uploadFile = catchAsyncErrors(async (req, res) => {
     const { type } = req.body
     const file = req.file
+
+    if (!file) {
+      throw new ApiError(constant.MESSAGES.FILE_NOT_FOUND, httpStatus.BAD_REQUEST)
+    }
+
+    const extname = path.extname(file.originalname).slice(1)
+
+    const supportedFiles = process.env.SUPPORTED_FILETYPES?.split(' ')
+
+    if (!supportedFiles.includes(extname)) {
+      throw new ApiError(constant.MESSAGES.FILE_TYPE_NOT_SUPPORTED, httpStatus.BAD_REQUEST)
+    }
 
     let folderName
 

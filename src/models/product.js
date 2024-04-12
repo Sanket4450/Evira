@@ -11,10 +11,6 @@ const productSchema = new mongoose.Schema(
             type: String,
             default: null,
         },
-        imageFile: {
-            type: String,
-            default: null,
-        },
         description: {
             type: String,
         },

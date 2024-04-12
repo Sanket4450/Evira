@@ -57,6 +57,8 @@ module.exports = {
     ORDER_ALREADY_CANCELED: 'Order already canceled',
     STATUS_ALREADY_UPDATED: 'Order-status already updated',
     ERROR_UPLOADING_FILE: 'Error uploading file',
+    FILE_NOT_FOUND: 'File not found',
+    FILE_TYPE_NOT_SUPPORTED: 'File type not supported',
     INVALID_TYPE: 'Invalid type',
   },
   COLLECTIONS: {

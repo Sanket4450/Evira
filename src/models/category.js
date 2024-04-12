@@ -11,10 +11,6 @@ const categorySchema = new mongoose.Schema(
             type: String,
             default: null,
         },
-        iconFile: {
-            type: String,
-            default: null,
-        },
         description: {
             type: String,
         },
