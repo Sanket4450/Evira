@@ -52,9 +52,9 @@ exports.uploadFile = catchAsyncErrors(async (req, res) => {
 
     const extname = path.extname(file.originalname).slice(1)
 
-    const supportedFiles = process.env.SUPPORTED_FILETYPES?.split(' ')
+    const supportedFiles = process.env.SUPPORTED_FILE_TYPES?.split(' ')
 
-    if (!supportedFiles.includes(extname)) {
+    if (!supportedFiles.includes(extname?.toLowerCase())) {
       throw new ApiError(constant.MESSAGES.FILE_TYPE_NOT_SUPPORTED, httpStatus.BAD_REQUEST)
     }
 
