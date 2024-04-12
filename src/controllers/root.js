@@ -1,3 +1,4 @@
+const fs = require('fs')
 const httpStatus = require('http-status')
 const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
@@ -68,7 +69,9 @@ exports.uploadFile = catchAsyncErrors(async (req, res) => {
 
     const fileName = file.originalname
 
-    const url = await storageService.uploadFile(folderName, fileName, file.path)
+    const fileBuffer = fs.readFileSync(file.path)
+
+    const url = await storageService.uploadFile(folderName, fileName, fileBuffer)
 
     return sendResponse(
         res, 
