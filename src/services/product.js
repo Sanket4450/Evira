@@ -788,3 +788,19 @@ exports.modifyVariantQuantity = (productId, variantId, modifyCount) => {
 
     return dbRepo.updateOne(constant.COLLECTIONS.VARIANT, { query, data })
 }
+
+exports.increaseSoldCount = (productId, count) => {
+    Logger.info(`Inside increaseSoldCount => product = ${productId} count = ${count}`)
+
+    const query = {
+        _id: new mongoose.Types.ObjectId(productId),
+    }
+
+    const data = {
+        $inc: {
+            sold: count,
+        },
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.PRODUCT, { query, data })
+}

@@ -3,7 +3,7 @@ const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
-const { userService, orderService, reviewService, notificationService } = require('../services/index.service')
+const { userService, orderService, reviewService, notificationService, productService } = require('../services/index.service')
 
 exports.getOrders = catchAsyncErrors(async (req, res) => {
     const { page, limit } = req.query
@@ -110,6 +110,12 @@ exports.cancelOrder = catchAsyncErrors(async (req, res) => {
 
     await orderService.updateOrder(orderId, updateBody)
     await orderService.updateOrderStatus(orderId, pushBody)
+
+    await productService.modifyVariantQuantity(
+        order.item?.product,
+        order.item?.variant,
+        order.item?.quantity
+    )
 
     const notificationBody = {
       title: 'Order Cancel!',
@@ -218,6 +224,16 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         }
 
         await orderService.updateOrderStatus(orderId, statusBody)
+
+        if (status.title === 'Delivered') {
+            await productService.increaseSoldCount(order.item?.product, order.item?.quantity)
+        } else if (status.title === 'Canceled') {
+            await productService.modifyVariantQuantity(
+                order.item?.product,
+                order.item?.variant,
+                order.item?.quantity
+            )
+        } else null
 
         const notificationBody = {
           title: 'Order Traking!',

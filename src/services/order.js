@@ -194,11 +194,11 @@ exports.getAdminOrderById = (id) => {
     const pipeline = [
         {
             $match: {
-                _id: new mongoose.Types.ObjectId(id) // Assuming "id" is the ID you want to filter by
+                _id: new mongoose.Types.ObjectId(id)
             }
         },
         {
-            $limit: 1 // Limit to only one document
+            $limit: 1
         },
         {
             $sort: {
@@ -216,7 +216,7 @@ exports.getAdminOrderById = (id) => {
         {
             $unwind: {
                 path: '$product',
-                preserveNullAndEmptyArrays: true // Preserve unmatched documents
+                preserveNullAndEmptyArrays: true
             }
         },
         {
@@ -230,7 +230,7 @@ exports.getAdminOrderById = (id) => {
         {
             $unwind: {
                 path: '$shippingType',
-                preserveNullAndEmptyArrays: true // Preserve unmatched documents
+                preserveNullAndEmptyArrays: true
             }
         },
 
