@@ -86,17 +86,17 @@ module.exports = {
     USER: 'User_profile_images',
   },
   NOTIFICATIONS: {
-    USER: 'https://firebasestorage.googleapis.com/v0/b/evira-b42be.appspot.com/o/notifications%2FAuto%20Layout%20Horizontal%20(4).png?alt=media&token=51c51383-109c-40a1-91e0-d622b064ab78',
+    USER: 'https://evira-images.s3.amazonaws.com/Notification_images/user.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712920011&Signature=C2bf0mgZrHS%2BPbgqaHL39wFHQSM%3D',
     DISCOUNT:
-      'https://firebasestorage.googleapis.com/v0/b/evira-b42be.appspot.com/o/notifications%2FAuto%20Layout%20Horizontal.png?alt=media&token=89119952-c5d3-499e-a8a4-0bb50381d2f0',
+      'https://evira-images.s3.amazonaws.com/Notification_images/delivery.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919922&Signature=psQ8QGVwoHDAqTJPZJ2zaYDfp6w%3D',
     LOCATION:
-      'https://firebasestorage.googleapis.com/v0/b/evira-b42be.appspot.com/o/notifications%2FAuto%20Layout%20Horizontal%20(2).png?alt=media&token=b57aea2a-481e-43e5-82f4-0f4f97d40e25',
+      'https://evira-images.s3.amazonaws.com/Notification_images/discount.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919948&Signature=yeSXYPuJcY8kZzoxCd5DeW6u%2BII%3D',
     WALLET:
-      'https://firebasestorage.googleapis.com/v0/b/evira-b42be.appspot.com/o/notifications%2FAuto%20Layout%20Horizontal%20(1).png?alt=media&token=f01e7334-a9b8-4bce-bcc5-7f9e7bf3ccc3',
-    CARD: 'https://firebasestorage.googleapis.com/v0/b/evira-b42be.appspot.com/o/notifications%2FAuto%20Layout%20Horizontal%20(3).png?alt=media&token=12e33873-09ab-407d-865a-9943ff11ce05',
+      'https://evira-images.s3.amazonaws.com/Notification_images/wallet.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712920039&Signature=Z3jit%2BDKesNe%2BMu0GQeGvaJqUNo%3D',
+    CARD: 'https://evira-images.s3.amazonaws.com/Notification_images/card.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919862&Signature=NLiDZtCUZMJzqbtiwONQMJPUl3s%3D',
     DELIVERY:
-      'https://firebasestorage.googleapis.com/v0/b/evira-b42be.appspot.com/o/notifications%2FAuto%20Layout%20Horizontal%20(5).png?alt=media&token=2f6f60a9-104a-4014-af96-ad4b34d1debc',
+      'https://evira-images.s3.amazonaws.com/Notification_images/delivery.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919894&Signature=R%2BIHiimCoDj1sMHwEmoifuhq5Wg%3D',
     PROMOCODE:
-      'https://firebasestorage.googleapis.com/v0/b/evira-b42be.appspot.com/o/notifications%2FGroup%204.png?alt=media&token=ed3d4ad1-269a-4970-87f5-5507658da406',
+      'https://evira-images.s3.amazonaws.com/Notification_images/promocode.png?AWSAccessKeyId=AKIAVRUVUKGNI57FWPTY&Expires=1712919975&Signature=k%2BQQN4g6Um19QPP8NuET2quOVrs%3D',
   },
 }

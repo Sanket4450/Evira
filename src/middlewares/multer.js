@@ -26,7 +26,7 @@ exports.uploadFile = async (req, res, next) => {
         if (err instanceof multer.MulterError) {
           switch (err.code) {
           case 'LIMIT_FILE_SIZE':
-            next(new ApiError(`Upload file size is limited to ${(maxFileSize / 1024 / 1024).toPrecision(2)} bytes`, httpStatus.BAD_REQUEST))
+            next(new ApiError(`Upload file size is limited to ${(maxFileSize / 1024 / 1024).toPrecision(2)} MB`, httpStatus.BAD_REQUEST))
             break;
           case 'LIMIT_FILE_COUNT':
             next(new ApiError(`Upload is limited to 1 file`, httpStatus.BAD_REQUEST))
