@@ -48,6 +48,21 @@ exports.getFaqs = ({ page, limit }) => {
   )
 }
 
+exports.getAdminFaqs = ({ page, limit }) => {
+  Logger.info(`Inside getAdminFaqs => page = ${page}, limit = ${limit}`)
+
+  page ||= 1
+  limit ||= 10
+
+  return dbRepo.findWithCount(
+    constant.COLLECTIONS.FAQ,
+    {},
+    { createdAt: -1 },
+    page,
+    limit
+  )
+}
+
 exports.postFaq = (faqBody) => {
   Logger.info('Inside postFaq')
 

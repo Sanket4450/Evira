@@ -2326,6 +2326,31 @@ paths:
           content:
             application/json: {}
   /admin/faqs:
+    get:
+      tags:
+        - Admin FAQs
+      security:
+        - adminAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: page number for faqs
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+          description: number of faqs per page
+      responses:
+        '200':
+          description: faqs array
+          content:
+            application/json: {}
     post:
       tags:
         - Admin FAQs

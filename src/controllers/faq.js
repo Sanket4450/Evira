@@ -18,6 +18,23 @@ exports.getFaqs = catchAsyncErrors(async (req, res) => {
   )
 })
 
+exports.getAdminFaqs = catchAsyncErrors(async (req, res) => {
+  const { page, limit } = req.query
+
+  if (!(await userService.getUserById(req.user.sub))) {
+    throw new ApiError(constant.MESSAGES.ADMIN_NOT_FOUND, httpStatus.NOT_FOUND)
+  }
+
+  const faqs = await faqService.getAdminFaqs({ page, limit })
+
+  return sendResponse(
+    res,
+    httpStatus.OK,
+    { faqs },
+    'FAQs retrieved successfully'
+  )
+})
+
 exports.postFaq = catchAsyncErrors(async (req, res) => {
   const body = req.body
 

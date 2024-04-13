@@ -7,6 +7,14 @@ const faqValidation = require('../validations/faq')
 
 router.get('/', validate(faqValidation.getFaqs), faqController.getFaqs)
 
+adminRouter.get(
+  '/',
+  authChecker,
+  authorizeRole('admin'),
+  validate(faqValidation.getFaqs),
+  faqController.getAdminFaqs
+)
+
 adminRouter.post(
   '/',
   authChecker,
