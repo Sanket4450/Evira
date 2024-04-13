@@ -3,9 +3,7 @@ info:
   title: Evira
   version: 1.0.0
   description: Evira E-commerce APIs with Swagger
-  contact: {
-    email: talaviyasanket01@gmail.com
-  }
+  contact: { email: talaviyasanket01@gmail.com }
 servers:
   - url: https://evira.onrender.com/api/v1
   - url: http://localhost:8000/api/v1
@@ -2303,7 +2301,14 @@ paths:
                   properties:
                     title:
                       type: string
-                      enum: [Ordered, Shipped, Out for Delivery, Delivered, Canceled]
+                      enum:
+                        [
+                          Ordered,
+                          Shipped,
+                          Out for Delivery,
+                          Delivered,
+                          Canceled,
+                        ]
                     description:
                       type: string
                     date:
@@ -2341,10 +2346,60 @@ paths:
                 - description
               example:
                 title: What is Evira?
-                description: Evira is an e-commerce platform, here you find products with lots of categories & with different variants
+                description: Evira is an e-commerce platform, here you find products with lot of categories & with different variants
       responses:
         '200':
-          description: created message object
+          description: created FAQ object
+          content:
+            application/json: {}
+  /admin/faqs/{faqId}:
+    put:
+      tags:
+        - Admin FAQs
+      security:
+        - adminAuth: []
+      parameters:
+        - name: faqId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the FAQ
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+              example:
+                title: What is Evira?
+                description: Evira is an online mart application, here you find products with lot of categories & with different variants
+      responses:
+        '200':
+          description: updated FAQ object
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Admin FAQs
+      security:
+        - adminAuth: []
+      parameters:
+        - name: faqId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the FAQ
+      responses:
+        '200':
+          description: deleted FAQ object
           content:
             application/json: {}
   /admin/messages:
@@ -2371,5 +2426,24 @@ paths:
       responses:
         '200':
           description: messages array
+          content:
+            application/json: {}
+  /admin/messages/{messageId}:
+    delete:
+      tags:
+        - Admin Messages
+      security:
+        - adminAuth: []
+      parameters:
+        - name: messageId
+          in: path
+          schema:
+            type: string
+            format: objectId
+          required: true
+          description: objectId for the message
+      responses:
+        '200':
+          description: deleted message object
           content:
             application/json: {}
