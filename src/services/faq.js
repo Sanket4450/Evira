@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 
@@ -73,9 +74,9 @@ exports.updateFaq = (faqId, faqBody) => {
   return dbRepo.updateOne(constant.COLLECTIONS.FAQ, { query, data })
 }
 
-exports.deleteFaqById = (id) => {
+exports.deleteFaq = (faqId) => {
   const query = {
-    _id: new mongoose.Types.ObjectId(id),
+    _id: new mongoose.Types.ObjectId(faqId),
   }
   return dbRepo.deleteOne(constant.COLLECTIONS.FAQ, { query })
 }

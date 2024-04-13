@@ -20,12 +20,12 @@ adminRouter.get(
   messageController.getMessages
 )
 
-// adminRouter.delete(
-//   '/',
-//   authChecker,
-//   authorizeRole('admin'),
-//   validate(messageValidation.deleteMessages),
-//   messageController.deleteMessages
-// )
+adminRouter.delete(
+  '/:messageId',
+  authChecker,
+  authorizeRole('admin'),
+  validate(messageValidation.deleteMessage),
+  messageController.deleteMessage
+)
 
 module.exports = { router, adminRouter }

@@ -59,6 +59,7 @@ module.exports = {
     FILE_NOT_FOUND: 'File not found',
     FILE_TYPE_NOT_SUPPORTED: 'File type not supported',
     INVALID_TYPE: 'Invalid type',
+    MESSAGE_NOT_FOUND: 'Message not found for this messageId',
     FAQ_NOT_FOUND: 'FAQ not found for this faqId',
     FAQ_TITLE_TAKEN: 'FAQ title is already taken',
   },
