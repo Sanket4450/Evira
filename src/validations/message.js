@@ -3,7 +3,8 @@ const joi = require('joi')
 const {
     emailValidation,
     pageAndLimit,
-    stringReqValidation
+    stringReqValidation,
+    idReqValidation
 } = require('./common')
 
 const postMessage = {
@@ -20,7 +21,14 @@ const getMessages = {
     }),
 }
 
+const deleteMessage = {
+    params: joi.object().keys({
+        messageId: idReqValidation,
+    }),
+}
+
 module.exports = {
     postMessage,
-    getMessages
+    getMessages,
+    deleteMessage,
 }

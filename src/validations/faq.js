@@ -2,7 +2,9 @@ const joi = require('joi')
 
 const {
     pageAndLimit,
-    stringReqValidation
+    stringReqValidation,
+    stringValidation,
+    idReqValidation
 } = require('./common')
 
 const getFAQs = {
@@ -18,7 +20,25 @@ const postFAQ = {
     }),
 }
 
+const updateFAQ = {
+    params: joi.object().keys({
+        faqId: idReqValidation,
+    }),
+    body: joi.object().keys({
+        title: stringValidation.max(80),
+        description: stringValidation.max(500),
+    }),
+}
+
+const deleteFAQ = {
+    params: joi.object().keys({
+        faqId: idReqValidation,
+    }),
+}
+
 module.exports = {
     getFAQs,
     postFAQ,
+    updateFAQ,
+    deleteFAQ
 }

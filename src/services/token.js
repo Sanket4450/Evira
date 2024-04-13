@@ -9,12 +9,6 @@ const generateToken = ({ payload, secret, options }) => {
 }
 
 const verifyToken = (token, secret) => {
-    if (!token) {
-        throw new ApiError(
-            constant.MESSAGES.TOKEN_IS_REQUIRED,
-            httpStatus.FORBIDDEN
-        )
-    }
     return new Promise((resolve, reject) => {
         jwt.verify(token, secret, (err, decoded) => {
             if (err) {

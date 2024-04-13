@@ -9,7 +9,6 @@ module.exports = {
     INCORRECT_OTP: 'Incorrect OTP',
     SOMETHING_WENT_WRONG: 'Something went wrong, please try again',
     AUTHENTICATION_FAILED: 'Authentication failed',
-    TOKEN_IS_REQUIRED: 'Token is required',
     INVALID_TOKEN: 'Invalid token or signature',
     TOKEN_EXPIRED: 'Token has expired',
     RESET_PASSWORD: 'Reset Password',

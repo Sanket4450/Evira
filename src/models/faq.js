@@ -4,17 +4,18 @@ const fieldsRemoval = require('./plugins/fieldsRemoval')
 const faqSchema = new mongoose.Schema(
   {
     title: {
-        type: String,
-        required: true,
+      type: String,
+      unique: true,
+      required: true,
     },
     description: {
-        type: String,
-        required: true,
-    }
+      type: String,
+      required: true,
+    },
   },
   {
     autoIndex: false,
-    timestamps: true
+    timestamps: true,
   }
 )
 
