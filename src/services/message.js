@@ -27,7 +27,7 @@ exports.getMessages = ({ page, limit }) => {
   page ||= 1
   limit ||= 10
 
-  return dbRepo.findPage(
+  return dbRepo.findWithCount(
     constant.COLLECTIONS.MESSAGE,
     { query: {}, data: {} },
     { createdAt: -1 },
