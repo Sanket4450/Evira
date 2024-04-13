@@ -14,16 +14,16 @@ exports.getCategoryById = (id) => {
     return dbRepo.findOne(constant.COLLECTIONS.CATEGORY, { query, data })
 }
 
+exports.getFullCategoryByName = (name) => {
+  const query = {
+    name: { $regex: name, $options: 'i' },
+  }
+  return dbRepo.findOne(constant.COLLECTIONS.CATEGORY, { query })
+}
+
 exports.getFullCategoryById = (id) => {
     const query = {
         _id: new mongoose.Types.ObjectId(id),
-    }
-    return dbRepo.findOne(constant.COLLECTIONS.CATEGORY, { query })
-}
-
-exports.getFullCategoryByName = (name) => {
-    const query = {
-        name: { $regex: name, $options: 'i' },
     }
     return dbRepo.findOne(constant.COLLECTIONS.CATEGORY, { query })
 }

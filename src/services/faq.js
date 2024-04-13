@@ -1,8 +1,39 @@
 const dbRepo = require('../dbRepo')
 const constant = require('../constants')
 
-exports.getFAQs = ({ page, limit }) => {
-  Logger.info(`Inside getFAQs => page = ${page}, limit = ${limit}`)
+exports.getFaqById = (id) => {
+  const query = {
+    _id: new mongoose.Types.ObjectId(id),
+  }
+
+  const data = {
+    _id: 1,
+  }
+
+  return dbRepo.findOne(constant.COLLECTIONS.FAQ, { query, data })
+}
+
+exports.getFaqByTitle = (title) => {
+  const query = {
+    title: { $regex: title, $options: 'i' },
+  }
+
+  const data = {
+    _id: 1,
+  }
+
+  return dbRepo.findOne(constant.COLLECTIONS.FAQ, { query, data })
+}
+
+exports.getFullFaqById = (id) => {
+  const query = {
+    _id: new mongoose.Types.ObjectId(id),
+  }
+  return dbRepo.findOne(constant.COLLECTIONS.FAQ, { query })
+}
+
+exports.getFaqs = ({ page, limit }) => {
+  Logger.info(`Inside getFaqs => page = ${page}, limit = ${limit}`)
 
   page ||= 1
   limit ||= 10
@@ -16,12 +47,35 @@ exports.getFAQs = ({ page, limit }) => {
   )
 }
 
-exports.postFAQ = (faqBody) => {
-  Logger.info('Inside postFAQ')
+exports.postFaq = (faqBody) => {
+  Logger.info('Inside postFaq')
 
   const data = {
-    ...faqBody
+    ...faqBody,
   }
 
   return dbRepo.create(constant.COLLECTIONS.FAQ, { data })
+}
+
+exports.updateFaq = (faqId, faqBody) => {
+  Logger.info('Inside udpateFaq')
+
+  const query = {
+    _id: new mongoose.Types.ObjectId(faqId),
+  }
+
+  const data = {
+    $set: {
+      ...faqBody,
+    },
+  }
+
+  return dbRepo.updateOne(constant.COLLECTIONS.FAQ, { query, data })
+}
+
+exports.deleteFaqById = (id) => {
+  const query = {
+    _id: new mongoose.Types.ObjectId(id),
+  }
+  return dbRepo.deleteOne(constant.COLLECTIONS.FAQ, { query })
 }
