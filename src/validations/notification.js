@@ -1,6 +1,6 @@
 const joi = require('joi')
 
-const { pageAndLimit, idValidation } = require('./common')
+const { pageAndLimit, idReqValidation } = require('./common')
 
 const getNotifications = {
     query: joi.object().keys({
@@ -10,7 +10,7 @@ const getNotifications = {
 
 const deleteNotification = {
     params: joi.object().keys({
-        notificationId: idValidation,
+        notificationId: idReqValidation,
     }),
 }
 

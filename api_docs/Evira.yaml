@@ -555,7 +555,7 @@ paths:
         - Notifications
       security:
         - userAuth: []
-      paramaters:
+      parameters:
         - name: notificationId
           in: path
           schema:
@@ -565,7 +565,7 @@ paths:
           description: objectId for the notification
       responses:
         '200':
-          description: empty object
+          description: full notification object
           content:
             application/json: {}
   /offers:

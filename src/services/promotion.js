@@ -76,14 +76,9 @@ exports.getAdminPromoCodes = ({ page, limit }) => {
     page ||= 1
     limit ||= 10
 
-    const data = {
-        title: 1,
-        description: 1,
-    }
-
     return dbRepo.findWithCount(
         constant.COLLECTIONS.PROMOTION,
-        { data },
+        {},
         { createdAt: -1 },
         page,
         limit
