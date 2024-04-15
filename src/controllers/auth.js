@@ -35,10 +35,10 @@ exports.register = catchAsyncErrors(async (req, res) => {
 })
 
 exports.login = catchAsyncErrors(async (req, res) => {
-  const { email, password } = req.body
+  const { email, password, isAdmin } = req.body
 
   const { _id, role, isProfileCompleted } =
-    await authService.loginWithEmailAndPassword(email, password)
+    await authService.loginWithEmailAndPassword(email, password, isAdmin)
 
   const tokens = await tokenService.generateAuthTokens(_id, role)
 

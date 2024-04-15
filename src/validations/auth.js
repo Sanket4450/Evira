@@ -23,6 +23,7 @@ const login = {
     body: joi.object().keys({
         email: emailValidation,
         password: stringReqValidation,
+        isAdmin: booleanValidation
     }),
 }
 

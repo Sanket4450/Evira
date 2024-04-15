@@ -20,14 +20,21 @@ exports.checkUserWithEmail = async (email) => {
     Logger.info('User not found inside checkUserWithEmail')
 }
 
-exports.loginWithEmailAndPassword = async (email, password) => {
-    Logger.info(`Inside loginWithEmailAndPassword => email = ${email}`)
+exports.loginWithEmailAndPassword = async (email, password, isAdmin) => {
+    Logger.info(`Inside loginWithEmailAndPassword => email = ${email} password = ${password}`)
 
     const user = await userService.getUserByEmail(email)
 
-    if (!user) {
+    if (!isAdmin && !user) {
         throw new ApiError(
             constant.MESSAGES.USER_NOT_EXIST_WITH_EMAIL,
+            httpStatus.NOT_FOUND
+        )
+    }
+
+    if (isAdmin && !user || isAdmin && user.role !== 'admin') {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_EXIST_WITH_EMAIL,
             httpStatus.NOT_FOUND
         )
     }
