@@ -2,10 +2,11 @@ module.exports = {
   MESSAGES: {
     USER_EXISTS_WITH_EMAIL: 'User already exists with this email',
     USER_EXISTS_WITH_MOBILE: 'User already exists with this mobile',
-    USER_NOT_EXIST: 'User does not exist with this email or mobile',
+    USER_NOT_EXIST_WITH_EMAIL: 'User does not exist with this email',
     INCORRECT_PASSWROD: 'Incorrect password',
     USER_NOT_FOUND: 'User not found',
     ADMIN_NOT_FOUND: 'Admin User not found',
+    ADMIN_NOT_EXIST_WITH_EMAIL: 'Admin does not exist with this email',
     INCORRECT_OTP: 'Incorrect OTP',
     SOMETHING_WENT_WRONG: 'Something went wrong, please try again',
     AUTHENTICATION_FAILED: 'Authentication failed',

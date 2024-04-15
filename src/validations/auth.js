@@ -6,8 +6,8 @@ const {
     stringValidation,
     stringReqValidation,
     integerNumberReqValidation,
-    numberReqValidation,
     secretValidation,
+    booleanValidation,
 } = require('./common')
 
 const register = {
@@ -29,6 +29,7 @@ const login = {
 const forgotPasswordWithEmail = {
     body: joi.object().keys({
         email: emailValidation,
+        isAdmin: booleanValidation
     }),
 }
 

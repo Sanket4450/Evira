@@ -15,7 +15,7 @@ exports.postProfile = catchAsyncErrors(async (req, res) => {
 
     if (!user) {
         throw new ApiError(
-            constant.MESSAGES.USER_NOT_EXIST,
+            constant.MESSAGES.USER_NOT_FOUND,
             httpStatus.NOT_FOUND
         )
     }

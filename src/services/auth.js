@@ -27,7 +27,7 @@ exports.loginWithEmailAndPassword = async (email, password) => {
 
     if (!user) {
         throw new ApiError(
-            constant.MESSAGES.USER_NOT_EXIST,
+            constant.MESSAGES.USER_NOT_EXIST_WITH_EMAIL,
             httpStatus.NOT_FOUND
         )
     }
@@ -41,14 +41,21 @@ exports.loginWithEmailAndPassword = async (email, password) => {
     return user
 }
 
-exports.forgotPasswordWithEmail = async (email) => {
+exports.forgotPasswordWithEmail = async (email, isAdmin) => {
     Logger.info(`Inside forgotPasswordWithEmail => email = ${email}`)
 
     const user = await userService.getUserByEmail(email)
 
-    if (!user) {
+    if (!isAdmin && !user) {
         throw new ApiError(
-            constant.MESSAGES.USER_NOT_EXIST,
+            constant.MESSAGES.USER_NOT_EXIST_WITH_EMAIL,
+            httpStatus.NOT_FOUND
+        )
+    }
+
+    if (isAdmin && !user || isAdmin && user.role !== 'admin') {
+        throw new ApiError(
+            constant.MESSAGES.ADMIN_NOT_EXIST_WITH_EMAIL,
             httpStatus.NOT_FOUND
         )
     }
@@ -84,7 +91,7 @@ exports.verifyResetOtp = async ({ token, otp }) => {
 
     if (!user) {
         throw new ApiError(
-            constant.MESSAGES.USER_NOT_EXIST,
+            constant.MESSAGES.USER_NOT_FOUND,
             httpStatus.CONFLICT
         )
     }
@@ -135,7 +142,7 @@ exports.refreshTokens = async (token) => {
 
     if (!user) {
         throw new ApiError(
-            constant.MESSAGES.USER_NOT_EXIST,
+            constant.MESSAGES.USER_NOT_FOUND,
             httpStatus.CONFLICT
         )
     }
