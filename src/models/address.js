@@ -41,6 +41,7 @@ const addressSchema = new mongoose.Schema(
     },
     {
         autoIndex: false,
+        timestamps: true,
     }
 )
 

@@ -13,7 +13,7 @@ exports.uploadFile = async (req, res, next) => {
       },
     })
 
-    const maxFileSize = Number(process.env.MAX_FILE_SIZE)
+    const maxFileSize = parseInt(process.env.MAX_FILE_SIZE)
     const fileFieldName = process.env.FILE_FIELD_NAME
 
     const upload = multer({

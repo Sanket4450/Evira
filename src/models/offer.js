@@ -26,6 +26,7 @@ const offerSchema = new mongoose.Schema(
         },
     },
     {
+        autoIndex: false,
         timestamps: true,
     }
 )

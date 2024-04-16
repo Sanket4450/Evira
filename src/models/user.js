@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             trim: true,
             lowercase: true,
-            unique: true,
+            index: true,
         },
         password: {
             type: String,
@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
         },
         mobile: {
             type: Number,
-            unique: true,
+            index: true,
         },
         dateOfBirth: {
             type: Date,

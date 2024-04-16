@@ -17,6 +17,7 @@ const categorySchema = new mongoose.Schema(
     },
     {
         autoIndex: false,
+        timestamps: true,
     }
 )
 

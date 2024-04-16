@@ -27,6 +27,7 @@ const variantSchema = new mongoose.Schema(
     },
     {
         autoIndex: false,
+        timestamps: true,
     }
 )
 

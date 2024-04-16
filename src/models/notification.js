@@ -30,6 +30,7 @@ const notificationSchema = new mongoose.Schema(
     },
     {
         autoIndex: false,
+        timestamps: true,
     }
 )
 
