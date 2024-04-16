@@ -79,12 +79,6 @@ const toggleCart = {
     }),
 }
 
-const searchWithOnlyKeyword = {
-    query: joi.object().keys({
-        keyword: stringReqValidation.label('Search Keyword'),
-    }),
-}
-
 const getVariants = {
     params: joi.object().keys({
         productId: idReqValidation,
@@ -163,7 +157,6 @@ module.exports = {
     getAdminProducts,
     toggleLike,
     toggleCart,
-    searchWithOnlyKeyword,
     getVariants,
     postVariant,
     updateVariant,

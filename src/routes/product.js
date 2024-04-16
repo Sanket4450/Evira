@@ -72,13 +72,6 @@ router3.put(
 
 router3.get('/', authChecker, productController.getCartProducts)
 
-router3.get(
-    '/search',
-    authChecker,
-    validate(productValidation.searchWithOnlyKeyword),
-    productController.getCartProductsBySearch
-)
-
 adminRouter.get(
     '/',
     authChecker,

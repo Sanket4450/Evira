@@ -939,24 +939,6 @@ paths:
           description: cart products array
           content:
             application/json: {}
-  /products/cart/search:
-    get:
-      tags:
-        - Products
-      security:
-        - userAuth: []
-      parameters:
-        - name: keyword
-          in: query
-          schema:
-            type: string
-          required: true
-          example: gold
-      responses:
-        '200':
-          description: cart products array for search results
-          content:
-            application/json: {}
   /products/reviews/{productId}:
     get:
       tags:
