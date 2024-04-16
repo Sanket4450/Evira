@@ -44,7 +44,7 @@ module.exports = {
     SHIPPING_TITLE_TAKEN: 'Shipping title is already taken!',
     ENTER_VALID_OBJECTID: 'Invalid ID. Please provide a valid ObjectId',
     PROMO_NOT_FOUND: 'Promo-code not found with this promoId',
-    PROMO_EXPIRED: 'Promo-code expired',
+    PROMO_NOT_AVAILABLE: 'Promo-code is expired or not available',
     PROMO_CODE_TAKEN: 'Promo-code is already taken!',
     INCORRECT_PIN: 'Incorrect PIN. Please enter correct PIN',
     ORDER_NOT_FOUND: 'Order not found for this user or orderId',

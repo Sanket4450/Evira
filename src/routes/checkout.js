@@ -9,13 +9,6 @@ router.get('/shipping-types', checkoutController.getShippingTypes)
 router.get('/promo-codes', checkoutController.getPromoCodes)
 
 router.post(
-    '/promo/apply/:promoId',
-    authChecker,
-    validate(checkoutValidation.applyPromoCode),
-    checkoutController.applyPromoCode
-)
-
-router.post(
     '/',
     authChecker,
     validate(checkoutValidation.postCheckout),

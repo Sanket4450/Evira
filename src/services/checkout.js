@@ -40,6 +40,13 @@ exports.postCheckout = async ({ userId, address, shipping, promo }) => {
         let [{ amount }] = await cartService.getTotalAmount(userId)
 
         if (promo) {
+            if (!await promotionService.getPromoCodeById(promo)) {
+                throw new ApiError(
+                    constant.MESSAGES.PROMO_NOT_FOUND,
+                    httpStatus.NOT_FOUND
+                )
+            }
+
             const promoCode = await promotionService.checkPromoCodeValidity(
                 promo,
                 Date.now()
@@ -47,8 +54,8 @@ exports.postCheckout = async ({ userId, address, shipping, promo }) => {
 
             if (!promoCode) {
                 throw new ApiError(
-                    constant.MESSAGES.PROMO_NOT_FOUND,
-                    httpStatus.NOT_FOUND
+                    constant.MESSAGES.PROMO_NOT_AVAILABLE,
+                    httpStatus.CONFLICT
                 )
             }
 

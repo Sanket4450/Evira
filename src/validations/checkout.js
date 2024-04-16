@@ -6,12 +6,6 @@ const {
     idValidation,
 } = require('./common')
 
-const applyPromoCode = {
-    params: joi.object().keys({
-        promoId: idReqValidation,
-    }),
-}
-
 const postCheckout = {
     body: joi.object().keys({
         address: idReqValidation.label('Address'),

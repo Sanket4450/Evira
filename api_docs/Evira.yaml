@@ -1172,25 +1172,6 @@ paths:
           description: promo-codes array
           content:
             application/json: {}
-  /checkout/promo/apply/{promoId}:
-    post:
-      tags:
-        - Checkout
-      security:
-        - userAuth: []
-      parameters:
-        - name: promoId
-          in: path
-          schema:
-            type: string
-            format: objectId
-          required: true
-          description: objectId for the promo-code
-      responses:
-        '200':
-          description: Success response with discount percentage
-          content:
-            application/json: {}
   /checkout:
     post:
       tags:
@@ -1219,9 +1200,9 @@ paths:
                 - shipping
                 - amount
               example:
-                address: 653fafffb2b0eb2bf3debbc0
-                shipping: 6540f65058fd3635d79ce1bf
-                promo: 6540fa3cc1405138b2c14c2b
+                address: address-id
+                shipping: shipping-id
+                promo: promo-id
                 amount: 945015
       responses:
         '200':

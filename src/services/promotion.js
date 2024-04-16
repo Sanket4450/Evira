@@ -39,6 +39,7 @@ exports.getPromoCodes = (date) => {
     const data = {
         title: 1,
         description: 1,
+        discountPercentage: 1,
     }
 
     const sortQuery = {

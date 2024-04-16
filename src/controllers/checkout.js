@@ -34,42 +34,6 @@ exports.getPromoCodes = catchAsyncErrors(async (_, res) => {
     )
 })
 
-exports.applyPromoCode = catchAsyncErrors(async (req, res) => {
-    const { promoId } = req.params
-
-    const user = await userService.getUserById(req.user.sub)
-
-    if (!user) {
-        throw new ApiError(
-            constant.MESSAGES.USER_NOT_FOUND,
-            httpStatus.NOT_FOUND
-        )
-    }
-
-    if (!(await promotionService.getPromoCodeById(promoId))) {
-        throw new ApiError(
-            constant.MESSAGES.PROMO_NOT_FOUND,
-            httpStatus.NOT_FOUND
-        )
-    }
-
-    const promo = await promotionService.checkPromoCodeValidity(
-        promoId,
-        Date.now()
-    )
-
-    if (!promo) {
-        throw new ApiError(constant.MESSAGES.PROMO_EXPIRED, httpStatus.CONFLICT)
-    }
-
-    return sendResponse(
-        res,
-        httpStatus.OK,
-        { discountPercentage: promo.discountPercentage },
-        'Promo-code validated successfully'
-    )
-})
-
 exports.postCheckout = catchAsyncErrors(async (req, res) => {
     const { address, shipping, promo, amount } = req.body
 
