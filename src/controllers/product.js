@@ -401,17 +401,17 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    // const productVariantCartAmount =
-    //     await cartService.getProductVariantAmount(productId, variantId, user._id)
-    const totalCartAmount = await cartService.getTotalAmount(user._id)
+    const productVariantCartAmount =
+        await cartService.getProductVariantAmount(productId, variantId, user._id)
+    // const totalCartAmount = await cartService.getTotalAmount(user._id)
 
-    // const productVariantAmount = productVariantCartAmount[0] ? productVariantCartAmount[0].amount : 0
-    const totalAmount = totalCartAmount[0] ? totalCartAmount[0].amount : 0
+    const productVariantAmount = productVariantCartAmount[0] ? productVariantCartAmount[0].amount : 0
+    // const totalAmount = totalCartAmount[0] ? totalCartAmount[0].amount : 0
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { action, totalAmount },
+        { action, productVariantAmount },
         `${
             action === 'add'
                 ? 'Product added to cart successfully'
