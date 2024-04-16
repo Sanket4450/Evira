@@ -165,7 +165,7 @@ exports.getAdminOrder = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    let order = await orderService.getAdminOrderById(orderId)
+    let [order] = await orderService.getAdminOrderById(orderId)
 
     if (!order) {
         throw new ApiError(
@@ -239,7 +239,6 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         }
 
         await notificationService.createNotification(order.user, notificationBody)
-
     }
 
     order = await orderService.getAdminOrderById(orderId)

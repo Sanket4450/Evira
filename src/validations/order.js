@@ -5,8 +5,6 @@ const {
     stringReqValidation,
     idReqValidation,
     stringValidation,
-    idValidation,
-    dateValidation,
 } = require('./common')
 
 const getOrders = {
