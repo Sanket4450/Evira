@@ -343,6 +343,13 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
 
     const variant = cartProductVariant ? cartProductVariant.items.find((obj) => obj.variant.toString() === variantId) : null
 
+    if ((action === 'add' || action === 'increase') && (quantity > 10 || ((variant?.quantity || 0) + quantity) > 10)) {
+        throw new ApiError(
+            constant.MESSAGES.MAXIMUM_QUANTITY,
+            httpStatus.CONFLICT
+        )
+    }
+
     if (
         !cartProductVariant &&
         (action === 'increase' || action === 'decrease')

@@ -36,6 +36,7 @@ module.exports = {
     TOGGLE_FIELD_MISSING: 'Please enter the toggle field',
     ENTER_VALID_ACTION: 'Please enter a valid cart action',
     NOT_HAVE_ENOUGH_QUANTITY: 'Not have enough quantity for this product',
+    MAXIMUM_QUANTITY: 'Maximum quantity reached for this product',
     ADD_PRODUCT_TO_CART: 'Please first add product to cart',
     ADDRESS_NOT_FOUND: 'Address not found for this user or addressId',
     DEFAULT_ADDRESS: 'You cannot perform this action on default address',
