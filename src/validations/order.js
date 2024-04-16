@@ -36,7 +36,7 @@ const cancelOrder = {
 const getAdminOrders = {
     query: joi.object().keys({
         ...pageAndLimit,
-        type: stringValidation
+        type: stringReqValidation
             .lowercase()
             .valid('all', 'ongoing', 'completed')
             .label('Order Status'),
@@ -54,7 +54,6 @@ const updateOrder = {
         orderId: idReqValidation,
     }),
     body: joi.object().keys({
-        address: idValidation,
         status: joi.object().keys({
             title: stringValidation.valid(
                 'Ordered',
@@ -64,7 +63,6 @@ const updateOrder = {
                 'Canceled',
             ),
             description: stringValidation,
-            date: dateValidation,
         }),
     }),
 }

@@ -388,7 +388,7 @@ exports.getWishlistProductsBySearch = (
         case 'recent':
             pipeline.push({
                 $sort: {
-                    'products.updatedAt': -1,
+                    'products.createdAt': -1,
                 },
             })
             break
@@ -396,7 +396,7 @@ exports.getWishlistProductsBySearch = (
         case 'price_desc':
             pipeline.push({
                 $sort: {
-                    price: -1,
+                    price: 1,
                 },
             })
             break
@@ -404,7 +404,7 @@ exports.getWishlistProductsBySearch = (
         case 'price_asc':
             pipeline.push({
                 $sort: {
-                    price: 1,
+                    price: -1,
                 },
             })
             break

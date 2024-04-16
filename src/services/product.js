@@ -336,7 +336,7 @@ exports.getProductsBySearch = ({
             case 'recent':
                 pipeline.push({
                 $sort: {
-                    modifiedAt: -1,
+                    createdAt: -1,
                 },
                 })
                 break
@@ -344,7 +344,7 @@ exports.getProductsBySearch = ({
             case 'price_desc':
                 pipeline.push({
                     $sort: {
-                        price: -1,
+                        price: 1,
                     },
                 })
                 break
@@ -352,7 +352,7 @@ exports.getProductsBySearch = ({
             case 'price_asc':
                 pipeline.push({
                     $sort: {
-                        price: 1,
+                        price: -1,
                     },
                 })
                 break

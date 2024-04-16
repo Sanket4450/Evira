@@ -401,13 +401,6 @@ exports.toggleCart = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    // const productVariantCartAmount =
-    //     await cartService.getProductVariantAmount(productId, variantId, user._id)
-    // const totalCartAmount = await cartService.getTotalAmount(user._id)
-
-    // const productVariantAmount = productVariantCartAmount[0] ? productVariantCartAmount[0].amount : 0
-    // const totalAmount = totalCartAmount[0] ? totalCartAmount[0].amount : 0
-
     return sendResponse(
         res,
         httpStatus.OK,
@@ -436,14 +429,14 @@ exports.getCartProducts = catchAsyncErrors(async (req, res) => {
 
     const items = await cartService.getCartProducts(user._id)
 
-    // const totalAmount = await cartService.getTotalAmount(user._id)
+    const totalAmount = await cartService.getTotalAmount(user._id)
 
-    // const amount = totalAmount[0] ? totalAmount[0].amount : 0
+    const amount = totalAmount[0] ? totalAmount[0]?.amount : 0
 
     return sendResponse(
         res,
         httpStatus.OK,
-        { items },
+        { items, amount },
         'Cart Products retrieved successfully'
     )
 })

@@ -184,7 +184,7 @@ exports.getAdminOrder = catchAsyncErrors(async (req, res) => {
 
 exports.updateOrder = catchAsyncErrors(async (req, res) => {
     const { orderId } = req.params
-    let { address, status } = req.body
+    let { status } = req.body
 
     let order = await orderService.getAdminOrderInfoById(orderId)
 
@@ -195,20 +195,17 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    if (address) {
-        if (!userService.getAddressById(address, order.user)) {
-            throw new ApiError(
-                constant.MESSAGES.ADDRESS_NOT_FOUND,
-                httpStatus.NOT_FOUND
-            )
-        }
-        await orderService.updateOrder(orderId, { address })
-    }
-
     const type = status.title === 'Delivered' || status.title === 'Canceled' ? 'completed' : 'ongoing'
     await orderService.updateOrder(orderId, { type })
 
     if (status) {
+        if (!status.title) {
+            throw new ApiError(
+                constant.MESSAGES.STATUS_TITLE_REQUIRED,
+                httpStatus.BAD_REQUEST
+            )
+        }
+
         if (order.status.find((sts) => sts.title === status.title)) {
             throw new ApiError(
                 constant.MESSAGES.STATUS_ALREADY_UPDATED,
@@ -220,7 +217,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
             title: status.title,
             description:
                 status.description || `Order ${status.title} successfully`,
-            date: status.date || Date.now(),
+            date: Date.now(),
         }
 
         await orderService.updateOrderStatus(orderId, statusBody)

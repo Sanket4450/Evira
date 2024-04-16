@@ -925,7 +925,7 @@ paths:
                 quantity: 1
       responses:
         '200':
-          description: action field with value
+          description: action field
           content:
             application/json: {}
   /products/cart:

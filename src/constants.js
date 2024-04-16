@@ -55,6 +55,7 @@ module.exports = {
       'Payment-method expired, please add a new payment-method',
     INSUFFICIENT_BALANCE: 'Not have sufficient balance',
     ORDER_ALREADY_CANCELED: 'Order already canceled',
+    STATUS_TITLE_REQUIRED: 'Please enter the status title',
     STATUS_ALREADY_UPDATED: 'Order-status already updated',
     ERROR_UPLOADING_FILE: 'Error uploading file',
     FILE_NOT_FOUND: 'File not found',

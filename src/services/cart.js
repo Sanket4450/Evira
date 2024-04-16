@@ -87,56 +87,6 @@ exports.cartAction = ({ action, productId, variantId, userId, quantity }) => {
     return dbRepo.updateOne(constant.COLLECTIONS.CART, { query, data, options })
 }
 
-exports.getProductVariantAmount = async (productId, variantId, userId) => {
-    Logger.info(
-        `Inside getCartActionProduct => product = ${productId}, user = ${userId}`
-    )
-
-    const pipeline = [
-        {
-            $match: {
-                user: new mongoose.Types.ObjectId(userId),
-            },
-        },
-        {
-            $unwind: '$items',
-        },
-        {
-            $match: {
-                'items.product': new mongoose.Types.ObjectId(productId),
-                'items.variant': new mongoose.Types.ObjectId(variantId),
-            },
-        },
-        {
-            $lookup: {
-                from: 'variants',
-                localField: 'items.variant',
-                foreignField: '_id',
-                as: 'variant',
-            },
-        },
-        {
-            $unwind: '$variant',
-        },
-        {
-            $group: {
-                _id: null,
-                amount: {
-                    $sum: { $multiply: ['$items.quantity', '$variant.price'] },
-                },
-            },
-        },
-        {
-            $project: {
-                amount: 1,
-                _id: 0,
-            },
-        },
-    ]
-
-    return dbRepo.aggregate(constant.COLLECTIONS.CART, pipeline)
-}
-
 exports.getCartProducts = (userId) => {
     Logger.info('Inside getCartProducts')
 
