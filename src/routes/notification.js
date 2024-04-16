@@ -12,6 +12,12 @@ router.get(
 )
 
 router.delete(
+    '/',
+    authChecker,
+    notificationController.deleteNotifications
+)
+
+router.delete(
     '/:notificationId',
     authChecker,
     validate(notificationValidation.deleteNotification),

@@ -107,3 +107,12 @@ exports.deleteNotification = (notificationId) => {
     }
     return dbRepo.deleteOne(constant.COLLECTIONS.NOTIFICATION, { query })
 }
+
+exports.deleteAllNotifications = (userId) => {
+    Logger.info('Inside deleteAllNotifications')
+
+    const query = {
+        user: new mongoose.Types.ObjectId(userId),
+    }
+    return dbRepo.deleteMany(constant.COLLECTIONS.NOTIFICATION, { query })
+}

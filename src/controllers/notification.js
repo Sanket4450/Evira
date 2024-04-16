@@ -39,6 +39,27 @@ exports.getNotifications = catchAsyncErrors(async (req, res) => {
     )
 })
 
+exports.deleteNotifications = catchAsyncErrors(async (req, res) => {
+    const user = await userService.getUserById(req.user.sub)
+
+    if (!user) {
+        throw new ApiError(
+            constant.MESSAGES.USER_NOT_FOUND,
+            httpStatus.NOT_FOUND
+        )
+    }
+
+    await notificationService.deleteAllNotifications(user._id)
+
+    return sendResponse(
+        res,
+        httpStatus.OK,
+        {},
+        'All Notifications deleted successfully'
+    )
+})
+
+
 exports.deleteNotification = catchAsyncErrors(async (req, res) => {
     const { notificationId } = req.params
 
