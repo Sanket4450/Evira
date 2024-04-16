@@ -16,6 +16,5 @@ const postCheckout = {
 }
 
 module.exports = {
-    applyPromoCode,
     postCheckout,
 }
