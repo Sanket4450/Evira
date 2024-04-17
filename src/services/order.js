@@ -92,6 +92,22 @@ exports.updateOrderStatus = (orderId, pushBody) => {
     return dbRepo.updateOne(constant.COLLECTIONS.ORDER, { query, data })
 }
 
+exports.removeLatestOrderStatus = (orderId) => {
+    Logger.info(`Inside removeLatestOrderStatus => order = ${orderId}`)
+
+    const query = {
+        _id: new mongoose.Types.ObjectId(orderId),
+    }
+
+    const data = {
+        $pop: {
+            status: -1
+        },
+    }
+
+    return dbRepo.updateOne(constant.COLLECTIONS.ORDER, { query, data })
+}
+
 exports.getOrders = (type, userId, { page, limit }) => {
     Logger.info(
         `Inside getOrders => type = ${type}, page = ${page}, limit = ${limit}`
@@ -140,11 +156,12 @@ exports.getOrders = (type, userId, { page, limit }) => {
                 size: { $first: '$variant.size' },
                 quantity: { $first: '$item.quantity' },
                 amount: { $first: '$amount' },
+                createdAt: { $first: '$createdAt' },
             },
         },
         {
             $sort: {
-                _id: 1
+                createdAt: -1
             }
         },
         {
@@ -201,11 +218,6 @@ exports.getAdminOrderById = (id) => {
             $limit: 1
         },
         {
-            $sort: {
-                createdAt: -1,
-            },
-        },
-        {
             $lookup: {
                 from: 'products',
                 localField: 'item.product',
@@ -222,8 +234,8 @@ exports.getAdminOrderById = (id) => {
         {
             $lookup: {
                 from: 'shippingtypes',
-                localField: 'orders.shippingType',
-                foreignField: 'id',
+                localField: 'shippingType',
+                foreignField: '_id',
                 as: 'shippingType',
             },
         },
@@ -233,12 +245,11 @@ exports.getAdminOrderById = (id) => {
                 preserveNullAndEmptyArrays: true
             }
         },
-
         {
             $lookup: {
                 from: 'users',
-                localField: 'orders.user',
-                foreignField: 'id',
+                localField: 'user',
+                foreignField: '_id',
                 as: 'user',
             },
         },
@@ -265,39 +276,37 @@ exports.getAdminOrderById = (id) => {
         {
             $group: {
                 _id: '$_id',
+                type: { $first: '$type' },
+                status: { $first: '$status' },
+                billingName: { $first: '$user.fullName' },
                 product: { $first: '$product' },
                 variant: { $first: '$variant' },
-                user: { $first: '$user' },
-                status: { $first: '$status' },
-                name: { $first: '$product.name' },
-                image: { $first: '$product.image' },
-                color: { $first: '$variant.color' },
-                size: { $first: '$variant.size' },
                 quantity: { $first: '$item.quantity' },
+                discountPercentage: { $first: '$discountPercentage' },
+                shippingCharge: { $first: '$shippingType.charge' },
                 amount: { $first: '$amount' },
-                users_info: { $first: '$users_info' },
-                createdAt: { $first: '$createdAt' },
-                shippingType: { $first: '$shippingType' },
-                type: { $first: '$type' },
             },
         },
         {
             $project: {
-                product: 1,
-                variant: 1,
-                user: 1,
-                name: 1,
-                image: 1,
-                color: 1,
-                size: 1,
+                type: 1,
+                status: 1,
+                billingName: 1,
+                product: {
+                    image: 1,
+                    name: 1,
+                },
+                variant: {
+                    color: 1,
+                    size: 1,
+                    price: 1,
+                },
                 quantity: 1,
+                discountPercentage: 1,
+                shippingCharge: 1,
                 amount: 1,
                 _id: 0,
                 id: '$_id',
-                createdAt: 1,
-                shippingType: 1,
-                status: 1,
-                type: 1
             },
         },
     ];
@@ -316,9 +325,9 @@ exports.getAdminOrderInfoById = (id) => {
     return dbRepo.findOne(constant.COLLECTIONS.ORDER, { query })
 }
 
-exports.getAdminOrders = async (type, { page, limit }) => {
+exports.getAdminOrders = async (status, { page, limit }) => {
     Logger.info(
-        `Inside getAdminOrders => type = ${type}, page = ${page}, limit = ${limit}`
+        `Inside getAdminOrders => status = ${status}, page = ${page}, limit = ${limit}`
     )
 
     page ||= 1
@@ -370,14 +379,14 @@ exports.getAdminOrders = async (type, { page, limit }) => {
                 quantity: { $first: '$item.quantity' },
                 amount: { $first: '$amount' },
                 users_info: { $first: '$users_info' },
-                createdAt: { $first: '$createdAt' },
-                status: { $first: '$status' },
+                status: { $first: { $arrayElemAt: ['$status.title', 0] } },
                 type: { $first: '$type' },
+                createdAt: { $first: '$createdAt' },
             },
         },
         {
             $sort: {
-                _id: 1,
+                createdAt: -1,
             },
         },
         {
@@ -440,6 +449,7 @@ exports.getAdminOrders = async (type, { page, limit }) => {
                 size: { $first: '$variant.size' },
                 quantity: { $first: '$item.quantity' },
                 amount: { $first: '$amount' },
+                status: { $first: { $arrayElemAt: ['$status.title', 0] } },
             },
         },
         {
@@ -447,16 +457,16 @@ exports.getAdminOrders = async (type, { page, limit }) => {
         }
     ]
 
-    if (type) {
-        pipeline.unshift({
+    if (status) {
+        pipeline.splice(7, 0, {
             $match: {
-                type: { $regex: type === 'all' ? '' : type, $options: 'i' },
+                status: { $regex: status === 'all' ? '' : status, $options: 'i' },
             },
         })
 
-        countPipeline.unshift({
+        countPipeline.splice(5, 0, {
             $match: {
-                type: { $regex: type === 'all' ? '' : type, $options: 'i' },
+                status: { $regex: status === 'all' ? '' : status, $options: 'i' },
             },
         })
     }
@@ -489,11 +499,6 @@ exports.getAdminDashboardRevenue = async (type) => {
     ]
 
     const countPipeline = [
-        {
-            $sort: {
-                createdAt: -1,
-            },
-        },
         {
             $lookup: {
                 from: 'products',
@@ -543,11 +548,6 @@ exports.getAdminDashboardRevenue = async (type) => {
             }
         },
         {
-            $sort: {
-                createdAt: -1,
-            },
-        },
-        {
             $group: {
                 _id: '$_id',
                 amount: { $first: '$amount' },
@@ -574,11 +574,6 @@ exports.getAdminDashboardRevenue = async (type) => {
                     $lt: lastMonthEnd
                 }
             }
-        },
-        {
-            $sort: {
-                createdAt: -1,
-            },
         },
         {
             $group: {

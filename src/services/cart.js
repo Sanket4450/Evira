@@ -136,11 +136,12 @@ exports.getCartProducts = (userId) => {
                         $multiply: ['$items.quantity', '$variant.price'],
                     },
                 },
+                createdAt: { $first: '$variant.createdAt' },
             },
         },
         {
             $sort: {
-                _id: 1
+                createdAt: -1
             }
         },
         {
@@ -237,11 +238,12 @@ exports.getCheckoutProducts = (userId) => {
                         $multiply: ['$items.quantity', '$variant.price'],
                     },
                 },
+                createdAt: { $first: '$variant.createdAt' },
             },
         },
-        {
+       {
             $sort: {
-                _id: 1
+                createdAt: -1
             }
         },
         {

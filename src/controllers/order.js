@@ -136,7 +136,7 @@ exports.cancelOrder = catchAsyncErrors(async (req, res) => {
 })
 
 exports.getAdminOrders = catchAsyncErrors(async (req, res) => {
-    const { type, page, limit } = req.query
+    const { status, page, limit } = req.query
 
     if (!(await userService.getUserById(req.user.sub))) {
         throw new ApiError(
@@ -145,13 +145,13 @@ exports.getAdminOrders = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    const orders = await orderService.getAdminOrders(type, { page, limit })
+    const orders = await orderService.getAdminOrders(status, { page, limit })
 
     return sendResponse(
         res,
         httpStatus.OK,
         { orders },
-        'Orders retrieved successfully'
+        'Order retrieved successfully'
     )
 })
 
@@ -195,9 +195,6 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    const type = status.title === 'Delivered' || status.title === 'Canceled' ? 'completed' : 'ongoing'
-    await orderService.updateOrder(orderId, { type })
-
     if (status) {
         if (!status.title) {
             throw new ApiError(
@@ -206,21 +203,41 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
             )
         }
 
-        if (order.status.find((sts) => sts.title === status.title)) {
+        const currentStatus = order.status[0]
+
+        if (currentStatus.title === status.title) {
             throw new ApiError(
                 constant.MESSAGES.STATUS_ALREADY_UPDATED,
                 httpStatus.CONFLICT
             )
         }
 
-        const statusBody = {
-            title: status.title,
-            description:
-                status.description || `Order ${status.title} successfully`,
-            date: Date.now(),
+        if (currentStatus.title === 'Canceled') {
+            throw new ApiError(constant.MESSAGES.STATUS_CANNOT_UPDATE, httpStatus.CONFLICT)
         }
 
-        await orderService.updateOrderStatus(orderId, statusBody)
+        const type = status.title === 'Delivered' || status.title === 'Canceled' ? 'completed' : 'ongoing'
+        await orderService.updateOrder(orderId, { type })
+
+        if (status.isForwardDirection === false) {
+            await orderService.removeLatestOrderStatus(orderId)
+        }
+        else if (status.isForwardDirection === true) {
+            const statusBody = {
+                title: status.title,
+                description:
+                    status.description || `Order ${status.title} successfully`,
+                date: Date.now(),
+            }
+
+            await orderService.updateOrderStatus(orderId, statusBody)
+        }
+        else {
+          throw new ApiError(
+            constant.MESSAGES.STATUS_DIRECTION_REQUIRED,
+            httpStatus.BAD_REQUEST
+          )
+        }
 
         if (status.title === 'Delivered') {
             await productService.increaseSoldCount(order.item?.product, order.item?.quantity)
@@ -233,7 +250,7 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         } else null
 
         const notificationBody = {
-          title: 'Order Traking!',
+          title: `${status.title}!`,
           message: `Your order is ${status.title}`,
           icon: constant.NOTIFICATIONS.DELIVERY,
         }
@@ -241,12 +258,10 @@ exports.updateOrder = catchAsyncErrors(async (req, res) => {
         await notificationService.createNotification(order.user, notificationBody)
     }
 
-    order = await orderService.getAdminOrderById(orderId)
-
     return sendResponse(
         res,
         httpStatus.OK,
-        { order },
+        {},
         'Order updated successfully'
     )
 })

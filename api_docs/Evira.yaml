@@ -2202,10 +2202,10 @@ paths:
         - name: type
           in: query
           schema:
-            type: string
-            enum: [all, ongoing, completed]
+            status: string
+            enum: [Ordered, Shipped, Out for Delivery, Delivered, Canceled]
           required: true
-          description: type or status of orders
+          description: status of orders
         - name: page
           in: query
           schema:
@@ -2263,17 +2263,11 @@ paths:
             schema:
               type: object
               properties:
-                address:
-                  type: string
-                  format: objectId
-                type:
-                  type: string
-                  enum: [ongoing, completed]
                 status:
                   type: object
                   properties:
                     title:
-                      type: string
+                      status: string
                       enum:
                         [
                           Ordered,
@@ -2284,18 +2278,15 @@ paths:
                         ]
                     description:
                       type: string
-                    date:
-                      type: string
-                      format: date
+                    isForwardDirection:
+                      type: boolean
               example:
-                type: ongoing
                 status:
                   title: Shipped
                   description: Order Shipped successfully
-                  date: '2023-11-01T08:42:21.510Z'
       responses:
         '200':
-          description: updated order object
+          description: empty object
           content:
             application/json: {}
   /admin/faqs:

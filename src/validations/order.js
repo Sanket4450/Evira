@@ -5,6 +5,7 @@ const {
     stringReqValidation,
     idReqValidation,
     stringValidation,
+    booleanValidation,
 } = require('./common')
 
 const getOrders = {
@@ -32,13 +33,19 @@ const cancelOrder = {
 }
 
 const getAdminOrders = {
-    query: joi.object().keys({
-        ...pageAndLimit,
-        type: stringReqValidation
-            .lowercase()
-            .valid('all', 'ongoing', 'completed')
-            .label('Order Status'),
-    }),
+  query: joi.object().keys({
+    ...pageAndLimit,
+    status: stringReqValidation
+      .valid(
+        'all',
+        'Ordered',
+        'Shipped',
+        'Out for Delivery',
+        'Delivered',
+        'Canceled'
+      )
+      .label('Order Status'),
+  }),
 }
 
 const getAdminOrder = {
@@ -61,6 +68,7 @@ const updateOrder = {
                 'Canceled',
             ),
             description: stringValidation,
+            isForwardDirection: booleanValidation
         }),
     }),
 }

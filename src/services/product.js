@@ -78,7 +78,7 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
         },
         {
             $sort: {
-                createdAt: 1,
+                sold: -1,
             },
         },
         {
@@ -175,11 +175,6 @@ exports.getProductsByCategory = (
             },
         },
         {
-            $sort: {
-                createdAt: -1,
-            },
-        },
-        {
             $group: {
                 _id: '$_id',
                 name: { $first: '$name' },
@@ -191,7 +186,7 @@ exports.getProductsByCategory = (
         },
         {
             $sort: {
-                _id: 1,
+                sold: -1,
             },
         },
         {
@@ -302,6 +297,7 @@ exports.getProductsBySearch = ({
                             1,
                         ],
                     },
+                    createdAt: 1,
                     _id: 0,
                     id: '$_id',
                 },
@@ -344,7 +340,7 @@ exports.getProductsBySearch = ({
             case 'price_desc':
                 pipeline.push({
                     $sort: {
-                        price: 1,
+                        price: -1,
                     },
                 })
                 break
@@ -352,7 +348,7 @@ exports.getProductsBySearch = ({
             case 'price_asc':
                 pipeline.push({
                     $sort: {
-                        price: -1,
+                        price: 1,
                     },
                 })
                 break
@@ -420,12 +416,6 @@ exports.getAdminProducts = async ({
         })
     }
 
-    pipeline.push({
-        $sort: {
-            sold: -1,
-        },
-    })
-
     pipeline.push(
         {
             $lookup: {
@@ -471,6 +461,7 @@ exports.getAdminProducts = async ({
                         1,
                     ],
                 },
+                createdAt: '$createdAt',
                 _id: 0,
                 id: '$_id',
             },
@@ -511,6 +502,12 @@ exports.getAdminProducts = async ({
     )
 
     pipeline.pop()
+
+    pipeline.push({
+        $sort: {
+            createdAt: -1,
+        },
+    })
 
     pipeline.push(
         {

@@ -53,7 +53,7 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
         userId: user._id,
     }
 
-    const { items, finalAmount } = await checkoutService.postCheckout(
+    const { items, finalAmount, discountPercentage } = await checkoutService.postCheckout(
         checkoutBody
     )
 
@@ -73,11 +73,12 @@ exports.postCheckout = catchAsyncErrors(async (req, res) => {
             },
             address,
             shippingType: shipping,
+            discountPercentage,
             amount: item.amount,
             type: 'ongoing',
             status: {
                 title: 'Ordered',
-                description: 'Order placed successfully',
+                description: 'Order has been placed',
                 date: Date.now(),
             },
         }

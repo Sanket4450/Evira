@@ -69,12 +69,12 @@ exports.postCheckout = async ({ userId, address, shipping, promo }) => {
             amount -= (amount * promoCode.discountPercentage) / 100
             const finalAmount = amount + shippingType.charge
 
-            return { items, finalAmount }
+            return { items, finalAmount, discountPercentage: promoCode.discountPercentage }
         }
 
         const finalAmount = amount + shippingType.charge
 
-        return { items, finalAmount }
+        return { items, finalAmount, discountPercentage: 0 }
     } catch (error) {
         Logger.error(`postCheckout error => ${error}`)
 

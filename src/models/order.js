@@ -34,6 +34,10 @@ const orderSchema = new mongoose.Schema(
             ref: 'ShippingType',
             required: true,
         },
+        discountPercentage: {
+            type: Number,
+            default: 0,
+        },
         amount: {
             type: Number,
             required: true,

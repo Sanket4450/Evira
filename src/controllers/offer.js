@@ -68,7 +68,7 @@ exports.postOffer = catchAsyncErrors(async (req, res) => {
 
     users.forEach(async (user) => {
       const notificationBody = {
-        title: `${offer.discountPercentage} Special Discount!`,
+        title: `${offer.discountPercentage}% Special Discount!`,
         message: `New offer is now available on ${product.name}`,
         icon: constant.NOTIFICATIONS.DISCOUNT,
       }
