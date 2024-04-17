@@ -59,7 +59,7 @@ module.exports = {
     STATUS_TITLE_REQUIRED: 'Status Title is required',
     STATUS_DIRECTION_REQUIRED: 'Status Direction is required',
     STATUS_ALREADY_UPDATED: 'Order Status already updated',
-    STATUS_CANNOT_UPDATE: 'Deleted Order Status cannot be updated',
+    STATUS_CANNOT_UPDATE: 'Cannot update status of canceled order',
     ERROR_UPLOADING_FILE: 'Error uploading file',
     FILE_NOT_FOUND: 'File not found',
     FILE_TYPE_NOT_SUPPORTED: 'File type not supported',
