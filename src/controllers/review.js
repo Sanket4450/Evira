@@ -71,36 +71,6 @@ exports.postReview = catchAsyncErrors(async (req, res) => {
   )
 })
 
-exports.getReviewsBySearch = catchAsyncErrors(async (req, res) => {
-  const { productId } = req.params
-
-  const user = await userService.getUserById(req.user.sub)
-
-  if (!user) {
-    throw new ApiError(constant.MESSAGES.USER_NOT_FOUND, httpStatus.NOT_FOUND)
-  }
-
-  const product = await productService.getProductById(productId)
-
-  if (!product) {
-    throw new ApiError(
-      constant.MESSAGES.PRODUCT_NOT_FOUND,
-      httpStatus.NOT_FOUND
-    )
-  }
-
-  let reviews = await reviewService.getReviewsBySearch(productId, req.query)
-  
-  reviews = await reviewService.validateEditableReviews(user._id, reviews)
-
-  return sendResponse(
-    res,
-    httpStatus.OK,
-    { reviews },
-    'Reviews retrieved successfully'
-  )
-})
-
 exports.updateReview = catchAsyncErrors(async (req, res) => {
   const { reviewId } = req.params
 

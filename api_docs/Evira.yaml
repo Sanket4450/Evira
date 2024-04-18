@@ -1025,52 +1025,6 @@ paths:
           description: posted review object
           content:
             application/json: {}
-  /products/reviews/search/{productId}:
-    get:
-      tags:
-        - Reviews
-      security:
-        - userAuth: []
-      parameters:
-        - name: productId
-          in: path
-          schema:
-            type: string
-            format: objectId
-          required: true
-          description: objectId for the product
-        - name: keyword
-          in: query
-          schema:
-            type: string
-          description: keyword to be searched
-          example: joNnY
-        - name: rating
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 5
-          description: rating stars of review
-        - name: page
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-          description: page number for reviews
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 15
-          description: number of reviews per page
-      responses:
-        '200':
-          description: reviews array
-          content:
-            application/json: {}
   /reviews/{reviewId}:
     put:
       tags:

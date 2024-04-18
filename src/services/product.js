@@ -79,6 +79,7 @@ exports.getProducts = ({ matchCriteria, page, limit }) => {
         {
             $sort: {
                 sold: -1,
+                createdAt: -1,
             },
         },
         {
@@ -187,6 +188,7 @@ exports.getProductsByCategory = (
         {
             $sort: {
                 sold: -1,
+                createdAt: -1,
             },
         },
         {

@@ -30,17 +30,6 @@ const postReview = {
     }),
 }
 
-const getReviewsBySearch = {
-    query: joi.object().keys({
-        ...pageAndLimit,
-        keyword: stringValidation.label('Search Keyword'),
-        rating: integerNumberValidation.min(1).max(5),
-    }),
-    params: joi.object().keys({
-        productId: idReqValidation,
-    }),
-}
-
 const updateReview = {
     params: joi.object().keys({
         reviewId: idReqValidation,
@@ -68,7 +57,6 @@ const toggleLike = {
 
 module.exports = {
     getReviews,
-    getReviewsBySearch,
     postReview,
     updateReview,
     deleteReview,
