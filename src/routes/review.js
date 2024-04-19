@@ -20,13 +20,6 @@ router1.post(
     reviewController.postReview
 )
 
-router1.get(
-    '/reviews/search/:productId',
-    authChecker,
-    validate(reviewValidation.getReviewsBySearch),
-    reviewController.getReviewsBySearch
-)
-
 router2.put(
     '/:reviewId',
     authChecker,

@@ -251,7 +251,7 @@ exports.getWishlistProductsBySearch = (
     userId,
     { keyword, category, min_price, max_price, sortBy, rating, page, limit }
 ) => {
-    Logger.info(`Inside getProductsBySearch => keyword = ${keyword}, category = ${category}, min_price = ${min_price},
+    Logger.info(`Inside getWishlistProductsBySearch => keyword = ${keyword}, category = ${category}, min_price = ${min_price},
     max_price = ${max_price}, sortBy = ${sortBy}, rating = ${rating}, page = ${page}, limit = ${limit}`)
 
     page ||= 1

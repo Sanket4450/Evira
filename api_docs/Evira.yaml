@@ -671,60 +671,46 @@ paths:
           content:
             application/json: {}
   /products/search:
-    get:
+    post:
       tags:
         - Products
       security:
         - userAuth: []
-      parameters:
-        - name: keyword
-          in: query
-          schema:
-            type: string
-          description: keyword to be searched
-          example: with
-        - name: category
-          in: query
-          schema:
-            type: string
-            format: objectId
-          description: objectId for the category
-        - name: min_price
-          in: query
-          schema:
-            type: number
-          description: minimum price for products
-        - name: max_price
-          in: query
-          schema:
-            type: number
-          description: maximum price for products
-        - name: sortBy
-          in: query
-          schema:
-            type: string
-            enum: [popular, recent, price_desc, price_asc]
-            default: popular
-          description: products sorted by
-        - name: rating
-          in: query
-          schema:
-            type: integer
-          description: average rating of product out of 5
-        - name: page
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-          description: page number for products
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 10
-          description: number of products per page
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keyword:
+                  type: string
+                category:
+                  type: string
+                  format: objectId
+                min_price:
+                  type: number
+                max_price:
+                  type: number
+                sortBy:
+                  type: string
+                  enum: [popular, recent, price_desc, price_asc]
+                rating:
+                  type: integer
+                  minimum: 1
+                page:
+                  type: integer
+                  minimum: 1
+                limit:
+                  type: integer
+                  minimum: 1
+              example:
+                keyword: with
+                min_price: 100
+                max_price: 90000
+                sortBy: price_desc
+                rating: 3
+                page: 1
+                limit: 10
       responses:
         '200':
           description: products array for search results
@@ -839,60 +825,46 @@ paths:
           content:
             application/json: {}
   /products/wishlist/search:
-    get:
+    post:
       tags:
         - Products
       security:
         - userAuth: []
-      parameters:
-        - name: keyword
-          in: query
-          schema:
-            type: string
-          description: keyword to be searched
-          example: with
-        - name: category
-          in: query
-          schema:
-            type: string
-            format: objectId
-          description: objectId for the category
-        - name: min_price
-          in: query
-          schema:
-            type: number
-          description: minimum price for products
-        - name: max_price
-          in: query
-          schema:
-            type: number
-          description: maximum price for products
-        - name: sortBy
-          in: query
-          schema:
-            type: string
-            enum: [popular, recent, price_desc, price_asc]
-            default: popular
-          description: products sorted by
-        - name: rating
-          in: query
-          schema:
-            type: integer
-          description: average rating of products out of 5
-        - name: page
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-          description: page number for products
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            default: 10
-          description: number of products per page
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keyword:
+                  type: string
+                category:
+                  type: string
+                  format: objectId
+                min_price:
+                  type: number
+                max_price:
+                  type: number
+                sortBy:
+                  type: string
+                  enum: [popular, recent, price_desc, price_asc]
+                rating:
+                  type: integer
+                  minimum: 1
+                page:
+                  type: integer
+                  minimum: 1
+                limit:
+                  type: integer
+                  minimum: 1
+              example:
+                keyword: with
+                min_price: 100
+                max_price: 90000
+                sortBy: price_desc
+                rating: 3
+                page: 1
+                limit: 10
       responses:
         '200':
           description: wishlist products array for search results
@@ -1154,9 +1126,9 @@ paths:
                 - shipping
                 - amount
               example:
-                address: address-id
-                shipping: shipping-id
-                promo: promo-id
+                address: 1234567890abcdef12345678
+                shipping: 1234567890abcdef12345678
+                promo: 1234567890abcdef12345678
                 amount: 945015
       responses:
         '200':

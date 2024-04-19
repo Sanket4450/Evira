@@ -80,7 +80,7 @@ exports.getProductsBySearch = catchAsyncErrors(async (req, res) => {
         )
     }
 
-    let products = await productService.getProductsBySearch(req.query)
+    let products = await productService.getProductsBySearch(req.body)
 
     products = await productService.validateLikedProducts(user._id, products)
 
@@ -88,7 +88,7 @@ exports.getProductsBySearch = catchAsyncErrors(async (req, res) => {
         res,
         httpStatus.OK,
         { products },
-        'Product retrieved successfully'
+        'Products retrieved successfully'
     )
 })
 
@@ -101,7 +101,7 @@ exports.getAdminProducts = catchAsyncErrors(async (req, res) => {
     }
 
     const { countObject, products } = await productService.getAdminProducts(
-        req.query
+        req.body
     )
 
     return sendResponse(
@@ -287,7 +287,7 @@ exports.getWishlistProductsBySearch = catchAsyncErrors(async (req, res) => {
 
     const products = await wishlistService.getWishlistProductsBySearch(
         user._id,
-        req.query
+        req.body
     )
 
     return sendResponse(

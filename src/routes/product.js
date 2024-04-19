@@ -21,7 +21,7 @@ router1.get(
     productController.getProductsByCategory
 )
 
-router1.get(
+router1.post(
     '/search',
     authChecker,
     validate(productValidation.getProductsBySearch),
@@ -56,7 +56,7 @@ router2.get(
     productController.getWishlistProductsByCategory
 )
 
-router2.get(
+router2.post(
     '/search',
     authChecker,
     validate(productValidation.getProductsBySearch),
@@ -72,7 +72,7 @@ router3.put(
 
 router3.get('/', authChecker, productController.getCartProducts)
 
-adminRouter.get(
+adminRouter.post(
     '/',
     authChecker,
     authorizeRole('admin'),
