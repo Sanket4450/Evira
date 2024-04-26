@@ -5,6 +5,7 @@ const catchAsyncErrors = require('../utils/catchAsyncErrors')
 const sendResponse = require('../utils/responseHandler')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
+const configConstant = require('../config/constants')
 const {
     productService,
     categoryService,
@@ -52,7 +53,7 @@ exports.uploadFile = catchAsyncErrors(async (req, res) => {
 
     const extname = path.extname(file.originalname).slice(1)
 
-    const supportedFiles = process.env.SUPPORTED_FILE_TYPES?.split(' ')
+    const supportedFiles = configConstant.SUPPORTED_FILE_TYPES?.split(' ')
 
     if (!supportedFiles.includes(extname?.toLowerCase())) {
       throw new ApiError(constant.MESSAGES.FILE_TYPE_NOT_SUPPORTED, httpStatus.BAD_REQUEST)

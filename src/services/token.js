@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const httpStatus = require('http-status')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
+const configConstant = require('../config/constants')
 const userService = require('./user')
 
 const generateToken = ({ payload, secret, options }) => {
@@ -56,12 +57,12 @@ const generateAuthTokens = async (userId, role = 'user') => {
     const accessToken = generateToken({
         payload,
         secret: process.env.ACCESS_TOKEN_SECRET,
-        options: { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
+        options: { expiresIn: configConstant.ACCESS_TOKEN_EXPIRY },
     })
     const refreshToken = generateToken({
         payload,
         secret: process.env.REFRESH_TOKEN_SECRET,
-        options: { expiresIn: process.env.REFRESH_TOKEN_EXPIRY },
+        options: { expiresIn: configConstant.REFRESH_TOKEN_EXPIRY },
     })
     await userService.updateUser(userId, { token: refreshToken })
 

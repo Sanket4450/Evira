@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk')
+const configConstant = require('./constants')
 
-AWS.config.update({ region: process.env.REGION })
+AWS.config.update({ region: configConstant.REGION })
 
 // Set AWS credentials
 AWS.config.update({

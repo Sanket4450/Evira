@@ -2,6 +2,7 @@ const httpStatus = require('http-status')
 const bcrypt = require('bcryptjs')
 const ApiError = require('../utils/ApiError')
 const constant = require('../constants')
+const configConstant = require('../config/constants')
 const userService = require('./user')
 const tokenService = require('./token')
 const emailService = require('./email')
@@ -80,7 +81,7 @@ exports.forgotPasswordWithEmail = async (email, isAdmin) => {
     const resetToken = tokenService.generateToken({
         payload: { sub: user._id },
         secret: process.env.RESET_TOKEN_SECRET,
-        options: { expiresIn: process.env.RESET_TOKEN_EXPIRY },
+        options: { expiresIn: configConstant.RESET_TOKEN_EXPIRY },
     })
 
     return resetToken

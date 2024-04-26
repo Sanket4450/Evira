@@ -4,13 +4,14 @@ const ejs = require('ejs')
 const fs = require('fs')
 const util = require('util')
 const ApiError = require('./ApiError')
+const configConstant = require('../config/constants')
 
 const readFileAsync = util.promisify(fs.readFile)
 
 const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE,
+    service: configConstant.EMAIL_SERVICE,
     auth: {
-        user: process.env.EMAIL_USER,
+        user: configConstant.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
     },
 })
@@ -22,7 +23,7 @@ const sendMail = async ({ email, subject, templateFile, data }) => {
         const renderedHtml = ejs.render(htmlContent, data)
 
         const mailOptions = {
-            from: `${process.env.EMAIL_HOST} <${process.env.EMAIL_USER}>`,
+            from: `${configConstant.EMAIL_HOST} <${configConstant.EMAIL_USER}>`,
             to: email,
             subject,
             html: renderedHtml,
