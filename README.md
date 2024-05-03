@@ -3,7 +3,7 @@
 
 An e-commerce platform backend made using node.js, express & mongoDB
 
-🔗 https://evira.onrender.com/api/docs
+🔗 http://65.0.143.176/api/docs
 
 
 ## Features
