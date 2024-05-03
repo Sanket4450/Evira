@@ -1,6 +1,5 @@
 collections
 logs
 node_modules
-.env.local
-.env.production
-yarn.lock
+.env
+.env.prod

@@ -1,12 +1,12 @@
-const AWS = require('aws-sdk')
+const { S3Client } = require('@aws-sdk/client-s3')
 const configConstant = require('./constants')
 
-AWS.config.update({ region: configConstant.REGION })
-
-// Set AWS credentials
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3Client = new S3Client({
+  region: configConstant.REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 })
 
-module.exports = { AWS }
+module.exports = { s3Client }

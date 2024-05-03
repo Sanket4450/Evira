@@ -1,8 +1,5 @@
-const environment = process.env.NODE_ENV || 'development'
-const envFilePath =
-    environment === 'production' ? '.env.production' : '.env.local'
+require('dotenv').config()
 
-require('dotenv').config({ path: envFilePath })
 const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
