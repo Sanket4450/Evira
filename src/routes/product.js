@@ -73,7 +73,7 @@ router3.put(
 router3.get('/', authChecker, productController.getCartProducts)
 
 adminRouter.post(
-    '/',
+    '/filter',
     authChecker,
     authorizeRole('admin'),
     validate(productValidation.getAdminProducts),

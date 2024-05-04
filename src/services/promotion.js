@@ -11,7 +11,7 @@ exports.getPromoCodeById = (id) => {
 
 exports.getPromoCodeByTitle = (title) => {
     const query = {
-        title: { $regex: title, $options: 'i' },
+        title: { $regex: new RegExp(`^${title}$`, 'i') },
     }
     return dbRepo.findOne(constant.COLLECTIONS.PROMOTION, { query })
 }

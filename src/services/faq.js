@@ -16,7 +16,7 @@ exports.getFaqById = (id) => {
 
 exports.getFaqByTitle = (title) => {
   const query = {
-    title: { $regex: title, $options: 'i' },
+    title: { $regex: new RegExp(`^${title}$`, 'i') },
   }
 
   const data = {

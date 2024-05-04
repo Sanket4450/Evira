@@ -16,7 +16,7 @@ exports.getCategoryById = (id) => {
 
 exports.getFullCategoryByName = (name) => {
   const query = {
-    name: { $regex: name, $options: 'i' },
+    name: { $regex: new RegExp(`^${name}$`, 'i') },
   }
   return dbRepo.findOne(constant.COLLECTIONS.CATEGORY, { query })
 }
