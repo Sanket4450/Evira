@@ -5,7 +5,7 @@ info:
   description: Evira E-commerce APIs with Swagger
   contact: { email: talaviyasanket01@gmail.com }
 servers:
-  - url: http://65.0.143.176/api/v1
+  - url: https://evira.work.gd/api/v1
   - url: http://localhost:8000/api/v1
 components:
   securitySchemes:
